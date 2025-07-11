@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+
+@layer components {
+  .sideBar {
+    @apply
+    /* Display */
+    flex
+    flex-col
+
+    /* Sizing */
+    h-full
+    w-1/12
+
+    /* Positioning */
+    justify-center
+    items-center
+
+    /* Styling */
+    shadow-xl
+    bg-red-800
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  .sandwich {
+    @apply
+    /* Display */
+    flex
+    opacity-100
+
+    /* Positioning */
+    pt-10
+    justify-center
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  @media (min-height:400px) and (min-width:640px) {
+    .sandwich {
+      @apply
+      opacity-0
+      pt-0
+    }
+  }
+
+  .initials {
+    @apply
+    /* Display */
+    flex
+    opacity-100
+
+    /* Sizing */
+    h-1/10
+    w-1/2
+
+    /* Positioning */
+    justify-center
+    items-center
+
+    /* Styling */
+    bg-white
+    shadow-2xl
+    shadow-black
+    rounded-lg
+    font-semibold
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  @media (max-height:400px), (max-width:640px) {
+    .initials {
+      @apply
+      opacity-0
+    }
+  }
+
+  .anchorContainer {
+    @apply
+    /* Display */
+    flex
+    flex-col
+    gap-5
+    opacity-100
+
+    /* Sizing */
+    h-full
+
+    /* Positioning */
+    justify-center
+    items-center
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  @media (max-height: 400px), (max-width: 640px) {
+    .anchorContainer {
+      @apply
+      opacity-0
+    }
+  }
+
+  .anchor {
+    @apply
+    /* Display */
+    flex
+    flex-col
+    gap-2
+
+    /* Positioning */
+    justify-center
+    items-center
+  }
+
+  .anchorImg {
+    @apply
+    /* Sizing */
+    w-5
+    h-5
+    md:w-7
+    md:h-7
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  .anchorText {
+    @apply
+    /* Positioning */
+    px-2
+
+    /* Styling */
+    rounded-2xl
+    bg-transparent
+    text-white
+    md:bg-gray-100/50
+    md:text-black
+    sm:text-xs
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  .logoutBtn {
+    @apply
+    /* Display */
+    flex
+    flex-col
+    opacity-100
+
+    /* Positioning */
+    justify-center
+    items-center
+    pb-5
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  @media (max-height:400px), (max-width:640px) {
+    .logoutBtn {
+      @apply
+      opacity-0
+    }
+  }
+
+  .navbar {
+    @apply
+    /* Display */
+    flex
+    h-1/12
+
+    /* Positioning */
+    justify-between
+    items-center
+    px-8
+
+    /* Styling */
+    shadow-xl
+    bg-white
+
+    /* Animation */
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
+  @media (max-height:620px) {
+    .navbar {
+      @apply
+      h-1/6
+    }
+  }
+
+  .main {
+    @apply
+    flex
+    flex-col
+    h-11/12
+    overflow-auto
+  }
+
+  @media (max-height:620px) {
+    .main {
+      @apply
+      h-5/6
+    }
+  }
+
+  .clip-diagonal {
+    clip-path: polygon(0 0, 100% 0, 100% 30%, 0% 60%);
+  }
+
+}

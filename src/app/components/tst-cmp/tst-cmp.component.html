@@ -1,0 +1,47 @@
+<app-main>
+    <div class="main">
+        <div class="flex flex-col">
+            <div class="pl-10 py-10">
+                <p class="text-4xl font-bold ">Welcome back 👋</p>
+                <p class="text-xl font-light transition-all duration-200 ease-in-out">Pick up where you left off and
+                    continue working on your recent spreadsheets</p>
+            </div>
+            <div class="flex pl-10 pb-10 gap-3">
+                <button class="flex px-5 py-2 rounded-lg gap-2 justify-center items-center text-sm border border-gray-200 hover:shadow-xl transition-all duration-200 ease-in-out">
+                    <img src="group.png" alt="team" class="w-6 h-6"/>
+                    Team spreadsheets
+                </button>
+                <button class="flex px-5 py-2 rounded-lg gap-2 justify-center items-center text-sm border border-gray-200 hover:shadow-xl transition-all duration-200 ease-in-out">
+                    <img src="favorite.png" alt="team" class="w-6 h-6"/>
+                    Favorites
+                </button>
+            </div>
+
+            <div class="flex flex-col justify-center w-full h-full gap-5 px-10">
+                <app-preview [table]="tables[0]"/>
+                <div class="group relative flex flex-col h-full px-10 py-10 border border-gray-200 rounded-xl gap-5 hover:shadow-xl">
+                    <div class="absolute inset-0 rounded-xl bg-gray-50 w-full h-full"></div>
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-red-200 via-white to-orange-200 opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100 w-full h-full"></div>
+                    <div class="relative z-10 flex justify-between">
+                        <div class="flex gap-x-3">
+                            <div class="flex rounded-xl bg-gray-200 group-hover:bg-gray-50 p-2 justify-center items-center transition-all duration-500 ease-in-out">
+                                <img src="sheet.png" alt="sheet" class="w-8 h-8 "/>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-lg">Report name placeholder</p>
+                                <p class="font-light">Spreadsheet name placeholder</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center items-center gap-2">
+                            <img src="clock.png" alt="clock" class="w-3.5 h-3.5"/>
+                            <p>2 hours ago</p>
+                        </div>
+                    </div>
+                    <app-table></app-table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</app-main>

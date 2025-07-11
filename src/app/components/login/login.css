@@ -1,0 +1,12 @@
+.loginContainer {
+  @apply
+  h-dvh
+  w-screen
+  bg-gradient-to-tr
+  from-black
+  via-black
+  to-red-800
+  flex
+  items-center
+  justify-center
+}
