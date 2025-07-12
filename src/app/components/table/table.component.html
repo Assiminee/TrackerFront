@@ -1,140 +1,46 @@
 <div
-  class="relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white  rounded-xl shadow-xl border border-gray-200 bg-clip-border">
-  <p class="px-4 pt-4 font-light font-sans">PREVIEW • {{ rowCount }} ROW{{ rowCount === 0 || rowCount > 1 ? 'S' : ''}}</p>
-    <table class="w-full text-left table-auto min-w-max">
-    <thead>
-    <tr>
-      <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-          Name
-        </p>
-      </th>
-      <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-          Job
-        </p>
-      </th>
-      <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-          Employed
-        </p>
-      </th>
-      <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70"></p>
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td class="p-4 border-b border-blue-gray-50 blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          John Michael
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Manager
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          23/04/18
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900">
-          Edit
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Alexa Liras
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Developer
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          23/04/18
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900">
-          Edit
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td class="p-4 border-b border-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Laurent Perrier
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Executive
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          19/09/17
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50">
-        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900">
-          Edit
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Michael Levi
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Developer
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          24/12/08
-        </p>
-      </td>
-      <td class="p-4 border-b border-blue-gray-50  blur-xs">
-        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900">
-          Edit
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td class="p-4  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Richard Gran
-        </p>
-      </td>
-      <td class="p-4  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          Manager
-        </p>
-      </td>
-      <td class="p-4  blur-xs">
-        <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-          04/10/21
-        </p>
-      </td>
-      <td class="p-4  blur-xs">
-        <a href="#" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900">
-          Edit
-        </a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+        class="relative flex flex-col w-full h-full text-gray-700 bg-white  rounded-xl shadow-xl border border-gray-200 bg-clip-border">
+    <p class="px-4 py-4 font-light font-sans">PREVIEW • {{ rowCount }}
+        ROW{{ rowCount === 0 || rowCount > 1 ? 'S' : '' }}</p>
+    <div class="overflow-auto">
+    <table class="min-w-full text-center">
+        <!-- ---------- column headings ---------- -->
+        <thead>
+        <!-- 1st header row --------------------- -->
+        <tr class="bg-gray-50">
+            @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
+                @if (col.subCols) {
+                    <th class="p-2 border border-gray-200" [class.border-l-0]="isFirst" [class.border-r-0]="isLast" [colSpan]="col.subCols.length">{{ col.name }}</th>
+                } @else {
+                    <th class="p-2 border border-gray-200" [class.border-l-0]="isFirst" [class.border-r-0]="isLast" [rowSpan]="colsWithSubCols.length > 0 ? 2 : 1">{{ col.name }}</th>
+                }
+            }
+        </tr>
+
+        <tr class="bg-gray-100">
+            @if (colsWithSubCols.length > 0) {
+                @for (col of colsWithSubCols; track col; let isFirstCol = $first; let isLastCol = $last) {
+                    @for (subCol of col.subCols; track subCol; let isFirstSubCol = $first; let isLastSubCol = $last) {
+                        <th class="p-2 border border-gray-200" [class.border-l-0]="isFirstCol && isFirstSubCol" [class.border-r-0]="isLastCol && isLastSubCol">{{ subCol }}</th>
+                    }
+                }
+            }
+        </tr>
+        </thead>
+
+        <!-- ---------- data body ----------------- -->
+        <tbody>
+            @for (i of [1, 2, 3]; track i; let isLastRow = $last; let isFirstRow = $first) {
+                <tr class="border-t  border-gray-300">
+                    @for (val of row; track val;) {
+                        <td class='p-2' [class.blur-xs]="isFirstRow || isLastRow">
+                            {{ val }}
+                        </td>
+                    }
+                </tr>
+            }
+        <!-- more rows… -->
+        </tbody>
+    </table>
+    </div>
 </div>

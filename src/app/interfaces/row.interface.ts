@@ -2,8 +2,8 @@ import {Editor} from './editor.interface';
 
 export interface Row {
   id: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   editor: Editor;
   [key: string]: unknown;
 }

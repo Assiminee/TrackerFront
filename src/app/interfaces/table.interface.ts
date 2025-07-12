@@ -17,5 +17,5 @@ export interface Table {
 
   cols: Col[];
 
-  rows: Row[];
+  row: Row;
 }

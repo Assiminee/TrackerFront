@@ -27,11 +27,11 @@ export class TstCmpComponent {
       rowCount: 159,
       colCount: 4,
       cols: [{ name: '', subCols: []}],
-      rows: [{
-        id: '', createdAt: '', updatedAt: '', editor: {
+      row: {
+        id: '', createdAt: new Date(), updatedAt: new Date(), editor: {
           userId: '', firstName: '', lastName: ''
         }
-      }],
+      },
     }
   ];
 }

@@ -216,6 +216,9 @@
     flex-col
     h-11/12
     overflow-auto
+    p-6
+    sm:p-10
+
   }
 
   @media (max-height:620px) {
