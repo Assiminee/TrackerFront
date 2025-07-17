@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-main',
   imports: [],
   templateUrl: './main.component.html',
+  standalone: true,
   styleUrl: './main.component.css'
 })
 export class MainComponent {

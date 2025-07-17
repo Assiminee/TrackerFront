@@ -1,0 +1,29 @@
+<app-main>
+  <div class="main">
+    <app-list-header
+      [isListDisplay]="isListDisplay"
+      (changeDisplayEvent)="changeDisplay($event)"
+      [openOptionsMenu]="openOptionsMenu"
+      (toggleOptionsMenuEvent)="toggleOptions($event)"
+    />
+    <div class="flex flex-col w-full h-5/6 md:h-3/4 bg-white shadow-xl/15 shadow-red-800">
+      <div class="w-full h-full flex flex-col justify-between">
+        <div class="w-full h-11/12 overflow-auto">
+          <app-data-table [reports]="reports" (menuOpenEvent)="toggleMenu($event)" [openMenuIndex]="openMenuIndex"/>
+        </div>
+        <div class="px-5 py-2 w-full h-1/12 bg-gray-50 border-t border-gray-200">
+          <p>Showing 5 - 5 reports</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex h-1/12 p-5 w-full bg-gray-100 rounded-b-3xl shadow-lg text-center justify-center items-center gap-2 sm:gap-5">
+      <button
+        class="px-3 py-1 w-1/3 sm:w-1/4 md:w-1/6 lg:w-1/8 bg-white shadow-xl rounded-lg transformations" (click)="prevPage()">Previous</button>
+      <div class="px-3 py-1 w-1/8 sm:w-1/12 md:w-1/18 lg:w-1/24 bg-white shadow-xl rounded-lg transformations">{{ currentPage }}</div>
+      <button
+        class="px-3 py-1 w-1/3 sm:w-1/4 md:w-1/6 lg:w-1/8 bg-white shadow-xl rounded-lg transformations" (click)="nextPage()">Next</button>
+    </div>
+  </div>
+</app-main>

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @layer components {
   .sideBar {
     @apply
@@ -218,7 +217,6 @@
     overflow-auto
     p-6
     sm:p-10
-
   }
 
   @media (max-height:620px) {
@@ -232,4 +230,56 @@
     clip-path: polygon(0 0, 100% 0, 100% 30%, 0% 60%);
   }
 
+  /*************************************************** REPORTS ***********************************************/
+  .listHeader {
+    @apply
+    px-5
+    flex
+    justify-between
+    items-center
+    w-full
+    bg-red-800
+    text-white
+    rounded-t-3xl
+    shadow-lg
+  }
+
+  .toggleListGridDisplay {
+    @apply
+    p-0.5
+    md:p-1
+    rounded-lg
+    flex
+    justify-center
+    items-center
+    w-1/2
+  }
+
+  .transformations {
+    @apply
+    hover:-translate-y-1
+    hover:scale-110
+    transition-all
+    duration-500
+    ease-in-out
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.mdc-checkbox__background {
+  border-radius: 4px !important;
+}
+
+.mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
+  background-color: oklch(44.4% 0.177 26.899) !important;
+  border-color: oklch(44.4% 0.177 26.899) !important;
+}
+
+.mdc-checkbox__checkmark-path {
+  stroke: white !important;;
+}
+
+.mdc-checkbox__mixedmark {
+  border-color: white !important;;
 }

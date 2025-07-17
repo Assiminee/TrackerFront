@@ -1,46 +1,51 @@
 <div
-        class="relative flex flex-col w-full h-full text-gray-700 bg-white  rounded-xl shadow-xl border border-gray-200 bg-clip-border">
-    <p class="px-4 py-4 font-light font-sans">PREVIEW • {{ rowCount }}
-        ROW{{ rowCount === 0 || rowCount > 1 ? 'S' : '' }}</p>
-    <div class="overflow-auto">
+  class="relative flex flex-col w-full h-full text-gray-700 bg-white  rounded-xl shadow-xl border border-gray-200 bg-clip-border">
+  <p class="px-4 py-4 font-light font-sans">PREVIEW • {{ rowCount }}
+    ROW{{ rowCount === 0 || rowCount > 1 ? 'S' : '' }}</p>
+  <div class="overflow-auto">
     <table class="min-w-full text-center">
-        <!-- ---------- column headings ---------- -->
-        <thead>
-        <!-- 1st header row --------------------- -->
-        <tr class="bg-gray-50">
-            @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
-                @if (col.subCols) {
-                    <th class="p-2 border border-gray-200" [class.border-l-0]="isFirst" [class.border-r-0]="isLast" [colSpan]="col.subCols.length">{{ col.name }}</th>
-                } @else {
-                    <th class="p-2 border border-gray-200" [class.border-l-0]="isFirst" [class.border-r-0]="isLast" [rowSpan]="colsWithSubCols.length > 0 ? 2 : 1">{{ col.name }}</th>
-                }
-            }
-        </tr>
+      <!-- ---------- column headings ---------- -->
+      <thead>
+      <!-- 1st header row --------------------- -->
+      <tr class="bg-gray-50">
+        @for (col of cols; track col; let isFirst = $first; let isLast = $last) {
+          @if (!col.subCols || col.name === 'editor') {
+            <th class="p-2 border border-gray-200" [class.border-l-0]="isFirst" [class.border-r-0]="isLast"
+                [rowSpan]="colsWithSubCols.length > 0 ? 2 : 1">{{ col.name }}
+            </th>
+          } @else {
+            <th class="p-2 border border-gray-200" [class.border-l-0]="isFirst" [class.border-r-0]="isLast"
+                [colSpan]="col.subCols.length">{{ col.name }}
+            </th>
+          }
+        }
+      </tr>
 
-        <tr class="bg-gray-100">
-            @if (colsWithSubCols.length > 0) {
-                @for (col of colsWithSubCols; track col; let isFirstCol = $first; let isLastCol = $last) {
-                    @for (subCol of col.subCols; track subCol; let isFirstSubCol = $first; let isLastSubCol = $last) {
-                        <th class="p-2 border border-gray-200" [class.border-l-0]="isFirstCol && isFirstSubCol" [class.border-r-0]="isLastCol && isLastSubCol">{{ subCol }}</th>
-                    }
-                }
+      <tr class="bg-gray-100">
+        @if (colsWithSubCols.length > 0) {
+          @for (col of colsWithSubCols; track col; let isFirstCol = $first; let isLastCol = $last) {
+            @for (subCol of col.subCols; track subCol; let isFirstSubCol = $first; let isLastSubCol = $last) {
+              <th class="p-2 border border-gray-200" [class.border-l-0]="isFirstCol && isFirstSubCol"
+                  [class.border-r-0]="isLastCol && isLastSubCol">{{ subCol }}
+              </th>
             }
-        </tr>
-        </thead>
+          }
+        }
+      </tr>
+      </thead>
 
-        <!-- ---------- data body ----------------- -->
-        <tbody>
-            @for (i of [1, 2, 3]; track i; let isLastRow = $last; let isFirstRow = $first) {
-                <tr class="border-t  border-gray-300">
-                    @for (val of row; track val;) {
-                        <td class='p-2' [class.blur-xs]="isFirstRow || isLastRow">
-                            {{ val }}
-                        </td>
-                    }
-                </tr>
+      <!-- ---------- data body ----------------- -->
+      <tbody>
+        @for (i of [1, 2, 3]; track i; let isLastRow = $last; let isFirstRow = $first) {
+          <tr class="border-t  border-gray-300">
+            @for (val of row; track val; ) {
+              <td class='p-2' [class.blur-xs]="isFirstRow || isLastRow">
+                {{ val }}
+              </td>
             }
-        <!-- more rows… -->
-        </tbody>
+          </tr>
+        }
+      </tbody>
     </table>
-    </div>
+  </div>
 </div>

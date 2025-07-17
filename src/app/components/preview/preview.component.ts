@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Table} from "../../interfaces/table.interface";
 import {TableComponent} from "../table/table.component";
+import {TableDisplayService} from '../../services/table-display.service';
 
 @Component({
   selector: 'app-preview',
@@ -8,7 +9,7 @@ import {TableComponent} from "../table/table.component";
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.css'
 })
-export class PreviewComponent {
+export class PreviewComponent implements OnInit {
   @Input() table: Table = {
     report_id: '',
     report_name: '',
@@ -28,42 +29,19 @@ export class PreviewComponent {
   };
 
   last_edited: string = "";
+  link: string = "";
+
+  constructor(private tableDisplayService: TableDisplayService) {
+  }
 
   ngOnInit() {
-    if (this.table.updatedAt === null)
+    if (this.table.row.updatedAt === null)
       return;
 
-    const today = new Date();
+    this.link = `/reports/${this.table.report_id}/sheets/${this.table.sheet_id}`;
+    console.log(this.link);
 
-    const years = today.getFullYear() - this.table.updatedAt.getFullYear();
-    if (this.lastEdited(years, "year") > 0)
-      return;
-
-    const months = today.getMonth() - this.table.updatedAt.getMonth();
-    if (this.lastEdited(months, "month") > 0)
-      return;
-
-    const diffMs = today.getTime() - this.table.updatedAt.getTime();
-    const MS_IN_SECOND = 1_000;
-    const MS_IN_MINUTE = 60 * MS_IN_SECOND;
-    const MS_IN_HOUR = 60 * MS_IN_MINUTE;
-    const MS_IN_DAY = 24 * MS_IN_HOUR;
-
-    const days = Math.floor(diffMs / MS_IN_DAY);
-    if (this.lastEdited(days, "day") > 0)
-      return;
-
-    const hours = Math.floor((diffMs % MS_IN_DAY) / MS_IN_HOUR);
-    if (this.lastEdited(hours, "hour") > 0)
-      return;
-
-    const minutes  = Math.floor((diffMs % MS_IN_HOUR) / MS_IN_MINUTE);
-    if (this.lastEdited(minutes, "minute") > 0)
-      return;
-
-    const seconds  = Math.floor((diffMs % MS_IN_MINUTE) / MS_IN_SECOND);
-    if (this.lastEdited(seconds, "second") > 0)
-      return;
+    this.last_edited = this.tableDisplayService.calculateLastEdited(this.table) ?? "";
   }
 
   lastEdited(time : number, unit: string) {

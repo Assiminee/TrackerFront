@@ -1,6 +1,7 @@
-import {Component, Input} from '@angular/core';
-import {Col, ColWithSubCols} from "../../interfaces/col.interface";
+import {Component, Input, OnInit} from '@angular/core';
+import {Col} from "../../interfaces/col.interface";
 import {Row} from '../../interfaces/row.interface';
+import {TableDisplayService} from '../../services/table-display.service';
 
 @Component({
   selector: 'app-table',
@@ -8,9 +9,11 @@ import {Row} from '../../interfaces/row.interface';
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
-export class TableComponent {
+export class TableComponent implements OnInit {
   @Input() rowCount: number = 150;
-  @Input() cols: Col[] = [{name: 'editor', subCols: ['userId', 'firstName', 'lastName']}, {name: 'text'}, {
+  @Input() cols: Col[] = [{
+    name: 'editor', subCols: ['userId', 'firstName', 'lastName']
+  }, {name: 'text'}, {
     name: 'oops',
     subCols: ['oopsie', 'oopsies']
   }];
@@ -32,37 +35,12 @@ export class TableComponent {
   colsWithSubCols: Col[] = []
   row : any[] = [];
 
+  constructor(private tableDisplayService: TableDisplayService) {}
+
   ngOnInit() {
-    this.colsWithSubCols = this.cols.filter((col: Col) => 'subCols' in col);
-    console.log(this.colsWithSubCols);
-    for (let col of this.cols) {
-      console.log(col.name)
-      console.log(this.fullRow[col.name]);
-      if (!Object.hasOwn(this.fullRow, col.name)) {
-        this.row.push('');
-        continue;
-      }
+    this.colsWithSubCols = this.tableDisplayService.getColsWithSubCols(this.cols);
+    this.row = this.tableDisplayService.createRow(this.cols, this.fullRow);
 
-      if (this.hasSubCols(col)) {
-        const embedded = this.fullRow[col.name] as Record<string, unknown>;
-        console.log(embedded);
-        console.log(col.name);
-
-        for (let subCol of col.subCols)
-          this.row.push(String(embedded[subCol] ?? ''))
-
-        continue;
-      }
-
-      this.row.push(String(this.fullRow[col.name] ?? ''));
-    }
-
-    for (const val of this.row) {
-      console.log(val)
-    }
-  }
-
-  hasSubCols(col: Col) : col is ColWithSubCols {
-    return Array.isArray(col.subCols);
+    console.log(this.row);
   }
 }
