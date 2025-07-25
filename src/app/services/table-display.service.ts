@@ -1,14 +1,17 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal, WritableSignal} from '@angular/core';
 import {Col, ColWithSubCols} from '../interfaces/col.interface';
 import {Row} from '../interfaces/row.interface';
 import {Table} from '../interfaces/table.interface';
+import {TableRowCheckbox} from '../interfaces/table-row-checkbox.interface';
+import {TemplatePortal} from '@angular/cdk/portal';
+import {Overlay, OverlayRef} from '@angular/cdk/overlay';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TableDisplayService {
 
-  constructor() { }
+  constructor(private overlay: Overlay) { }
 
   hasSubCols(col: Col) : col is ColWithSubCols {
     return Array.isArray(col.subCols);
@@ -213,5 +216,4 @@ export class TableDisplayService {
       }
     ]
   }
-
 }

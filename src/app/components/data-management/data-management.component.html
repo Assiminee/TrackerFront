@@ -1,0 +1,44 @@
+<app-list-header
+  [isListDisplay]="isListDisplay"
+  (changeDisplayEvent)="changeDisplay($event)"
+  [openOptionsMenu]="openOptionsMenu"
+  (toggleOptionsMenuEvent)="toggleOptions($event)"
+  [entity]="entity"
+  [subTitle]="subTitle"
+  [showDownloadOption]="entity === 'report'"
+  (deleteSelectedEvent)="toggleDeletion($event)"
+  (openModal)="showModal($event)"
+/>
+<div class="flex flex-col w-full bg-white shadow-xl/15 shadow-red-800 rounded-3xl">
+  <!--      <div class="">-->
+  <div class="overflow-auto">
+    <app-data-table
+      [data]="data" [thead]="thead"
+      (menuOpenEvent)="toggleMenu($event)"
+      [openMenuIndex]="openMenuIndex"
+      [showDownloadOption]="entity === 'report'"
+      (deleteIds)="idsToDelete($event)"
+    />
+  </div>
+  <div class="px-5 py-2 w-full bg-gray-50 border-t border-gray-200">
+    <p>Showing {{ entity }}s {{ 5 * (currentPage() - 1) + 1 }} - {{ (5 * (currentPage() - 1)) + data.length }} </p>
+  </div>
+
+  <div
+    class="flex p-5 w-full bg-gray-100 rounded-b-3xl shadow-lg text-center justify-center items-center gap-2 sm:gap-5">
+    <button
+      class="px-3 py-1 w-1/3 sm:w-1/4 md:w-1/6 lg:w-1/8 bg-white shadow-xl rounded-lg transformations"
+      (click)="prevPage()">Previous
+    </button>
+    <div
+      class="px-3 py-1 w-1/8 sm:w-1/12 md:w-1/18 lg:w-1/24 bg-white shadow-xl rounded-lg transformations">{{ currentPage() }}
+    </div>
+    <button
+      class="px-3 py-1 w-1/3 sm:w-1/4 md:w-1/6 lg:w-1/8 bg-white shadow-xl rounded-lg transformations"
+      (click)="nextPage()">Next
+    </button>
+  </div>
+</div>
+<app-create-edit-modal [show]="show" (dismissModalEvent)="showModal($event)">
+  <ng-content></ng-content>
+</app-create-edit-modal>

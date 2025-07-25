@@ -161,7 +161,9 @@
     /* Display */
     flex
     flex-col
+    gap-2
     opacity-100
+
 
     /* Positioning */
     justify-center
@@ -255,6 +257,13 @@
     w-1/2
   }
 
+  .transitions {
+    @apply
+    transition-all
+    duration-500
+    ease-in-out
+  }
+
   .transformations {
     @apply
     hover:-translate-y-1
@@ -262,6 +271,36 @@
     transition-all
     duration-500
     ease-in-out
+  }
+
+  .badge {
+    @apply
+    inline-flex
+    items-center
+    rounded-md
+    px-2
+    py-1
+    text-xs
+    font-medium
+    text-gray-600
+    ring-1
+    ring-gray-500/10
+    ring-inset
+  }
+
+  .customInput {
+    @apply
+    w-full
+    p-5
+    shadow-xl
+    shadow-gray-400/10
+    bg-white
+    ring-2
+    ring-gray-400/15
+    outline-none
+    focus:ring-gray-500/25
+    focus:shadow-gray-500/10
+    placeholder-gray-400
   }
 }
 

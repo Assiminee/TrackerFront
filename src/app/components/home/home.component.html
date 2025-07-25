@@ -1,27 +1,27 @@
 <app-main>
-    <div class="main">
-        <div class="flex flex-col gap-5">
-            <div class="flex flex-col gap-3 text-center sm:text-left">
-                <p class="text-4xl font-bold ">Welcome back 👋</p>
-                <p class="text-xl font-light transition-all duration-200 ease-in-out">Pick up where you left off and
-                    continue working on your recent spreadsheets</p>
-            </div>
-            <div class="flex flex-col gap-5 sm:flex-row">
-                <button class="flex px-5 py-2 rounded-lg gap-2 justify-center items-center text-sm border border-gray-200 hover:shadow-xl hover:-translate-y-0.5 hover:scale-110 transition-all duration-200 ease-in-out">
-                    <img src="group.png" alt="team" class="w-6 h-6"/>
-                    Team spreadsheets
-                </button>
-                <button class="flex px-5 py-2 rounded-lg gap-2 justify-center items-center text-sm border border-gray-200 hover:shadow-xl hover:-translate-y-0.5 hover:scale-110 transition-all duration-200 ease-in-out">
-                    <img src="favorite.png" alt="team" class="w-6 h-6"/>
-                    Favorites
-                </button>
-            </div>
-
-            <div class="flex flex-col justify-center w-full h-full gap-5">
-              @for(table of tables; track table.table_id) {
-                <app-preview [table]="table"/>
-              }
-            </div>
-        </div>
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-3 text-center sm:text-left">
+      <p class="text-4xl font-bold ">Welcome back 👋</p>
+      <p class="text-xl font-light transition-all duration-200 ease-in-out">Pick up where you left off and
+        continue working on your recent spreadsheets</p>
     </div>
+    <div class="flex flex-col gap-5 sm:flex-row">
+      <button
+        class="flex px-5 py-2 rounded-lg gap-2 justify-center items-center text-sm border border-gray-200 hover:shadow-xl hover:-translate-y-0.5 hover:scale-110 transition-all duration-200 ease-in-out">
+        <img src="group.png" alt="team" class="w-6 h-6"/>
+        Team spreadsheets
+      </button>
+      <button
+        class="flex px-5 py-2 rounded-lg gap-2 justify-center items-center text-sm border border-gray-200 hover:shadow-xl hover:-translate-y-0.5 hover:scale-110 transition-all duration-200 ease-in-out">
+        <img src="favorite.png" alt="team" class="w-6 h-6"/>
+        Favorites
+      </button>
+    </div>
+
+    <div class="flex flex-col justify-center w-full h-full gap-5">
+      @for (table of tables; track table.table_id) {
+        <app-preview [table]="table"/>
+      }
+    </div>
+  </div>
 </app-main>

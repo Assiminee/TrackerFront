@@ -1,41 +1,63 @@
-<table class="table-auto text-left w-full truncate">
+<table class="table-auto text-left w-full">
   <thead class="rounded-xl bg-gray-50">
   <tr>
     <th class="py-3 px-5">
-      <!--              <input type="checkbox" class=""/>-->
       <mat-checkbox
-        class="rpt-checkbox"
-        [checked]="reportCheckboxes().selected"
+        class="ent-checkbox"
+        [checked]="entityCheckboxes().selected"
         [indeterminate]="someUnchecked()"
         (change)="update($event.checked)"
       ></mat-checkbox>
     </th>
-    <th class="py-3 px-5">Report Name</th>
-    <th class="py-3 px-5">Creation date</th>
-    <th class="py-3 px-5">Last update</th>
-    <th class="py-3 px-5">Creator</th>
+    @for (entry of thead(); track entry.key) {
+      <th class="py-3 px-5">
+        <div class="flex items-center gap-5">
+          {{ entry.title }}
+          @if (entry.sortable) {
+            <button (click)="toggleSortOrder(entry.key)"
+                    class="flex bg-green-400 rounded-lg p-1 transformations shadow-xl">
+              <img [src]="constructImageSrc(entry)" class="w-5 h-5" alt="order"/>
+            </button>
+          }
+          @if (entry.isEnum || entry.isFlag) {
+            <div class="flex">
+              <button (click)="openSortMenu(entry, $event)"
+                      class="flex bg-green-400 rounded-lg p-1 transformations shadow-xl">
+                <img [src]="constructImageSrc(entry)" class="w-5 h-5 p-1" alt="order"/>
+              </button>
+            </div>
+          }
+        </div>
+      </th>
+    }
     <th class="py-3 px-5">Actions</th>
   </tr>
   </thead>
-  <tbody>
-    @for (report of reports; track report.report_id; let i = $index; let isOdd = $odd; let isLast = $last) {
+  <tbody class="">
+    @for (entry of data; track entry.id; let i = $index; let isOdd = $odd; let isLast = $last) {
       <tr [class.bg-gray-50]="isOdd" [class.bg-white]="!isOdd" [class.border-b]="!isLast"
           class="hover:bg-red-50 border-t border-gray-200">
 
         <td class="py-3 px-5">
-          <mat-checkbox [checked]="reportCheckboxes().subReports?.[i]?.selected ?? false"
+          <mat-checkbox [checked]="entityCheckboxes().childCheckboxes?.[i]?.selected ?? false"
                         (change)="update($event.checked, i)"
-                        class="rpt-checkbox"
+                        class="ent-checkbox"
           ></mat-checkbox>
-          <!--                  <input type="checkbox"/>-->
-
         </td>
-        <td class="py-3 px-5">{{ report.title }}</td>
-        <td class="py-3 px-5">{{ String(report.createdAt).split(" GMT")[0] }}</td>
-        <td class="py-3 px-5">{{ String(report.updatedAt).split(" GMT")[0] }}</td>
-        <td class="py-3 px-5">{{ report.creator }}</td>
+        @for (key of keys; track key) {
+          <td class="py-3 px-5">
+            @if (isBadge(key)) {
+              <span class="badge" [ngClass]="getCustomCssClass(key, entry)">{{ getEntryValue(entry, key) }}</span>
+            } @else {
+              @if (key === 'pm' && entry?.['pm'] !== undefined) {
+                <input type="hidden" [value]="entry?.['pm']?.['id']">
+              }
+              {{ getEntryValue(entry, key) }}
+            }
+          </td>
+        }
         <td class="h-full flex justify-center items-center py-3 px-5">
-          <button type="button" class="relative" (click)="toggleMenu(report.report_id, $event)">
+          <button type="button" class="relative" (click)="toggleMenu(entry.id, $event)">
             <svg viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"
                  class="fill-black w-8 h-8"
             >
@@ -46,74 +68,114 @@
                   d="M128,28A100,100,0,1,0,228,128,100.11332,100.11332,0,0,0,128,28Zm0,192a92,92,0,1,1,92-92A92.10416,92.10416,0,0,1,128,220Zm8-92a8,8,0,1,1-8-8A8.00917,8.00917,0,0,1,136,128Zm48,0a8,8,0,1,1-8-8A8.00917,8.00917,0,0,1,184,128Zm-96,0a8,8,0,1,1-8-8A8.00917,8.00917,0,0,1,88,128Z"></path>
               </g>
             </svg>
-            @if (openMenuIndex === report.report_id) {
-              <div
-                (click)="$event.stopPropagation()"
-                class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-10">
-                <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
-                  <svg fill="#000000" viewBox="-3.5 0 32 32" class="w-7 h-7" version="1.1"
-                       xmlns="http://www.w3.org/2000/svg">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier"><title>view</title>
-                      <path
-                        d="M12.406 13.844c1.188 0 2.156 0.969 2.156 2.156s-0.969 2.125-2.156 2.125-2.125-0.938-2.125-2.125 0.938-2.156 2.125-2.156zM12.406 8.531c7.063 0 12.156 6.625 12.156 6.625 0.344 0.438 0.344 1.219 0 1.656 0 0-5.094 6.625-12.156 6.625s-12.156-6.625-12.156-6.625c-0.344-0.438-0.344-1.219 0-1.656 0 0 5.094-6.625 12.156-6.625zM12.406 21.344c2.938 0 5.344-2.406 5.344-5.344s-2.406-5.344-5.344-5.344-5.344 2.406-5.344 5.344 2.406 5.344 5.344 5.344z"></path>
-                    </g>
-                  </svg>
-                  <p>View</p>
-                </div>
-                <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 w-6">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                      <path
-                        d="M18.9445 9.1875L14.9445 5.1875M18.9445 9.1875L13.946 14.1859C13.2873 14.8446 12.4878 15.3646 11.5699 15.5229C10.6431 15.6828 9.49294 15.736 8.94444 15.1875C8.39595 14.639 8.44915 13.4888 8.609 12.562C8.76731 11.6441 9.28735 10.8446 9.946 10.1859L14.9445 5.1875M18.9445 9.1875C18.9445 9.1875 21.9444 6.1875 19.9444 4.1875C17.9444 2.1875 14.9445 5.1875 14.9445 5.1875M20.5 12C20.5 18.5 18.5 20.5 12 20.5C5.5 20.5 3.5 18.5 3.5 12C3.5 5.5 5.5 3.5 12 3.5"
-                        stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round"></path>
-                    </g>
-                  </svg>
-                  <p>Edit</p>
-                </div>
-                <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                      <path
-                        d="M5.625 15C5.625 14.5858 5.28921 14.25 4.875 14.25C4.46079 14.25 4.125 14.5858 4.125 15H5.625ZM4.875 16H4.125H4.875ZM19.275 15C19.275 14.5858 18.9392 14.25 18.525 14.25C18.1108 14.25 17.775 14.5858 17.775 15H19.275ZM11.1086 15.5387C10.8539 15.8653 10.9121 16.3366 11.2387 16.5914C11.5653 16.8461 12.0366 16.7879 12.2914 16.4613L11.1086 15.5387ZM16.1914 11.4613C16.4461 11.1347 16.3879 10.6634 16.0613 10.4086C15.7347 10.1539 15.2634 10.2121 15.0086 10.5387L16.1914 11.4613ZM11.1086 16.4613C11.3634 16.7879 11.8347 16.8461 12.1613 16.5914C12.4879 16.3366 12.5461 15.8653 12.2914 15.5387L11.1086 16.4613ZM8.39138 10.5387C8.13662 10.2121 7.66533 10.1539 7.33873 10.4086C7.01212 10.6634 6.95387 11.1347 7.20862 11.4613L8.39138 10.5387ZM10.95 16C10.95 16.4142 11.2858 16.75 11.7 16.75C12.1142 16.75 12.45 16.4142 12.45 16H10.95ZM12.45 5C12.45 4.58579 12.1142 4.25 11.7 4.25C11.2858 4.25 10.95 4.58579 10.95 5H12.45ZM4.125 15V16H5.625V15H4.125ZM4.125 16C4.125 18.0531 5.75257 19.75 7.8 19.75V18.25C6.61657 18.25 5.625 17.2607 5.625 16H4.125ZM7.8 19.75H15.6V18.25H7.8V19.75ZM15.6 19.75C17.6474 19.75 19.275 18.0531 19.275 16H17.775C17.775 17.2607 16.7834 18.25 15.6 18.25V19.75ZM19.275 16V15H17.775V16H19.275ZM12.2914 16.4613L16.1914 11.4613L15.0086 10.5387L11.1086 15.5387L12.2914 16.4613ZM12.2914 15.5387L8.39138 10.5387L7.20862 11.4613L11.1086 16.4613L12.2914 15.5387ZM12.45 16V5H10.95V16H12.45Z"
-                        fill="#000000"></path>
-                    </g>
-                  </svg>
-                  <p>Download</p>
-                </div>
-                <div class="p-2 hover:bg-gray-100 flex gap-2 items-center">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ff0000"
-                       class="w-6 h-6">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                      <path d="M20.5001 6H3.5" stroke="#ff0000" stroke-width="1.5"
-                            stroke-linecap="round"></path>
-                      <path d="M9.5 11L10 16" stroke="#ff0000" stroke-width="1.5"
-                            stroke-linecap="round"></path>
-                      <path d="M14.5 11L14 16" stroke="#ff0000" stroke-width="1.5"
-                            stroke-linecap="round"></path>
-                      <path
-                        d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6"
-                        stroke="#ff0000" stroke-width="1.5"></path>
-                      <path
-                        d="M18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5M18.8334 8.5L18.6334 11.5"
-                        stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"></path>
-                    </g>
-                  </svg>
-                  <p class="text-red-500">Delete</p>
-                </div>
-              </div>
-            }
           </button>
         </td>
+      </tr>
+    } @empty {
+      <tr class="text-center text-2xl">
+        <td class="p-5" [colSpan]="thead().length + 2">No data to display</td>
       </tr>
     }
   </tbody>
 </table>
+
+<ng-template #menus let-entryId>
+  <div
+    (click)="$event.stopPropagation()"
+    class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100">
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
+      <svg fill="#000000" viewBox="-3.5 0 32 32" class="w-7 h-7" version="1.1"
+           xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier"><title>view</title>
+          <path
+            d="M12.406 13.844c1.188 0 2.156 0.969 2.156 2.156s-0.969 2.125-2.156 2.125-2.125-0.938-2.125-2.125 0.938-2.156 2.125-2.156zM12.406 8.531c7.063 0 12.156 6.625 12.156 6.625 0.344 0.438 0.344 1.219 0 1.656 0 0-5.094 6.625-12.156 6.625s-12.156-6.625-12.156-6.625c-0.344-0.438-0.344-1.219 0-1.656 0 0 5.094-6.625 12.156-6.625zM12.406 21.344c2.938 0 5.344-2.406 5.344-5.344s-2.406-5.344-5.344-5.344-5.344 2.406-5.344 5.344 2.406 5.344 5.344 5.344z"></path>
+        </g>
+      </svg>
+      <button (click)="viewEntry(entryId)">View</button>
+    </div>
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 w-6">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path
+            d="M18.9445 9.1875L14.9445 5.1875M18.9445 9.1875L13.946 14.1859C13.2873 14.8446 12.4878 15.3646 11.5699 15.5229C10.6431 15.6828 9.49294 15.736 8.94444 15.1875C8.39595 14.639 8.44915 13.4888 8.609 12.562C8.76731 11.6441 9.28735 10.8446 9.946 10.1859L14.9445 5.1875M18.9445 9.1875C18.9445 9.1875 21.9444 6.1875 19.9444 4.1875C17.9444 2.1875 14.9445 5.1875 14.9445 5.1875M20.5 12C20.5 18.5 18.5 20.5 12 20.5C5.5 20.5 3.5 18.5 3.5 12C3.5 5.5 5.5 3.5 12 3.5"
+            stroke="#000000" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </g>
+      </svg>
+      <button (click)="editEntry(entryId)">Edit</button>
+    </div>
+    @if (showDownloadOption) {
+      <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7">
+          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+          <g id="SVGRepo_iconCarrier">
+            <path
+              d="M5.625 15C5.625 14.5858 5.28921 14.25 4.875 14.25C4.46079 14.25 4.125 14.5858 4.125 15H5.625ZM4.875 16H4.125H4.875ZM19.275 15C19.275 14.5858 18.9392 14.25 18.525 14.25C18.1108 14.25 17.775 14.5858 17.775 15H19.275ZM11.1086 15.5387C10.8539 15.8653 10.9121 16.3366 11.2387 16.5914C11.5653 16.8461 12.0366 16.7879 12.2914 16.4613L11.1086 15.5387ZM16.1914 11.4613C16.4461 11.1347 16.3879 10.6634 16.0613 10.4086C15.7347 10.1539 15.2634 10.2121 15.0086 10.5387L16.1914 11.4613ZM11.1086 16.4613C11.3634 16.7879 11.8347 16.8461 12.1613 16.5914C12.4879 16.3366 12.5461 15.8653 12.2914 15.5387L11.1086 16.4613ZM8.39138 10.5387C8.13662 10.2121 7.66533 10.1539 7.33873 10.4086C7.01212 10.6634 6.95387 11.1347 7.20862 11.4613L8.39138 10.5387ZM10.95 16C10.95 16.4142 11.2858 16.75 11.7 16.75C12.1142 16.75 12.45 16.4142 12.45 16H10.95ZM12.45 5C12.45 4.58579 12.1142 4.25 11.7 4.25C11.2858 4.25 10.95 4.58579 10.95 5H12.45ZM4.125 15V16H5.625V15H4.125ZM4.125 16C4.125 18.0531 5.75257 19.75 7.8 19.75V18.25C6.61657 18.25 5.625 17.2607 5.625 16H4.125ZM7.8 19.75H15.6V18.25H7.8V19.75ZM15.6 19.75C17.6474 19.75 19.275 18.0531 19.275 16H17.775C17.775 17.2607 16.7834 18.25 15.6 18.25V19.75ZM19.275 16V15H17.775V16H19.275ZM12.2914 16.4613L16.1914 11.4613L15.0086 10.5387L11.1086 15.5387L12.2914 16.4613ZM12.2914 15.5387L8.39138 10.5387L7.20862 11.4613L11.1086 16.4613L12.2914 15.5387ZM12.45 16V5H10.95V16H12.45Z"
+              fill="#000000"></path>
+          </g>
+        </svg>
+        <button (click)="downloadEntries(entryId)">Download</button>
+      </div>
+    }
+    <div class="p-2 hover:bg-gray-100 flex gap-2 items-center">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ff0000"
+           class="w-6 h-6">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path d="M20.5001 6H3.5" stroke="#ff0000" stroke-width="1.5"
+                stroke-linecap="round"></path>
+          <path d="M9.5 11L10 16" stroke="#ff0000" stroke-width="1.5"
+                stroke-linecap="round"></path>
+          <path d="M14.5 11L14 16" stroke="#ff0000" stroke-width="1.5"
+                stroke-linecap="round"></path>
+          <path
+            d="M6.5 6C6.55588 6 6.58382 6 6.60915 5.99936C7.43259 5.97849 8.15902 5.45491 8.43922 4.68032C8.44784 4.65649 8.45667 4.62999 8.47434 4.57697L8.57143 4.28571C8.65431 4.03708 8.69575 3.91276 8.75071 3.8072C8.97001 3.38607 9.37574 3.09364 9.84461 3.01877C9.96213 3 10.0932 3 10.3553 3H13.6447C13.9068 3 14.0379 3 14.1554 3.01877C14.6243 3.09364 15.03 3.38607 15.2493 3.8072C15.3043 3.91276 15.3457 4.03708 15.4286 4.28571L15.5257 4.57697C15.5433 4.62992 15.5522 4.65651 15.5608 4.68032C15.841 5.45491 16.5674 5.97849 17.3909 5.99936C17.4162 6 17.4441 6 17.5 6"
+            stroke="#ff0000" stroke-width="1.5"></path>
+          <path
+            d="M18.3735 15.3991C18.1965 18.054 18.108 19.3815 17.243 20.1907C16.378 21 15.0476 21 12.3868 21H11.6134C8.9526 21 7.6222 21 6.75719 20.1907C5.89218 19.3815 5.80368 18.054 5.62669 15.3991L5.16675 8.5M18.8334 8.5L18.6334 11.5"
+            stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"></path>
+        </g>
+      </svg>
+      <button class="text-red-400" (click)="deleteEntries(entryId)">Delete</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #statusFilter>
+  <div
+    (click)="$event.stopPropagation()"
+    class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100">
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center">
+      <button (click)="setFilter(null, 'deleted')">All</button>
+    </div>
+    <div class="border-b border-gray-200 p-2 hover:bg-green-100 flex gap-2 items-center">
+      <button class="text-green-600" (click)="setFilter(false, 'deleted')">Active</button>
+    </div>
+    <div class="p-2 hover:bg-red-100 flex gap-2 items-center">
+      <button class="text-red-600" (click)="setFilter(true, 'deleted')">Deleted</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #roleFilter>
+  <div
+    (click)="$event.stopPropagation()"
+    class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100 text-center">
+    <div class="border-b border-gray-200 p-2 px-4 hover:bg-blue-100 text-blue-600 flex gap-2 items-center justify-center">
+      <button class="text-center" (click)="setFilter('ROLE_PM', 'role')">Project Manager</button>
+    </div>
+    <div class="border-b border-gray-200 p-2 px-4 hover:bg-orange-100 text-orange-600 flex gap-2 items-center justify-center">
+      <button class="text-center" (click)="setFilter('ROLE_TM', 'role')">Team Member</button>
+    </div>
+    <div class="p-2 px-4 hover:bg-purple-100 text-purple-600 flex gap-2 items-center justify-center">
+      <button class="text-center" (click)="setFilter('ROLE_SA', 'role')">Administrator</button>
+    </div>
+  </div>
+</ng-template>
+

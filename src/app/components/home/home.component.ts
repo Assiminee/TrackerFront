@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {MainComponent} from '../main/main.component';
 import {TableComponent} from '../table/table.component';
 import {PreviewComponent} from '../preview/preview.component';
@@ -9,16 +9,15 @@ import {TableDisplayService} from '../../services/table-display.service';
   selector: 'app-home',
   imports: [
     MainComponent,
-    TableComponent,
     PreviewComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  tables : Table[] = [];
+  tables: Table[] = [];
 
-  constructor(private tableDisplayService : TableDisplayService) {
+  constructor(private tableDisplayService: TableDisplayService) {
     this.tables = tableDisplayService.getData();
   }
 }

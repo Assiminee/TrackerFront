@@ -1,43 +1,64 @@
 <div class="relative h-dvh w-screen flex items-center justify-center overflow-hidden">
-  <div class="absolute top-0 h-[120%] w-full bg-gradient-to-r from-red-900 via-[#d94551] to-[#f8ae95] clip-diagonal"></div>
+  @if (!success) {
+    <app-error-popup [msg]="errorMessage"/>
+  }
+  <div
+    class="absolute top-0 h-[120%] w-full bg-gradient-to-r from-red-900 via-[#d94551] to-[#f8ae95] clip-diagonal"></div>
   <div class="relative z-10 w-5/6 md:w-1/2 max-w-4xl h-2/3 flex rounded-4xl shadow-2xl bg-white/75">
-    <div class="relative flex-1 flex flex-col gap-5 items-center justify-center">
-      <div class="absolute top-10 flex flex-col text-center">
+    <div class="relative flex-1 flex flex-col items-center justify-center">
+      <div class="flex flex-col text-center pt-10">
         <p class="font-semibold text-2xl pb-1">Welcome to TrackIt</p>
         <p>Please provide your credentials to log in</p>
       </div>
-      <form class="flex flex-col gap-5 items-center justify-center w-full" method="get" (submit)="goToApp()">
+      <form class="flex flex-col gap-3 items-center justify-center h-full w-full"
+            method="post" [formGroup]="loginForm" (submit)="login()">
         <div class="flex flex-col w-1/2">
-          <label class="font-semibold">
+          <label for="idInput" class="font-semibold">
             ID:
           </label>
-          <input type="text"
+          <input type="text" formControlName="id" id="idInput"
                  class="rounded-lg shadow-2xl bg-white px-4 py-2 placeholder-gray-500 border border-gray-300 focus:ring-green-400 focus:outline-none focus:ring-0 focus:border-gray-500"
-                 placeholder="XY256HD244H">
+                 placeholder="XY256HD244H"/>
+          <div class="text-red-400 transition-all" [class.opacity-100]="isInvalid(id)"
+               [class.opacity-0]="!isInvalid(id)">
+            <p>{{ id?.hasError('required') ? 'Please provide your ID' : 'The provided ID is invalid' }}</p>
+          </div>
         </div>
         <div class="flex flex-col w-1/2">
-          <label class="font-semibold">
+          <label for="passwordInput" class="font-semibold">
             Password:
           </label>
           <div class="w-full relative flex items-center">
-            <input [type]="show ? 'text' : 'password'"
+            <input [type]="show ? 'text' : 'password'" id="passwordInput" formControlName="password"
                    class="rounded-lg shadow-2xl bg-white px-4 py-2 placeholder-gray-500 border border-gray-300 w-full focus:outline-none focus:ring-0 focus:border-gray-500"
                    placeholder="***************"/>
-            <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6" (click)="showPassword()">
+            <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6"
+                    (click)="showPassword()">
               <img alt="show/hide" [src]="eye" class="w-6 h-6"/>
             </button>
           </div>
+          <div class="text-red-400 transition-all" [class.opacity-100]="isInvalid(password)"
+               [class.opacity-0]="!isInvalid(password)">
+            <p>The password is required</p>
+          </div>
         </div>
-        <div class="flex flex-col w-1/2 text-center items-center">
+
+        <div class="flex flex-col w-1/2">
           <button type="submit" class="rounded-lg bg-red-800 hover:bg-red-700 py-2 text-white w-full">
             Log in
           </button>
-          <p class="absolute pt-3 bottom-10 font-semibold">Don't have an account?</p>
-          <a href="https://www.google.com" class="absolute bottom-5 text-sm underline text-blue-500">
-            Please contact an admin
-          </a>
+
+          <div class="pt-3 text-center" [class.opacity-100]="showFormError" [class.opacity-0]="!showFormError">
+            <p class="text-red-400">Please fill the form out correctly</p>
+          </div>
         </div>
       </form>
+      <div class="pb-5 text-center">
+        <p class="font-semibold">Don't have an account?</p>
+        <a href="https://www.google.com" class="text-sm underline text-blue-500">
+          Please contact an admin
+        </a>
+      </div>
     </div>
   </div>
 </div>
