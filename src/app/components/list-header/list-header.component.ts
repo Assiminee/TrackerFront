@@ -4,6 +4,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   selector: 'app-list-header',
   imports: [],
   templateUrl: './list-header.component.html',
+  standalone: true,
   styleUrl: './list-header.component.css'
 })
 export class ListHeaderComponent {

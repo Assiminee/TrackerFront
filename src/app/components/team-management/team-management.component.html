@@ -1,12 +1,13 @@
 <app-data-management
-  [data]="data"
   [thead]="thead"
   [entity]="entity"
   [subTitle]="'Manage teams'"
   [entityService]="teamService"
+  [showSuccess]="showSuccess"
+  [msg]="msg"
 >
-  <div class="flex flex-col max-h-[60vh]">
-    <div class="flex items-center gap-5">
+  <div ngProjectAs="entityForm" class="flex flex-col max-h-[60vh]">
+    <div class="relative flex items-center gap-5" [class.pb-5]="showFailed">
       <div
         class="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
         <svg viewBox="-5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -26,8 +27,10 @@
       </div>
       <h3 id="dialog-title" class="text-2xl text-gray-900">Create a new Team</h3>
     </div>
+    <app-alert [msg]="msg" [showMsg]="showFailed" [success]="success"/>
     <div class="pt-5 text-center sm:mt-0 sm:text-left overflow-auto p-5 pb-0">
-      <form class="flex flex-col gap-3" [formGroup]="createTeamForm" id="modalForm" (ngSubmit)="onSubmit()" method="POST" action="localhost:8080/api/teams">
+      <form class="flex flex-col gap-3" [formGroup]="createTeamForm" id="modalForm" (ngSubmit)="onSubmit()"
+            method="POST" action="localhost:8080/api/teams" #modalForm="ngForm">
         <div class="flex justify-center items-center w-full">
           <div class="flex flex-col w-full">
             <label class="text-lg p-2">Team Name <span class="text-red-600">*</span></label>
@@ -36,9 +39,10 @@
                    placeholder="IAM NPM"
                    formControlName="name"
             />
-            <div class="pt-5 text-red-400 transition-all" [class.opacity-100]="isInvalid(name) || createTeamForm.invalid"
+            <div class="pt-5 text-red-400 transition-all"
+                 [class.opacity-100]="isInvalid(name) || createTeamForm.invalid"
                  [class.opacity-0]="!isInvalid(name) && !createTeamForm.invalid">
-              <p>{{ isInvalid(name) ? 'Please provide a team name' : (createTeamForm.invalid ? 'Please fill out the form' : '')}}</p>
+              <p>{{ isInvalid(name) ? 'Please provide a team name' : (createTeamForm.invalid ? 'Please fill out the form' : '') }}</p>
             </div>
             <label class="text-sm p-2 text-end"><span class="text-red-400">* </span>Mandatory field</label>
           </div>

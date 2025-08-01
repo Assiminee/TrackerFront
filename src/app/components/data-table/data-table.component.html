@@ -39,16 +39,17 @@
           class="hover:bg-red-50 border-t border-gray-200">
 
         <td class="py-3 px-5">
-          <mat-checkbox [checked]="entityCheckboxes().childCheckboxes?.[i]?.selected ?? false"
+          <mat-checkbox [checked]="entityCheckboxes().childCheckboxes?.[i]?.selected"
                         (change)="update($event.checked, i)"
                         class="ent-checkbox"
           ></mat-checkbox>
         </td>
         @for (key of keys; track key) {
-          <td class="py-3 px-5">
+          <td class="py-3 px-5 justify-center">
             @if (isBadge(key)) {
               <span class="badge" [ngClass]="getCustomCssClass(key, entry)">{{ getEntryValue(entry, key) }}</span>
-            } @else {
+            }
+            @else {
               @if (key === 'pm' && entry?.['pm'] !== undefined) {
                 <input type="hidden" [value]="entry?.['pm']?.['id']">
               }
@@ -167,6 +168,9 @@
   <div
     (click)="$event.stopPropagation()"
     class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100 text-center">
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center justify-center">
+      <button (click)="setFilter(null, 'role')">All</button>
+    </div>
     <div class="border-b border-gray-200 p-2 px-4 hover:bg-blue-100 text-blue-600 flex gap-2 items-center justify-center">
       <button class="text-center" (click)="setFilter('ROLE_PM', 'role')">Project Manager</button>
     </div>

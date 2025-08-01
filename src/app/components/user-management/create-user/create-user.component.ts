@@ -17,7 +17,6 @@ export class CreateUserComponent {
 
   constructor() {
     this.filteredOptions = [...this.roleOptions];
-    console.log(this.filteredOptions);
   }
 
   hide(name: string) {

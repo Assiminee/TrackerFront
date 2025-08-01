@@ -1,10 +1,11 @@
 import {
+  AfterContentChecked,
   Component,
   EventEmitter,
-  Input,
+  Input, OnChanges,
   OnInit,
   Output,
-  signal,
+  signal, SimpleChange, SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewContainerRef, WritableSignal
@@ -16,6 +17,7 @@ import {Overlay, OverlayModule, OverlayRef} from '@angular/cdk/overlay';
 import {PortalModule, TemplatePortal} from '@angular/cdk/portal';
 import {NgClass} from '@angular/common';
 import {DataTableColumn} from '../../interfaces/data-table-column.interface';
+import {EntityService} from '../../interfaces/entity-service.interface';
 
 @Component({
   selector: 'app-data-table',
@@ -26,7 +28,7 @@ import {DataTableColumn} from '../../interfaces/data-table-column.interface';
   styleUrls: ['./data-table.component.css'],
   standalone: true,
 })
-export class DataTableComponent implements OnInit {
+export class DataTableComponent implements OnInit, OnChanges {
   readonly entityCheckboxes = signal<TableRowCheckbox>(
     {name: 'all-checks', selected: false}
   );
@@ -40,18 +42,13 @@ export class DataTableComponent implements OnInit {
   @Input() thead!: WritableSignal<DataTableColumn[]>;
   @Input() showDownloadOption!: boolean;
   keys!: string[];
-  values!: string[];
   overlayRef: OverlayRef | null = null;
-  roles: Record<string, string> = {
-    ROLE_PM: 'Project Manager',
-    ROLE_TM: 'Team Member',
-    ROLE_SA: 'Administrator'
-  }
   idsToDelete: string[] = [];
 
   protected readonly String = String;
   protected readonly Object = Object;
   @Input() page!: number;
+  @Input() entityService!: EntityService;
 
   constructor(
     private overlay: Overlay,
@@ -60,8 +57,13 @@ export class DataTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initCheckboxSignal();
     this.keys = this.thead().map(e => e.key);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes?.['data'] && Array.isArray(changes?.['data'].currentValue)) {
+      this.initCheckboxSignal();
+    }
   }
 
   initCheckboxSignal() {
@@ -86,6 +88,7 @@ export class DataTableComponent implements OnInit {
   }
 
   update(selected: boolean, index?: number) {
+    // console.log(this.entityCheckboxes());
     this.entityCheckboxes.update(check => {
       // Parent is checked
       if (index === undefined) {
@@ -98,6 +101,8 @@ export class DataTableComponent implements OnInit {
         // Sets the parent's "selected" property based on whether all sub-reports are checked or not
         check.selected = check.childCheckboxes?.every(r => r.selected) ?? true;
       }
+
+      console.log(check);
 
       return {...check};
     });
@@ -134,7 +139,6 @@ export class DataTableComponent implements OnInit {
       .flexibleConnectedTo(origin)
       .withPositions([
         {originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'top', offsetY: 0},
-        // {originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 0},
       ]);
 
     // 2) configure scroll/backdrop etc.
@@ -154,25 +158,24 @@ export class DataTableComponent implements OnInit {
   }
 
   getEntryValue(entry: BaseTableData, key: string): any {
-    if (!entry.hasOwnProperty(key))
-      return "";
+    if (['createdAt', 'updatedAt'].includes(key)) {
+      const date = new Date(entry[key]);
 
-    if (entry?.[key] instanceof Date)
-      return String(entry[key]).split(" GMT")[0];
+      if (!date)
+        return ''
+
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: 'numeric', minute: 'numeric',
+      };
+
+      return date.toLocaleDateString(undefined, options);
+    }
 
     if (key === 'deleted')
       return entry['deleted'] ? 'Deleted' : 'Active';
 
-    if (key === 'role')
-      return this.roles[entry['role']];
-
-    if (key === 'pm') {
-      if (entry['pm'] === null)
-        return '';
-
-      return entry?.['pm']?.['lastName'] + " " + entry['pm']?.['firstName'];
-    }
-    return entry[key];
+    return this.entityService.getEntryValue(key, entry);
   }
 
   viewEntry(id: string) {

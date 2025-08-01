@@ -1,33 +1,25 @@
-import {Component, ContentChild, EventEmitter, Input, Output} from '@angular/core';
+import {AfterContentInit, Component, ContentChild, EventEmitter, Input, Output} from '@angular/core';
 import {FormGroupDirective, NgForm} from '@angular/forms';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-create-edit-modal',
-  imports: [],
+  imports: [
+    NgClass
+  ],
   templateUrl: './create-edit-modal.component.html',
   styleUrl: './create-edit-modal.component.css'
 })
-export class CreateEditModalComponent {
+export class CreateEditModalComponent implements AfterContentInit {
   @Input() show!: boolean;
   @Output() dismissModalEvent : EventEmitter<boolean> = new EventEmitter<boolean>();
-  @ContentChild(FormGroupDirective, { static: false }) reactiveForm!: FormGroupDirective;
+  @ContentChild(FormGroupDirective, { static: true }) modalFormDir!: FormGroupDirective;
+
+  ngAfterContentInit() {
+  }
 
   dismiss() {
     this.show = false;
-    console.log(this.show);
     this.dismissModalEvent.emit(this.show);
-  }
-
-  confirm() {
-    this.submitForm();
-    console.log("WELL????")
-  }
-
-  private submitForm() {
-    if (this.reactiveForm) {
-      this.reactiveForm.onSubmit(new Event('submit'));
-    } else {
-      console.warn("No reactive form found");
-    }
   }
 }

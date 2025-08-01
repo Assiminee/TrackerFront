@@ -1,86 +1,115 @@
 import {
-  Component,
+  Component, ContentChild,
   effect,
   HostListener,
-  Input,
+  Input, OnChanges,
   OnInit,
-  signal,
+  signal, SimpleChanges,
   WritableSignal
 } from '@angular/core';
 import {DataTableComponent} from "../data-table/data-table.component";
 import {ListHeaderComponent} from "../list-header/list-header.component";
 import {BaseTableData} from '../../interfaces/base-table-data.interface';
-import {CreateEditModalComponent} from '../create-edit-modal/create-edit-modal.component';
 import {DataTableColumn} from '../../interfaces/data-table-column.interface';
 import {EntityService} from '../../interfaces/entity-service.interface';
 import {ActivatedRoute, Params, Router} from '@angular/router';
+import {AlertComponent} from '../alert/alert.component';
+import {NgClass} from '@angular/common';
+import {FormGroupDirective} from '@angular/forms';
 
 @Component({
   selector: 'app-data-management',
   imports: [
     DataTableComponent,
     ListHeaderComponent,
-    CreateEditModalComponent,
+    AlertComponent,
+    NgClass,
   ],
   templateUrl: './data-management.component.html',
+  standalone: true,
   styleUrl: './data-management.component.css'
 })
-export class DataManagementComponent implements OnInit {
-  @Input() data: BaseTableData[] = [];
+export class DataManagementComponent implements OnInit, OnChanges {
   @Input() subTitle!: string;
   @Input() thead!: WritableSignal<DataTableColumn[]>;
   @Input() entity!: string;
   @Input() entityService!: EntityService;
+  @Input() showSuccess!: boolean;
+  @Input() msg!: string;
+
+  data: BaseTableData[] = [];
+
+  currentPage: WritableSignal<number> = signal(1);
+  searchText: WritableSignal<string> = signal("");
+
   show: boolean = false;
   deleteSelected: boolean = false;
   deleteIds: string[] = [];
-
   isListDisplay = true;
   openOptionsMenu: boolean = false;
-
   openMenuIndex: string = "";
-
   pages!: number;
-  currentPage: WritableSignal<number> = signal(1);
   totalElements!: number;
-  searchText: string = "";
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.setQueryParamsFromSignal();
   }
 
   fetchData(): void {
-    this.entityService.getPage(
-      this.thead(), (
-        totalPages: number,
-        totalElements: number,
-        data: BaseTableData[]
-      ) => this.setData(totalPages, totalElements, data),
-      this.searchText,
+    const observable = this.entityService.getPage(
+      this.thead(),
+      this.searchText(),
       this.currentPage() <= 0 ? 0 : this.currentPage() - 1,
     );
+
+    if (observable === undefined)
+      return;
+
+    observable.subscribe({
+      next: (data) => {
+        if (!this.entityService.isValidResponse(data)) {
+          this.setData(0, 0, []);
+          return;
+        }
+
+        this.setData(data.totalPages, data.totalElements, data.content as BaseTableData[]);
+      },
+      error: (err) => {
+        console.log(err);
+        this.setData(0, 0, []);
+      }
+    });
   }
 
   updateSignalFromURL() {
     this.route.queryParams.subscribe(params => {
       let pageNumber = params['page'];
+      let searchText = params['searchText'] ?? "";
 
       pageNumber = pageNumber !== undefined ? parseInt(pageNumber, 10) || 1 : 1;
       pageNumber = pageNumber < 1 ? 1 : pageNumber;
 
       if (pageNumber !== this.currentPage()) {
-        console.log("Page number Change");
+        // console.log("Page number Change");
         this.currentPage.set(pageNumber);
       }
 
-      this.searchText = params['searchText'] ?? "";
+      if (searchText.trim() !== this.searchText()) {
+        // console.log("searchText change", searchText);
+        this.searchText.set(searchText);
+      }
 
-      this.updateSignal(params);
+      const cols = this.updateSignal(params);
+
+      if (cols === null)
+        return;
+
+      this.thead.set(cols);
     });
   }
 
   changeQueryParams() {
-    let params: Record<string, any> = {page: this.currentPage(), searchText: this.searchText.trim()};
+    let params: Record<string, any> = {page: this.currentPage(), searchText: this.searchText()};
 
     for (const col of this.thead()) {
       if (col.sortable)
@@ -90,7 +119,7 @@ export class DataManagementComponent implements OnInit {
         params[col.queryParamName!] = col.filterBy;
     }
 
-    console.log(params)
+    // console.log(params)
 
     this.router.navigate([], {
       relativeTo: this.route,
@@ -104,48 +133,25 @@ export class DataManagementComponent implements OnInit {
     effect(() => {
       const page = this.currentPage();
 
-      console.log(`Page change detected: ${page}`);
-
       if (page > this.pages)
         this.currentPage.set(this.pages);
 
       this.changeQueryParams();
 
       this.fetchData();
-    })
+    });
 
     effect(() => {
       const cols = this.thead();
-      console.log(`Column signal change detected: ${cols}`);
+      // console.log(`Column signal change detected: ${cols}`);
+      this.currentPage.set(1);
+    });
+
+    effect(() => {
+      const searchText = this.searchText();
+      // console.log(`Search text change detected: ${searchText}`);
       this.currentPage.set(1);
     })
-    // effect(() => {
-    //   if (this.currentPage() > this.pages) {
-    //     console.log("Page number Change");
-    //     this.currentPage.set(this.pages);
-    //   }
-    //
-    //   let params: Record<string, any> = {page: this.currentPage(), searchText: this.searchText.trim()};
-    //
-    //   for (const col of this.thead()) {
-    //     if (col.sortable)
-    //       params[col.queryParamName!] = col.isEnabled ? col.sortOrder : null;
-    //
-    //     if (col.isFlag)
-    //       params[col.queryParamName!] = col.filterBy;
-    //   }
-    //
-    //   console.log(params)
-    //
-    //   this.router.navigate([], {
-    //     relativeTo: this.route,
-    //     queryParams: params,
-    //     queryParamsHandling: 'merge',
-    //     replaceUrl: true
-    //   });
-    //
-    //   this.fetchData();
-    // });
   }
 
   ngOnInit(): void {
@@ -192,7 +198,7 @@ export class DataManagementComponent implements OnInit {
       return;
 
     this.currentPage.set(this.currentPage() - 1);
-    console.log("Page number Change");
+    // console.log("Page number Change");
   }
 
   nextPage() {
@@ -200,7 +206,7 @@ export class DataManagementComponent implements OnInit {
       return;
 
     this.currentPage.set(this.currentPage() + 1);
-    console.log("Page number Change");
+    // console.log("Page number Change");
   }
 
   showModal(open: boolean) {
@@ -244,8 +250,24 @@ export class DataManagementComponent implements OnInit {
     }
 
     if (!changed)
-      return;
+      return null;
 
-    this.thead.set(cols);
+    return cols;
+  }
+
+  @ContentChild(FormGroupDirective, {static: true}) modalFormDir!: FormGroupDirective;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['showSuccess'] && !changes['showSuccess'].isFirstChange()) {
+      this.showSuccess = changes['showSuccess'].currentValue;
+
+      if (this.showSuccess)
+        this.dismiss();
+    }
+  }
+
+  dismiss() {
+    this.show = false;
+    this.modalFormDir.resetForm()
   }
 }

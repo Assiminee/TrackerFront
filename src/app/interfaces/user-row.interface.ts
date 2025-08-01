@@ -11,4 +11,5 @@ export interface UserRow extends BaseTableData {
   role: string;
   team?: EmbeddedTeam;
   deleted: boolean;
+  createdAt: Date;
 }

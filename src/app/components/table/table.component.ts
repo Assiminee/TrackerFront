@@ -40,7 +40,5 @@ export class TableComponent implements OnInit {
   ngOnInit() {
     this.colsWithSubCols = this.tableDisplayService.getColsWithSubCols(this.cols);
     this.row = this.tableDisplayService.createRow(this.cols, this.fullRow);
-
-    console.log(this.row);
   }
 }

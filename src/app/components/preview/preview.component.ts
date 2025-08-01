@@ -39,7 +39,6 @@ export class PreviewComponent implements OnInit {
       return;
 
     this.link = `/reports/${this.table.report_id}/sheets/${this.table.sheet_id}`;
-    console.log(this.link);
 
     this.last_edited = this.tableDisplayService.calculateLastEdited(this.table) ?? "";
   }
