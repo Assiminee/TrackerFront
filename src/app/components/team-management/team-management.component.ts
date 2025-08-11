@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output, signal, WritableSignal} from '@angular/core';
+import {Component, EventEmitter, OnChanges, OnInit, Output, signal, SimpleChanges, WritableSignal} from '@angular/core';
 import {DataManagementComponent} from "../data-management/data-management.component";
 import {DataTableColumn} from '../../interfaces/data-table-column.interface';
 import {
@@ -11,6 +11,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AlertComponent} from '../alert/alert.component';
 import {TeamService} from '../../services/team.service';
 import {FormHelperService} from "../../services/form-helper.service";
+import {EntityManagement} from '../../interfaces/entity-management.interface';
+import {Team} from '../../interfaces/team.interface';
+import {BaseTableData} from '../../interfaces/base-table-data.interface';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-team-management',
@@ -18,37 +22,28 @@ import {FormHelperService} from "../../services/form-helper.service";
     DataManagementComponent,
     ReactiveFormsModule,
     AlertComponent,
+    NgClass,
   ],
   templateUrl: './team-management.component.html',
   standalone: true,
   styleUrl: './team-management.component.css'
 })
-export class TeamManagementComponent {
+export class TeamManagementComponent extends EntityManagement {
   @Output() deleteIdsEvent: EventEmitter<string[]> = new EventEmitter<string[]>();
-  entity!: string;
-  createTeamForm!: FormGroup;
-  thead!: WritableSignal<DataTableColumn[]>;
-  msg: string = '';
-  showFailed: boolean = false;
-  showSuccess: boolean = false;
-  success: boolean = false;
-  isInvalid : Function;
 
   constructor(
-    protected teamService: TeamService,
-    private router: Router,
-    private route: ActivatedRoute,
-    formHelper: FormHelperService
+    teamService: TeamService,
+    router: Router, route: ActivatedRoute, formHelper: FormHelperService
   ) {
+    super(router, route, teamService, formHelper);
+
     this.thead = this.getSignal();
 
     this.entity = 'team';
-    this.createTeamForm = new FormGroup({name: new FormControl("", Validators.required)});
-
-    this.isInvalid = formHelper.isInvalid;
+    this.form = new FormGroup({name: new FormControl("", Validators.required)});
   }
 
-  getSignal() : WritableSignal<DataTableColumn[]> {
+  getSignal(): WritableSignal<DataTableColumn[]> {
     return signal<DataTableColumn[]>([
       {key: 'name', title: 'Team Name', sortable: true, sortOrder: 'ASC', isEnabled: false, queryParamName: 'nameAsc'},
       {
@@ -72,50 +67,82 @@ export class TeamManagementComponent {
       {key: 'pm', title: 'PM', sortable: true, sortOrder: 'ASC', isEnabled: false, queryParamName: 'pmAsc'},
       {
         key: 'deleted', title: 'Team Status', isFlag: true, filterBy: null, badge: true, customCssClass: {
-          'true': 'text-red-600 bg-red-50 rounded-lg',
-          'false': 'text-green-600 bg-green-50 rounded-lg'
+          'true': 'text-red-600 bg-red-50 rounded-lg ring-red-800/30',
+          'false': 'text-green-600 bg-green-50 rounded-lg ring-green-800/30'
         }, queryParamName: 'isDeleted'
       },
+      {key: 'memberCount', title: 'Members Count', badge: true, customCssClass: 'text-black bg-white ring-gray-300'},
     ]);
   }
 
   get name() {
-    return this.createTeamForm.get('name');
+    return this.form.get('name');
   }
 
   onSubmit() {
-    if (this.createTeamForm.invalid)
+    if (this.form.invalid)
       return;
 
+    if (this.singleAction.action === -1) {
+      this.createTeam();
+      return;
+    }
+
+    if (this.singleAction.action === 2) {
+      this.editTeam();
+      return;
+    }
+
+  }
+
+  createTeam() {
     this.teamService.createInstance({name: this.name?.value ?? ''})?.subscribe({
       next: (resp) => {
         console.log(resp);
-        this.afterSubmit(true);
-
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: {searchText: this.name?.value ?? ""},
-          queryParamsHandling: 'merge',
-          replaceUrl: true
-        });
+        this.afterSubmit(this.getMessage("create", true), {searchText: this.name?.value ?? ""}, true);
       },
       error: (err) => {
         console.log(err);
-        this.afterSubmit();
+        this.afterSubmit(this.getMessage("create"), {});
       }
-    })
+    });
   }
 
-  afterSubmit(success: boolean = false) {
-    this.success = success;
-    this.msg = success ? `Team "${this.name?.value}" created successfully.` : `Failed to create team "${this.name?.value}".`;
+  editTeam() {
+    console.log(this.name?.value);
+    this.teamService.editEntry(this.singleAction?.entity?.id ?? "", {name: this.name?.value})
+      .subscribe({
+        next: (resp) => {
+          console.log(resp);
+          this.afterSubmit(this.getMessage("edite", true), {searchText: this.name?.value ?? ""}, true);
+        },
+        error: (err) => {
+          console.log(err);
+          this.afterSubmit(this.getMessage("edite"), {});
+        }
+      })
+  }
 
-    setTimeout(() => {
-      this.showSuccess = false;
-      this.showFailed = false;
-    }, 4000);
+  getMessage(action: string, success: boolean = false): string {
+    if (success)
+      return `Team "${this.name?.value}" ${action}d successfully.`;
 
-    this.showSuccess = success;
-    this.showFailed = !success;
+    return `Failed to ${action} team "${this.name?.value}".`;
+  }
+
+  setTeamName(event: { entity: BaseTableData | null, action: number }) {
+    this.setSingleAction(event);
+    if (this.singleAction.action === -1)
+      return;
+
+    let teamName = "";
+
+    if (this.singleAction)
+      teamName = (this.singleAction.entity as Team).name;
+
+    this.form.controls?.['name'].setValue(teamName);
+
+    if (!this.formHelper.isSubmittable(this.singleAction))
+      this.form.controls?.['name'].disable();
   }
 }

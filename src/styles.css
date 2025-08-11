@@ -286,6 +286,7 @@
     ring-1
     ring-gray-500/10
     ring-inset
+    shadow-xl/10
   }
 
   .customInput {
@@ -308,6 +309,7 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mdc-checkbox__background {
   border-radius: 4px !important;
+  box-shadow: 2px 2px !important;
 }
 
 .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
@@ -316,9 +318,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .mdc-checkbox__checkmark-path {
-  stroke: white !important;;
+  stroke: white !important;
 }
 
 .mdc-checkbox__mixedmark {
-  border-color: white !important;;
+  border-color: white !important;
 }

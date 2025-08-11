@@ -4,14 +4,15 @@ import {DataTableColumn} from '../interfaces/data-table-column.interface';
 import {BaseTableData} from '../interfaces/base-table-data.interface';
 import {JwtDecoderService} from './jwt-decoder.service';
 import {HttpClient} from '@angular/common/http';
+import {Team} from '../interfaces/team.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService extends BaseEntityService {
 
-  constructor(jwtDecoderService: JwtDecoderService, client: HttpClient) {
-    super(jwtDecoderService, client);
+  constructor(client: HttpClient) {
+    super(client);
     this.entity = 'team';
   }
 
@@ -24,5 +25,17 @@ export class TeamService extends BaseEntityService {
     }
 
     return entry[key];
+  }
+
+  formatForDelete(data: BaseTableData[], ids: string[]): { [key: string]: any }[] {
+    const teamData = data as Team[];
+
+    return teamData.filter(team => ids.includes(team.id)).map(team => {
+      return {
+        'Team Name': team.name,
+        PM: team.pm !== null ? `${team.pm?.lastName} ${team.pm?.firstName} (ID: ${team.pm?.id})` : "Not assigned",
+        'Total Members': team.memberCount
+      }
+    });
   }
 }

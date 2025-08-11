@@ -1,7 +1,7 @@
 import {BaseTableData} from './base-table-data.interface';
 
 interface EmbeddedTeam {
-  teamId: string;
+  id: string;
   name: string;
 }
 
@@ -10,6 +10,8 @@ export interface UserRow extends BaseTableData {
   lastName: string;
   role: string;
   team?: EmbeddedTeam;
+  phoneNumber: string;
+  email: string;
   deleted: boolean;
   createdAt: Date;
 }

@@ -1,11 +1,10 @@
 import {
-  AfterContentChecked,
   Component,
   EventEmitter,
   Input, OnChanges,
   OnInit,
   Output,
-  signal, SimpleChange, SimpleChanges,
+  signal, SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewContainerRef, WritableSignal
@@ -37,6 +36,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   @ViewChild("roleFilter") roleFilter: TemplateRef<any> = new TemplateRef();
   @Output() menuOpenEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() deleteIds: EventEmitter<string[]> = new EventEmitter<string[]>();
+  @Output() singleActionIdEmitter: EventEmitter<{ id: string, action: number }> = new EventEmitter<{ id: string, action: number }>();
   @Input() data: BaseTableData[] = [];
   @Input() openMenuIndex: string = "";
   @Input() thead!: WritableSignal<DataTableColumn[]>;
@@ -178,36 +178,6 @@ export class DataTableComponent implements OnInit, OnChanges {
     return this.entityService.getEntryValue(key, entry);
   }
 
-  viewEntry(id: string) {
-    console.log(`Viewing entry ${id}`)
-  }
-
-  editEntry(id: string) {
-    console.log(`Editing entry ${id}`)
-  }
-
-  deleteEntries(id?: string) {
-    if (id !== undefined) {
-      console.log(`Deleting entry ${id}`);
-      return;
-    }
-  }
-
-  downloadEntries(id?: string) {
-    if (id !== undefined) {
-      console.log(`Downloading entry ${id}`);
-      return;
-    }
-
-    const selectedChecks = this.entityCheckboxes()
-      .childCheckboxes?.filter(check => check.selected) ?? [];
-
-    console.log("Downloading multiple entries");
-    for (const check of selectedChecks) {
-      console.log(`Downloading entry ${check.name}`);
-    }
-  }
-
   ngOnDestroy() {
     this.overlayRef?.dispose();
   }
@@ -274,5 +244,10 @@ export class DataTableComponent implements OnInit, OnChanges {
         return c;
       })
     );
+  }
+
+  emitId(entryId: string, action: number) {
+    this.overlayRef?.dispose();
+    this.singleActionIdEmitter.emit({id: entryId, action: action});
   }
 }

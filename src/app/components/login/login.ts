@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NgOptimizedImage} from '@angular/common';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   AbstractControl,
   FormControl,
@@ -20,6 +20,7 @@ import {ErrorPopupComponent} from '../error-popup/error-popup.component';
     ErrorPopupComponent
   ],
   templateUrl: './login.html',
+  standalone: true,
   styleUrl: './login.css'
 })
 export class Login {
@@ -29,15 +30,30 @@ export class Login {
   loginForm: FormGroup;
   showFormError: boolean = false;
   errorMessage: string = "";
+  redirectUrl: string = "/home";
 
-  constructor(private router: Router, private auth: AuthService) {
+  constructor(private router: Router, private auth: AuthService, private route: ActivatedRoute) {
     if (this.auth.isLoggedIn())
-      this.router.navigate(['/home']);
+      this.router.navigate([this.redirectUrl]);
 
     this.loginForm = new FormGroup({
       id: new FormControl("", [Validators.required, Validators.minLength(8)]),
       password: new FormControl("", [Validators.required]),
     });
+
+    this.route.queryParams.subscribe(params => {
+      const redirectUrl = params['returnUrl'];
+
+      if (params['sessionExpired'] === 'true') {
+        this.errorMessage = 'Your session has expired. Please log in again.';
+        this.success = false;
+      }
+
+      if (redirectUrl)
+        this.redirectUrl = redirectUrl;
+
+      console.log(params);
+    })
   }
 
   showPassword() {
@@ -76,7 +92,7 @@ export class Login {
     }
 
     this.auth.login(
-      this.id?.value ?? "", this.password?.value ?? "",
+      this.id?.value ?? "", this.password?.value ?? "", this.redirectUrl,
       (ok: boolean, message?: string) => this.succeeded(ok, message)
     );
   }

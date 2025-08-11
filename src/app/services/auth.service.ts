@@ -13,7 +13,7 @@ export class AuthService {
 
   constructor(private client: HttpClient, private jwtDecoderService: JwtDecoderService, private router: Router) { }
 
-  login(id: string, password: string, setSuccess: Function): Subscription {
+  login(id: string, password: string, url: string, setSuccess: Function): Subscription {
     return this.client.post<LoginResponse>(this.BASE_URL + "/login", {id, password}).pipe(
       tap((loginResponse: LoginResponse) => {
         if (!this.jwtDecoderService.isValid(loginResponse.token))
@@ -29,7 +29,7 @@ export class AuthService {
       .subscribe({
         next: () => {
           setSuccess(true);
-          this.router.navigate(['/home']);
+          this.router.navigateByUrl(url);
           return;
         },
         error: (error: HttpErrorResponse) => {
@@ -50,7 +50,9 @@ export class AuthService {
 
   loggedInUser() {
     if (!this.isLoggedIn())
-      return null;
+      this.router.navigate(['/login'], {
+        queryParams: {sessionExpired: true, returnUrl: this.router.url}
+      });
 
     return this.jwtDecoderService.decode(localStorage.getItem("jwt") ?? "");
   }
@@ -58,6 +60,4 @@ export class AuthService {
   logout() : void {
     localStorage.removeItem("jwt");
   }
-
-
 }

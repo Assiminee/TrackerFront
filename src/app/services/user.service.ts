@@ -3,13 +3,14 @@ import {BaseEntityService} from './base-entity.service';
 import {BaseTableData} from '../interfaces/base-table-data.interface';
 import {JwtDecoderService} from './jwt-decoder.service';
 import {HttpClient} from '@angular/common/http';
+import {UserRow} from '../interfaces/user-row.interface'
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends BaseEntityService {
-  constructor(jwtDecoderService : JwtDecoderService, client: HttpClient) {
-    super(jwtDecoderService, client);
+  constructor(client: HttpClient) {
+    super(client);
     this.entity = 'user';
   }
 
@@ -30,5 +31,18 @@ export class UserService extends BaseEntityService {
     // console.log(`KEY: ${key} -------- VALUE: ${value}`);
 
     return value;
+  }
+
+  formatForDelete(data: BaseTableData[], ids: string[]): { [p: string]: any }[] {
+    const userData = data as UserRow[];
+
+    return userData.filter(user => ids.includes(user.id)).map(user => {
+      return  {
+        ID: user.id,
+        'Full Name': `${user.lastName} ${user.firstName}`,
+        Role: this.roles?.[user.role],
+        Team: user.role === 'ROLE_SA' ? '' : user.team?.name
+      };
+    });
   }
 }

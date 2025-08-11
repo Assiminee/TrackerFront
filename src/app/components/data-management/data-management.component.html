@@ -10,7 +10,7 @@
   (openModal)="showModal($event)"
 />
 <div class="flex flex-col w-full bg-white shadow-xl/15 shadow-red-800 rounded-3xl">
-  <app-alert [success]="true" [showMsg]="showSuccess" [msg]="msg"/>
+  <app-alert [success]="success" [showMsg]="showSuccess" [msg]="msg"/>
   <div class="overflow-auto">
     <app-data-table
       [data]="data" [thead]="thead"
@@ -19,10 +19,14 @@
       [showDownloadOption]="entity === 'report'"
       (deleteIds)="idsToDelete($event)"
       [entityService]="entityService"
+      (singleActionIdEmitter)="performSingleAction($event)"
     />
   </div>
-  <div class="px-5 py-2 w-full bg-gray-50 border-t border-gray-200">
-    <p>Showing {{ entity }}s {{ 5 * (currentPage() - 1) + 1 }} - {{ (5 * (currentPage() - 1)) + data.length }} </p>
+  <div class="px-5 py-2 w-full bg-gray-50 border-t border-gray-200 flex justify-between">
+    @if (totalElements >= 1) {
+      <p>Showing {{ entity }}s {{ 5 * (currentPage() - 1) + 1 }} - {{ (5 * (currentPage() - 1)) + data.length }} </p>
+      <p>Page {{ currentPage() }} of {{ pages }}</p>
+    }
   </div>
 
   <div
@@ -41,33 +45,130 @@
   </div>
 </div>
 
-<div role="dialog" aria-modal="true" class="relative z-10" [ngClass]="{'hidden': !show, 'block': show}">
+<div role="dialog" aria-modal="true" class="relative z-10" [ngClass]="{'hidden': !show, 'visible': show}">
   <div aria-hidden="true" class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
   <div class="fixed inset-0 z-10 w-screen overflow-hidden" (click)="dismiss()">
     <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
       <div
-        class="relative transform rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+        class="relative transform rounded-3xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl"
         (click)="$event.stopPropagation()"
       >
-        <div class="relative bg-white max-h-[70vh] px-4 pt-5 pb-4 sm:p-6 sm:pb-4 rounded-2xl">
+        <div class="relative bg-white max-h-[70vh] px-4 pt-5 pb-4 sm:p-8 rounded-2xl">
           <button type="button" class="absolute right-4 top-4" (click)="dismiss()">
             <img src="/close.png" class="w-3 h-3"/>
           </button>
-          <ng-content select="entityForm"></ng-content>
+          @if (deleteOp) {
+            <div class="flex justify-center items-center pb-5 gap-3">
+              <div class="relative border-1 border-red-300 bg-red-50 text-red-700 rounded-xl p-5 text-justify"
+                   [ngClass]="{'block': showWarning, 'hidden': !showWarning}">
+                <div class="flex items-center gap-3 animate-pulse justify-center pb-5">
+                  <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
+                       stroke="#ff0000" stroke-width="0.00024000000000000003" width="42" height="42"
+                  >
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                       stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M7.91 3.23 3.23 7.913v-.01a.81.81 0 0 0-.23.57v7.054c0 .22.08.42.23.57L7.9 20.77c.15.15.36.23.57.23h7.06c.22 0 .42-.08.57-.23l4.67-4.673a.81.81 0 0 0 .23-.57V8.473c0-.22-.08-.42-.23-.57L16.1 3.23a.81.81 0 0 0-.57-.23H8.48c-.22 0-.42.08-.57.23ZM12 7a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1Zm-1 9a1 1 0 0 1 1-1h.008a1 1 0 1 1 0 2H12a1 1 0 0 1-1-1Z"
+                            fill="#ff0000"></path>
+                    </g>
+                  </svg>
+                  <p class="text-2xl font-semibold text-red-500">Warning!!</p>
+
+                </div>
+                <ng-content select="notice"></ng-content>
+              </div>
+
+              <div class="text-center" [ngClass]="{'block': !showWarning, 'hidden': showWarning}">
+                <p class="font-semibold text-lg">You're attempting to deleted the following {{entity}}(s)</p>
+                <p class="pb-3">Click "Cancel" to abort</p>
+                <table class="text-center shadow-xl rounded-b-xl">
+                  <thead class="bg-red-800 text-white">
+                  <tr>
+                    @for (th of getDeletionTh(); track th; let first = $first; let last = $last) {
+                      <th [class.rounded-tl-xl]="first" [class.rounded-tr-xl]="last" class="p-2">{{ th }}</th>
+                    }
+                  </tr>
+                  </thead>
+                  <tbody class="">
+                    @for (entry of formattedDataToDelete; track entry; let odd = $odd; let lastEntry = $last) {
+                      <tr [ngClass]="{'bg-red-100' : odd, 'bg-white': !odd}">
+                        @for (th of getDeletionTh(); track th) {
+                          <td class="p-2"
+                              [ngClass]="{'rounded-bl-xl' : lastEntry && $first, 'rounded-br-xl' : lastEntry && $last}">{{ entry[th] }}
+                          </td>
+                        }
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          } @else {
+            <ng-content select="entityForm"></ng-content>
+          }
         </div>
-        <div class="bg-gray-200 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 rounded-b-lg justify-center">
-          <button type="submit"
-                  form="modalForm"
-                  class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 sm:ml-3 sm:w-auto">
-            Confirm
-          </button>
+        <div class="bg-gray-200 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 rounded-b-2xl justify-center gap-3">
+          @if (deleteOp) {
+            @if (showWarning) {
+              <button
+                class="inline-flex w-full justify-center items-center gap-3 rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 sm:ml-3 sm:w-auto"
+                (click)="dismissWarning(false)">
+                Proceed
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                     transform="rotate(0)matrix(-1, 0, 0, 1, 0, 0)" width="14" height="14">
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M8.70714 13.2929L3.41424 8.00001L8.70714 2.70712L7.29292 1.29291L0.585815 8.00001L7.29292 14.7071L8.70714 13.2929Z"
+                      fill="#ffffff"></path>
+                    <path
+                      d="M15.2071 13.2929L9.91424 8.00001L15.2071 2.70712L13.7929 1.29291L7.08582 8.00001L13.7929 14.7071L15.2071 13.2929Z"
+                      fill="#ffffff"></path>
+                  </g>
+                </svg>
+              </button>
+            } @else {
+              <button (click)="deleteEntities()"
+                      class="inline-flex w-full justify-center rounded-md bg-red-800 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-600 sm:w-auto">
+                Yes, I'm sure!
+              </button>
+            }
+          } @else if (isSubmittable()) {
+            <button type="submit"
+                    form="modalForm"
+                    class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 sm:ml-3 sm:w-auto">
+              Confirm
+            </button>
+          }
           <button type="button" (click)="dismiss()"
                   class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
             Cancel
           </button>
+          @if (deleteOp && !showWarning) {
+            <button type="button" (click)="dismissWarning(true)"
+                    class="mt-3 inline-flex w-full justify-center items-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
+
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+                   width="14" height="14">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M8.70714 13.2929L3.41424 8.00001L8.70714 2.70712L7.29292 1.29291L0.585815 8.00001L7.29292 14.7071L8.70714 13.2929Z"
+                    class="fill-black"></path>
+                  <path
+                    d="M15.2071 13.2929L9.91424 8.00001L15.2071 2.70712L13.7929 1.29291L7.08582 8.00001L13.7929 14.7071L15.2071 13.2929Z"
+                    class="fill-black"></path>
+                </g>
+              </svg>
+              Show warning
+            </button>
+          }
         </div>
       </div>
     </div>
   </div>
 </div>
-

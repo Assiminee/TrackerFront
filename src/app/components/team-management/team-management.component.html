@@ -5,6 +5,7 @@
   [entityService]="teamService"
   [showSuccess]="showSuccess"
   [msg]="msg"
+  (singleActionEmitter)="setTeamName($event)"
 >
   <div ngProjectAs="entityForm" class="flex flex-col max-h-[60vh]">
     <div class="relative flex items-center gap-5" [class.pb-5]="showFailed">
@@ -29,25 +30,57 @@
     </div>
     <app-alert [msg]="msg" [showMsg]="showFailed" [success]="success"/>
     <div class="pt-5 text-center sm:mt-0 sm:text-left overflow-auto p-5 pb-0">
-      <form class="flex flex-col gap-3" [formGroup]="createTeamForm" id="modalForm" (ngSubmit)="onSubmit()"
-            method="POST" action="localhost:8080/api/teams" #modalForm="ngForm">
+      <form class="flex flex-col gap-3" [formGroup]="form" id="modalForm" (ngSubmit)="onSubmit()" #modalForm="ngForm">
         <div class="flex justify-center items-center w-full">
           <div class="flex flex-col w-full">
-            <label class="text-lg p-2">Team Name <span class="text-red-600">*</span></label>
+            <label class="text-lg p-2">Team Name
+              <span class="text-red-600 visible" [class.hidden]="!formHelper.isSubmittable(singleAction)">*</span>
+            </label>
             <input type="email"
                    class="customInput rounded-xl"
+                   [ngClass]="{'bg-gray-100': !formHelper.isSubmittable(singleAction)}"
                    placeholder="IAM NPM"
                    formControlName="name"
             />
             <div class="pt-5 text-red-400 transition-all"
-                 [class.opacity-100]="isInvalid(name) || createTeamForm.invalid"
-                 [class.opacity-0]="!isInvalid(name) && !createTeamForm.invalid">
-              <p>{{ isInvalid(name) ? 'Please provide a team name' : (createTeamForm.invalid ? 'Please fill out the form' : '') }}</p>
+                 [class.opacity-100]="formHelper.isInvalid(name) || form.invalid"
+                 [class.opacity-0]="!formHelper.isInvalid(name) && !form.invalid">
+              <p>{{ formHelper.isInvalid(name) ? 'Please provide a team name' : (form.invalid ? 'Please fill out the form' : '') }}</p>
             </div>
-            <label class="text-sm p-2 text-end"><span class="text-red-400">* </span>Mandatory field</label>
+            @if (formHelper.isSubmittable(singleAction)) {
+              <label class="text-sm p-2 text-end"><span class="text-red-400">* </span>Mandatory field</label>
+            }
           </div>
         </div>
       </form>
     </div>
+  </div>
+  <div ngProjectAs="notice">
+    <p class="font-semibold">You’re about to delete one or more teams. Please review carefully before proceeding:</p>
+    <ul class="list-decimal flex flex-col gap-2 p-5">
+      <li>
+        Empty teams (no members) will be permanently removed
+      </li>
+      <li>
+        Teams whose members have never contributed to a report:
+        <ul class="list-disc px-3">
+          <li>The team itself, its manager, and all members will be permanently deleted.</li>
+          <li>To keep any of these accounts, you must first reassign those users to other teams.</li>
+        </ul>
+      </li>
+      <li>Teams with at least one report or members who have contributed:
+        <ul class="list-disc px-3">
+
+          <li>The team record will be marked “deleted” but remain in the database.</li>
+
+          <li>Team members who contributed will have their accounts deactivated.</li>
+
+          <li>Team members who never contributed will be permanently removed.</li>
+
+          <li>To preserve users, reassign them to other teams before deletion.</li>
+        </ul>
+      </li>
+    </ul>
+    <p>Click “Proceed” to view the teams slated for deletion and confirm.</p>
   </div>
 </app-data-management>

@@ -6,6 +6,7 @@ import {Login} from './components/login/login';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
+  standalone: true,
   styleUrl: './app.css'
 })
 export class App {

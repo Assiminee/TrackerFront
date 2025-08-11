@@ -12,18 +12,18 @@
     @for (entry of thead(); track entry.key) {
       <th class="py-3 px-5">
         <div class="flex items-center gap-5">
-          {{ entry.title }}
+          <p class="text-sm sm:text-lg">{{ entry.title }}</p>
           @if (entry.sortable) {
             <button (click)="toggleSortOrder(entry.key)"
-                    class="flex bg-green-400 rounded-lg p-1 transformations shadow-xl">
-              <img [src]="constructImageSrc(entry)" class="w-5 h-5" alt="order"/>
+                    class="inline-flex items-center justify-center size-5 shrink-0 bg-green-400 rounded-lg transformations shadow-xl sm:size-8">
+              <img [src]="constructImageSrc(entry)" class="size-3 sm:size-5" alt="order"/>
             </button>
           }
           @if (entry.isEnum || entry.isFlag) {
             <div class="flex">
               <button (click)="openSortMenu(entry, $event)"
-                      class="flex bg-green-400 rounded-lg p-1 transformations shadow-xl">
-                <img [src]="constructImageSrc(entry)" class="w-5 h-5 p-1" alt="order"/>
+                      class="inline-flex items-center justify-center size-5 shrink-0 bg-green-400 rounded-lg transformations shadow-xl sm:size-8">
+                <img [src]="constructImageSrc(entry)" class="size-3 p-0.5 sm:size-5 sm:p-1" alt="order"/>
               </button>
             </div>
           }
@@ -33,7 +33,7 @@
     <th class="py-3 px-5">Actions</th>
   </tr>
   </thead>
-  <tbody class="">
+  <tbody>
     @for (entry of data; track entry.id; let i = $index; let isOdd = $odd; let isLast = $last) {
       <tr [class.bg-gray-50]="isOdd" [class.bg-white]="!isOdd" [class.border-b]="!isLast"
           class="hover:bg-red-50 border-t border-gray-200">
@@ -47,13 +47,10 @@
         @for (key of keys; track key) {
           <td class="py-3 px-5 justify-center">
             @if (isBadge(key)) {
-              <span class="badge" [ngClass]="getCustomCssClass(key, entry)">{{ getEntryValue(entry, key) }}</span>
+              <span class="badge text-nowrap" [ngClass]="getCustomCssClass(key, entry)">{{ getEntryValue(entry, key) }}</span>
             }
             @else {
-              @if (key === 'pm' && entry?.['pm'] !== undefined) {
-                <input type="hidden" [value]="entry?.['pm']?.['id']">
-              }
-              {{ getEntryValue(entry, key) }}
+              <p class="text-sm sm:text-lg">{{ getEntryValue(entry, key) }}</p>
             }
           </td>
         }
@@ -94,7 +91,7 @@
             d="M12.406 13.844c1.188 0 2.156 0.969 2.156 2.156s-0.969 2.125-2.156 2.125-2.125-0.938-2.125-2.125 0.938-2.156 2.125-2.156zM12.406 8.531c7.063 0 12.156 6.625 12.156 6.625 0.344 0.438 0.344 1.219 0 1.656 0 0-5.094 6.625-12.156 6.625s-12.156-6.625-12.156-6.625c-0.344-0.438-0.344-1.219 0-1.656 0 0 5.094-6.625 12.156-6.625zM12.406 21.344c2.938 0 5.344-2.406 5.344-5.344s-2.406-5.344-5.344-5.344-5.344 2.406-5.344 5.344 2.406 5.344 5.344 5.344z"></path>
         </g>
       </svg>
-      <button (click)="viewEntry(entryId)">View</button>
+      <button (click)="emitId(entryId, 1)">View</button>
     </div>
     <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 w-6">
@@ -107,7 +104,7 @@
             stroke-linejoin="round"></path>
         </g>
       </svg>
-      <button (click)="editEntry(entryId)">Edit</button>
+      <button (click)="emitId(entryId, 2)">Edit</button>
     </div>
     @if (showDownloadOption) {
       <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
@@ -120,7 +117,7 @@
               fill="#000000"></path>
           </g>
         </svg>
-        <button (click)="downloadEntries(entryId)">Download</button>
+        <button (click)="emitId(entryId, 3)">Download</button>
       </div>
     }
     <div class="p-2 hover:bg-gray-100 flex gap-2 items-center">
@@ -143,7 +140,7 @@
             stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"></path>
         </g>
       </svg>
-      <button class="text-red-400" (click)="deleteEntries(entryId)">Delete</button>
+      <button class="text-red-400" (click)="emitId(entryId, 0)">Delete</button>
     </div>
   </div>
 </ng-template>

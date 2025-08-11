@@ -1,6 +1,6 @@
 export interface DataTableColumn {
   key: string;
-  title: string;
+  title?: string;
   queryParamName?: string;
   sortable?: boolean;
   sortOrder?: 'ASC' | 'DESC';

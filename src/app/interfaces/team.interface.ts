@@ -12,4 +12,5 @@ export interface Team extends BaseTableData {
   updatedAt: Date;
   pm?: EmbeddedPm;
   deleted: boolean;
+  memberCount: number;
 }

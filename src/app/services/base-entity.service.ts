@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {EntityService, PagedResponse} from '../interfaces/entity-service.interface';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {DataTableColumn} from '../interfaces/data-table-column.interface';
-import {Observable} from 'rxjs';
-import {JwtDecoderService} from './jwt-decoder.service';
+import {Observable, of, from, mergeMap, catchError, toArray} from 'rxjs';
 import {BaseTableData} from '../interfaces/base-table-data.interface';
 
 @Injectable({
@@ -12,11 +11,10 @@ import {BaseTableData} from '../interfaces/base-table-data.interface';
 export abstract class BaseEntityService implements EntityService {
   protected ROOT_URL : string = "http://localhost:8080/api/";
 
-  constructor(private jwtDecoderService: JwtDecoderService, private client: HttpClient) {}
+  protected constructor(private client: HttpClient) {}
 
-  constructHttpHeaders(token: string): { headers: HttpHeaders } {
-    return {headers: new HttpHeaders({Authorization: `Bearer ${token}`})};
-  }
+  abstract getEntryValue(key: string, entry: BaseTableData): string;
+  abstract formatForDelete(data: BaseTableData[], ids: string[]): { [key: string]: any }[] ;
 
   getDataTableColumnDefinition(dataTableColumns: DataTableColumn[], key: string): DataTableColumn | undefined {
     return dataTableColumns.find(data => data.key === key);
@@ -55,30 +53,25 @@ export abstract class BaseEntityService implements EntityService {
     return {params: params};
   }
 
-  getPage(dataTableColumns: DataTableColumn[] = [], searchText?: string, pageNumber?: number) : Observable<Object> | undefined {
-    const token = this.jwtDecoderService.getToken();
+  constructQueryParams(queryParams: { [key: string]: string }) : { params: HttpParams } {
+    let params = new HttpParams();
 
-    if (!token)
-      return;
+    for (const key in queryParams)
+      params = params.set(key, queryParams[key]);
 
-    const headers = this.constructHttpHeaders(token);
-    const params = this.constructHttpParams(dataTableColumns, searchText, pageNumber);
-
-    console.log(headers)
-    console.log(params);
-
-    return this.client.get(this.url, {...headers, ...params})
+    return {params: params};
   }
 
-  createInstance(body: object) : Observable<Object> | undefined {
-    const token = this.jwtDecoderService.getToken();
+  getPage(dataTableColumns: DataTableColumn[] = [], searchText?: string, pageNumber?: number) : Observable<Object>{
+    const params = this.constructHttpParams(dataTableColumns, searchText, pageNumber);
 
-    if (!token)
-      return;
+    console.log(params);
 
-    const headers = this.constructHttpHeaders(token);
+    return this.client.get(this.url, params)
+  }
 
-    return this.client.post(this.url, body, headers);
+  createInstance(body: object) : Observable<Object> {
+    return this.client.post(this.url, body);
   }
 
   isValidResponse<T>(data: any): data is PagedResponse<T> {
@@ -99,5 +92,44 @@ export abstract class BaseEntityService implements EntityService {
     return this.ROOT_URL;
   }
 
-  abstract getEntryValue(key: string, entry: BaseTableData): string;
+  deleteEntry(entryId: string, queryParams: {[key: string]: string}): Observable<Object> {
+    const params = this.constructQueryParams(queryParams);
+
+    return this.client.delete(this.url + "/" + entryId, params);
+  }
+
+  deleteEntries(ids: string[], queryParams: {[key: string]: string}): Observable<Object> {
+    const CONCURRENCY = 3; // Number of parallel calls to make
+
+    // 1. Array of identifiers.
+    //    from(ids) turns the array into an observable that emits each id one at a time, then completes.
+    return from(ids).pipe(
+      // 2. mergeMap(fn, CONCURRENCY)
+      //    For each id emitted by `from(ids)`, call a function (performing an api call in this case.
+      //    mergeMap will subscribe to up to 'CONCURRENCY' inner observables at once.
+      //    When one completes, it will pick up the next id and launch another,
+      //    so you never have more than CONCURRENCY pending HTTP calls.
+      mergeMap(id => {
+        return this.deleteEntry(id, queryParams).pipe(
+          // 3. catchError: if this single HTTP call fails,
+          //    log the error and emit `id` instead of letting the whole stream error out.
+          catchError(err => {
+            console.error(err);
+            return of(id);
+          })
+        )}, CONCURRENCY
+      ),
+      // 4. toArray: wait until the outer `from(ids)` and all inner mergeMap observables complete.
+      //    Then collect every emitted value (including those nulls on error) into one array and emit it once.
+      toArray()
+    );
+  }
+
+  editEntry(id: string, entry: Object): Observable<Object> {
+    return this.client.put(this.url + '/' + id, entry);
+  }
+
+  entitiesDeletable(entries: BaseTableData[]): boolean {
+    return entries.every(entry => entry?.['deleted'] === false);
+  }
 }
