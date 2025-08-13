@@ -7,7 +7,8 @@ import {TableDisplayService} from '../../services/table-display.service';
   selector: 'app-table',
   imports: [],
   templateUrl: './table.component.html',
-  styleUrl: './table.component.css'
+  styleUrl: './table.component.css',
+  standalone: true
 })
 export class TableComponent implements OnInit {
   @Input() rowCount: number = 150;

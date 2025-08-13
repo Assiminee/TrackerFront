@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import {JwtCustomPayload} from '../interfaces/jwt-custom-payload.interface';
+import {isValidRole} from '../models/roles.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JwtDecoderService {
-  private ROLES: string[] = ["ROLE_SA", "ROLE_PM", "ROLE_TM"]
   constructor() {}
 
   decode(jwt: string): JwtCustomPayload | null {
@@ -22,7 +22,7 @@ export class JwtDecoderService {
   }
 
   isValidData(payload: JwtCustomPayload): boolean {
-    return (payload.firstName.length > 0 && payload.lastName.length > 0 && this.ROLES.includes(payload.role));
+    return (payload.firstName.length > 0 && payload.lastName.length > 0 && isValidRole(payload.role));
   }
 
   isValid(token: string): boolean {

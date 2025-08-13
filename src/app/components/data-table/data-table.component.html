@@ -169,13 +169,13 @@
       <button (click)="setFilter(null, 'role')">All</button>
     </div>
     <div class="border-b border-gray-200 p-2 px-4 hover:bg-blue-100 text-blue-600 flex gap-2 items-center justify-center">
-      <button class="text-center" (click)="setFilter('ROLE_PM', 'role')">Project Manager</button>
+      <button class="text-center" (click)="setFilter(Role.ProjectManager, 'role')">Project Manager</button>
     </div>
     <div class="border-b border-gray-200 p-2 px-4 hover:bg-orange-100 text-orange-600 flex gap-2 items-center justify-center">
-      <button class="text-center" (click)="setFilter('ROLE_TM', 'role')">Team Member</button>
+      <button class="text-center" (click)="setFilter(Role.TeamMember, 'role')">Team Member</button>
     </div>
     <div class="p-2 px-4 hover:bg-purple-100 text-purple-600 flex gap-2 items-center justify-center">
-      <button class="text-center" (click)="setFilter('ROLE_SA', 'role')">Administrator</button>
+      <button class="text-center" (click)="setFilter(Role.Admin, 'role')">Administrator</button>
     </div>
   </div>
 </ng-template>

@@ -1,47 +1,49 @@
-import {Component} from '@angular/core';
-import {NgOptimizedImage} from '@angular/common';
+import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators, ɵFormGroupRawValue,
-  ɵGetProperty,
-  ɵTypedOrUntyped
+  Validators
 } from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
-import {ErrorPopupComponent} from '../error-popup/error-popup.component';
+import {FormHelperService} from '../../services/form-helper.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-login',
   imports: [
-    ReactiveFormsModule,
-    ErrorPopupComponent
+    ReactiveFormsModule
   ],
   templateUrl: './login.html',
   standalone: true,
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnDestroy {
   show: boolean = false;
   eye: string = "show-pwd.png";
   success: boolean = true;
-  loginForm: FormGroup;
+  loginForm!: FormGroup;
   showFormError: boolean = false;
   errorMessage: string = "";
   redirectUrl: string = "/home";
+  isInvalid!: Function;
+  subscription!: Subscription;
 
-  constructor(private router: Router, private auth: AuthService, private route: ActivatedRoute) {
-    if (this.auth.isLoggedIn())
+  constructor(private router: Router, private auth: AuthService, private route: ActivatedRoute, formHelper: FormHelperService) {
+    if (this.auth.isLoggedIn()) {
       this.router.navigate([this.redirectUrl]);
+      return;
+    }
+
+    this.isInvalid = formHelper.isInvalid;
 
     this.loginForm = new FormGroup({
       id: new FormControl("", [Validators.required, Validators.minLength(8)]),
       password: new FormControl("", [Validators.required]),
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.subscription = this.route.queryParams.subscribe(params => {
       const redirectUrl = params['returnUrl'];
 
       if (params['sessionExpired'] === 'true') {
@@ -51,9 +53,7 @@ export class Login {
 
       if (redirectUrl)
         this.redirectUrl = redirectUrl;
-
-      console.log(params);
-    })
+    });
   }
 
   showPassword() {
@@ -67,10 +67,6 @@ export class Login {
 
   get password() {
     return this.loginForm.get('password');
-  }
-
-  isInvalid(control: AbstractControl<ɵGetProperty<ɵTypedOrUntyped<any, ɵFormGroupRawValue<any>, any>, "id">> | null): boolean {
-    return control !== null && control.invalid && (control.dirty || control.touched);
   }
 
   succeeded(succeeded: boolean, message?: string) {
@@ -95,5 +91,10 @@ export class Login {
       this.id?.value ?? "", this.password?.value ?? "", this.redirectUrl,
       (ok: boolean, message?: string) => this.succeeded(ok, message)
     );
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription)
+      this.subscription.unsubscribe();
   }
 }

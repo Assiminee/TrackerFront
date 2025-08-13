@@ -12,12 +12,13 @@ import {TableDisplayService} from '../../services/table-display.service';
     PreviewComponent,
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  standalone: true
 })
 export class HomeComponent {
-  tables: Table[] = [];
+  tables: Table[];
 
-  constructor(private tableDisplayService: TableDisplayService) {
+  constructor(tableDisplayService: TableDisplayService) {
     this.tables = tableDisplayService.getData();
   }
 }

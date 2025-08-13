@@ -28,7 +28,6 @@
     "@angular/material": "^20.1.2",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
-    "@ionic/angular": "^8.7.2",
     "@tailwindcss/postcss": "^4.1.11",
     "jwt-decode": "^4.0.0",
     "ngx-infinite-scroll": "^20.0.0",

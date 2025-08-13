@@ -1,0 +1,98 @@
+<div class="relative h-dvh w-screen flex items-center justify-center overflow-hidden">
+  <div
+    class="absolute top-0 h-[120%] w-full bg-gradient-to-r from-red-900 via-[#d94551] to-[#f8ae95] clip-diagonal"></div>
+  <div
+    class="flex flex-col justify-center gap-5 z-10 w-5/6 lg:w-1/2 max-w-4xl h-[90%] rounded-4xl shadow-2xl bg-white/75">
+
+    <div class="flex flex-col items-center gap-3">
+      <img src="/logo-nameless.jpg" class="w-[25%]" alt="logo"/>
+      <p class="text-2xl lg:text-4xl text-center font-bold italic">Welcome to TrackIt</p>
+
+      <div class="text-center text-xs sm:text-sm lg:text-lg px-10">
+        <p>In order to access the platform,</p>
+        <p>you must first set a new password and confirm your email</p>
+      </div>
+    </div>
+    @if (!success) {
+      <div
+        class="flex flex-col gap-1 text-center text-wrap text-sm justify-center items-center text-white self-center rounded-xl animate-pulse"
+      >
+        @if (warning) {
+          <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
+               stroke-width="0.00024000000000000003"
+               class="stroke-red-700/70 w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+               stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M7.91 3.23 3.23 7.913v-.01a.81.81 0 0 0-.23.57v7.054c0 .22.08.42.23.57L7.9 20.77c.15.15.36.23.57.23h7.06c.22 0 .42-.08.57-.23l4.67-4.673a.81.81 0 0 0 .23-.57V8.473c0-.22-.08-.42-.23-.57L16.1 3.23a.81.81 0 0 0-.57-.23H8.48c-.22 0-.42.08-.57.23ZM12 7a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1Zm-1 9a1 1 0 0 1 1-1h.008a1 1 0 1 1 0 2H12a1 1 0 0 1-1-1Z"
+                    class="fill-red-700/70"></path>
+            </g>
+          </svg>
+        }
+        <p class="bg-red-700/70 p-2 rounded-xl" [ngClass]="{'bg-red-700/70': warning, 'bg-green-700/70' : !warning}">{{ msg }}</p>
+      </div>
+    }
+
+    <form class="flex flex-col justify-center px-[20%]" [formGroup]="form">
+      <div class="flex flex-col gap-2">
+        <label class="text-xs sm:text-lg font-semibold pl-2">
+          New Password
+        </label>
+        <div class="w-full relative flex items-center">
+          <input [type]="showPassword ? 'text' : 'password'" id="passwordInput" formControlName="password"
+                 class="rounded-lg shadow-2xl px-4 py-2 placeholder-gray-500 border w-full focus:outline-none focus:ring-0 focus:border-gray-500"
+                 [ngClass]="password.disabled ? 'bg-gray-200 border-gray-500' : 'bg-white border-gray-300'"
+                 placeholder="***************"/>
+          <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6"
+                  (click)="toggleShowPassword()">
+            <img alt="show/hide" [src]="showPassword ? '/show-pwd.png' : '/hide-pwd.png'" class="w-6 h-6"/>
+          </button>
+        </div>
+        <div class="pl-2 pb-4 text-red-600 transition-all opacity-0"
+             [class.opacity-100]="formHelper.isInvalid(password)">
+          <p>{{ password?.hasError('required') ? 'Please set a password' : (password?.hasError('pattern') ? 'A password must be 8 characters long, contain special characters, numbers as well as upper and lowercase letters' : '') }}</p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="text-xs sm:text-lg font-semibold pl-2">
+          Confirm Password
+        </label>
+        <div class="w-full relative flex items-center">
+          <input [type]="showConfPwd ? 'text' : 'password'" formControlName="confirmPassword"
+                 class="rounded-lg shadow-2xl px-4 py-2 placeholder-gray-500 border w-full focus:outline-none focus:ring-0 focus:border-gray-500"
+                 [ngClass]="password.disabled ? 'bg-gray-200 border-gray-500' : 'bg-white border-gray-300'"
+                 placeholder="***************"/>
+          <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6"
+                  (click)="toggleShowConfPwd()">
+            <img alt="show/hide" [src]="showConfPwd ? '/show-pwd.png' : '/hide-pwd.png'" class="w-6 h-6"/>
+          </button>
+        </div>
+        <div class="pl-2 pb-4 text-red-600 transition-all opacity-0"
+             [class.opacity-100]="formHelper.isInvalid(confirmPassword)">
+          <p>{{ confirmPassword?.hasError('required') ? 'Please confirm your password' : (confirmPassword?.hasError('different') ? 'The passwords don\'t match' : '') }}</p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        @if (success) {
+          <button type="button" (click)="onSubmit()"
+                  class="bg-red-800 hover:bg-red-700 rounded-lg text-sm sm:text-lg p-1 px-4 text-white self-center"
+                  [disabled]="!success"
+                  [ngClass]="success ? '' : 'bg-red-800/60'">Submit
+          </button>
+        }
+        @if (requestNewToken) {
+          <button type="button" (click)="requestToken()"
+                  class="rounded-lg text-sm sm:text-lg p-1 px-4 self-center bg-red-800 hover:bg-red-700 text-white">
+            Request a new activation email
+          </button>
+        }
+      </div>
+      <div class="flex justify-center pt-5">
+        <a routerLink="/login" class="text-blue-500 hover:text-blue-700">Login page</a>
+      </div>
+    </form>
+  </div>
+</div>

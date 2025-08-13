@@ -17,6 +17,8 @@ import {PortalModule, TemplatePortal} from '@angular/cdk/portal';
 import {NgClass} from '@angular/common';
 import {DataTableColumn} from '../../interfaces/data-table-column.interface';
 import {EntityService} from '../../interfaces/entity-service.interface';
+import {Role} from '../../models/roles.enum';
+import {SingleActionWithId} from '../../models/single-action.type';
 
 @Component({
   selector: 'app-data-table',
@@ -36,7 +38,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   @ViewChild("roleFilter") roleFilter: TemplateRef<any> = new TemplateRef();
   @Output() menuOpenEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() deleteIds: EventEmitter<string[]> = new EventEmitter<string[]>();
-  @Output() singleActionIdEmitter: EventEmitter<{ id: string, action: number }> = new EventEmitter<{ id: string, action: number }>();
+  @Output() singleActionIdEmitter: EventEmitter<SingleActionWithId> = new EventEmitter<SingleActionWithId>();
   @Input() data: BaseTableData[] = [];
   @Input() openMenuIndex: string = "";
   @Input() thead!: WritableSignal<DataTableColumn[]>;
@@ -250,4 +252,6 @@ export class DataTableComponent implements OnInit, OnChanges {
     this.overlayRef?.dispose();
     this.singleActionIdEmitter.emit({id: entryId, action: action});
   }
+
+  protected readonly Role = Role;
 }

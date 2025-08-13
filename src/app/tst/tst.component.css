@@ -1,9 +1,0 @@
-@import "@ionic/angular/css/core.css";
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-/* optional helpers */
-@import "@ionic/angular/css/display.css";
-
-/* ensure the page can take full height */
-html, body, ion-app, .ion-page { height: 100%; }

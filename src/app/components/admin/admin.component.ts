@@ -9,7 +9,8 @@ import {RouterOutlet} from '@angular/router';
     RouterOutlet
   ],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  styleUrl: './admin.component.css',
+  standalone: true
 })
 export class AdminComponent {
 

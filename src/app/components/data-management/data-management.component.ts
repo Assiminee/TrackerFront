@@ -16,6 +16,8 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {AlertComponent} from '../alert/alert.component';
 import {NgClass} from '@angular/common';
 import {FormGroupDirective} from '@angular/forms';
+import {Mode} from '../../models/modes.enum';
+import {SingleActionWithEntity, SingleActionWithId} from '../../models/single-action.type';
 
 @Component({
   selector: 'app-data-management',
@@ -54,18 +56,15 @@ export class DataManagementComponent implements OnInit, OnChanges {
   // entity: an instance of BaseTableData (Team, User, or Report) containing the actual entity
   // to perform an action on.
   // action: a number denoting what to do with the entity
-  //   -1 => create
-  //    0 => delete
-  //    1 => view
-  //    2 => edit
-  //    3 => download
-  @Output() singleActionEmitter: EventEmitter<{ entity: BaseTableData | null, action: number }> = new EventEmitter<{
-    entity: BaseTableData | null,
-    action: number
-  }>();
+  //   -1 => CREATE
+  //    0 => DELETE
+  //    1 => VIEW
+  //    2 => EDIT
+  //    3 => DOWNLOAD
+  @Output() singleActionEmitter: EventEmitter<SingleActionWithEntity> = new EventEmitter<SingleActionWithEntity>();
 
   // Action to perform on a given entity (source: DataTableManagement component)
-  singleAction: { id: string, action: number } = {id: "", action: -1};
+  singleAction: SingleActionWithId = {id: null, action: Mode.CREATE};
 
   // The data to display on the table
   data: BaseTableData[] = [];
@@ -253,9 +252,9 @@ export class DataManagementComponent implements OnInit, OnChanges {
   }
 
   showModal(open: boolean) {
-    this.singleAction.id = "";
-    this.singleAction.action = -1;
-    this.singleActionEmitter.emit({entity: null, action: -1});
+    this.singleAction.id = null;
+    this.singleAction.action = Mode.CREATE;
+    this.singleActionEmitter.emit({entity: null, action: Mode.CREATE});
     this.show = open;
   }
 
@@ -350,7 +349,7 @@ export class DataManagementComponent implements OnInit, OnChanges {
     this.showWarning = show;
   }
 
-  performSingleAction(event: any) {
+  performSingleAction(event: SingleActionWithId) {
     this.singleAction = event;
     console.log(this.singleAction);
 
@@ -360,13 +359,16 @@ export class DataManagementComponent implements OnInit, OnChanges {
       return;
 
     console.log(entity);
-    if (this.singleAction.action === 0) {
+    if (this.singleAction.action === Mode.DELETE) {
+      if (this.singleAction?.id === null)
+        return;
+
       this.idsToDelete([this.singleAction.id]);
       this.toggleDeletion(true);
       return;
     }
 
-    this.singleActionEmitter.emit({entity: entity, action: this.singleAction?.action})
+    this.singleActionEmitter.emit({entity: entity, action: this.singleAction.action})
     this.show = true;
   }
 
@@ -377,7 +379,7 @@ export class DataManagementComponent implements OnInit, OnChanges {
 
     setTimeout(() => {
       this.showSuccess = false;
-    }, 4000);
+    }, 6000);
 
     this.showSuccess = true;
 
@@ -386,6 +388,6 @@ export class DataManagementComponent implements OnInit, OnChanges {
   }
 
   isSubmittable() {
-    return this.singleAction && this.singleAction.action !== 1
+    return this.singleAction && this.singleAction.action !== Mode.VIEW
   }
 }

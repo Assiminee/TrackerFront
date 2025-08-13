@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {AbstractControl, FormGroup} from '@angular/forms';
 import {BaseTableData} from '../interfaces/base-table-data.interface'
+import {Mode} from '../models/modes.enum';
+import {SingleActionWithEntity} from '../models/single-action.type';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class FormHelperService {
     return control !== null && control.invalid && (control.dirty || control.touched);
   }
 
-  isSubmittable(singleAction: {entity: BaseTableData | null, action: number} | null) : boolean {
-    return singleAction !== null && singleAction.action !== 1;
+  isSubmittable(singleAction: SingleActionWithEntity | null) : boolean {
+    return singleAction !== null && singleAction.action !== Mode.VIEW;
   }
 }

@@ -23,9 +23,11 @@ import {FormHelperService} from "../../services/form-helper.service";
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertComponent} from '../alert/alert.component';
 import {EntityManagement} from '../../interfaces/entity-management.interface';
-import {BaseTableData} from '../../interfaces/base-table-data.interface';
 import {UserRow} from '../../interfaces/user-row.interface';
 import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
+import {getRoleName, isTmOrPm, isValidRole, Role, VALID_ROLES} from '../../models/roles.enum';
+import {SingleActionWithEntity} from '../../models/single-action.type';
+import {Mode} from '../../models/modes.enum';
 
 @Component({
   selector: 'app-user-management',
@@ -42,12 +44,6 @@ import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
 })
 export class UserManagementComponent extends EntityManagement implements OnInit, OnDestroy {
   chosenTeam: { name: string, id: string } = {name: '', id: ''};
-  roleOptions = [
-    {value: 'ROLE_SA', name: 'Administrator'},
-    {value: 'ROLE_PM', name: 'Project Manager'},
-    {value: 'ROLE_TM', name: 'Team Member'}
-  ];
-  validRoles: string[] = ['ROLE_SA', 'ROLE_PM', 'ROLE_TM'];
   teams: Team[] = [];
   searchTeam: FormControl = new FormControl('');
   error: string | null = null;
@@ -58,6 +54,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
   getTeamsParams = [
     {key: 'searchNameOnly', filterBy: 'true', queryParamName: 'searchNameOnly'}
   ];
+  mode: string = 'Create';
 
   constructor(protected userService: UserService, teamService: TeamService, router: Router, route: ActivatedRoute, formHelper: FormHelperService) {
     super(router, route, teamService, formHelper);
@@ -85,9 +82,9 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
       {key: 'team', title: 'Team', sortable: true, sortOrder: 'ASC', isEnabled: false},
       {
         key: 'role', title: 'Role', isEnum: true, badge: true, customCssClass: {
-          ROLE_PM: 'text-blue-600 bg-blue-50 rounded-lg ring-blue-800/30',
-          ROLE_TM: 'text-orange-600 bg-orange-50 rounded-lg ring-orange-800/30',
-          ROLE_SA: 'text-purple-600 bg-purple-50 rounded-lg ring-purple-800/30'
+          [Role.ProjectManager]: 'text-blue-600 bg-blue-50 rounded-lg ring-blue-800/30',
+          [Role.TeamMember]: 'text-orange-600 bg-orange-50 rounded-lg ring-orange-800/30',
+          [Role.Admin]: 'text-purple-600 bg-purple-50 rounded-lg ring-purple-800/30'
         }, queryParamName: 'role'
       },
       {
@@ -120,22 +117,22 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     })
   }
 
-  toggleIsLoading() {
-    this.isLoading = !this.isLoading;
-  }
-
   loadData() {
-    this.toggleIsLoading();
+    if (this.isLoading) return;
+
+    this.isLoading = true;
+
     this.teamService.getPage(this.getTeamsParams, this.searchTeam.value, this.teamPage)
+      .pipe(
+        takeUntil(this.destroy),
+        finalize(() => this.isLoading = false)
+      )
       .subscribe({
         next: data => {
           if (this.teamService.isValidResponse(data))
             this.teams = [...this.teams, ...(data.content as Team[])];
         }, error: error => {
           console.log(error);
-        },
-        complete: () => {
-          this.toggleIsLoading()
         }
       });
   }
@@ -143,7 +140,6 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
   onScroll() {
     this.teamPage++;
     this.loadData();
-    console.log(this.teams);
   }
 
   roleValidator(): ValidatorFn {
@@ -153,7 +149,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
       if (!value)
         return null;
 
-      return this.validRoles.includes(value.toUpperCase()) ? null : {invalidRole: true};
+      return isValidRole(value) ? null : {invalidRole: true};
     }
   }
 
@@ -177,7 +173,6 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     this.chosenTeamId = id;
     this.chosenTeamName = name;
     this.form.controls['teamId'].setValue(this.chosenTeamId);
-    console.log(this.form.controls['teamId'].value)
   }
 
   ngOnInit(): void {
@@ -202,7 +197,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
       // 5. tap: side effect before the request goes out.
       //    Sets the loading flag so the UI can show a spinner, and clears prior errors.
       tap(() => {
-        this.toggleIsLoading();
+        this.isLoading = true;
         this.teams.length = 0;
         this.teamPage = 0;
         this.error = null;
@@ -221,7 +216,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
           // finalize: always run when the inner observable completes or errors
           // turns off the loading indicator regardless of success or failure
           finalize(() => {
-            this.toggleIsLoading();
+            this.isLoading = false;
           }));
       }),
 
@@ -237,36 +232,14 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
         if (this.teams.length === 0)
           this.error = 'No corresponding teams.';
       }
-    })
-  }
-
-  ngOnDestroy() {
-    this.destroy.next();
-    this.destroy.complete();
+    });
   }
 
   onSubmit() {
-    console.log(`Is form valid? ${this.form.valid}`);
     const controls = this.form.controls;
 
     if (!this.form.valid) {
-      Object.entries(controls).forEach(([name, control]) => {
-        if (control.invalid)
-          console.log(`Control "${name}" is invalid. Errors:`, control.errors);
-      });
-      console.log('Form is invalid. Errors:');
-      const errs = this.form.errors ?? {};
-      console.log(this.form.errors);
       this.form.markAllAsTouched();
-
-      for (const err of Object.keys(errs))
-        console.log(`Error code: ${err} ----- Error: ${errs[err]}`);
-
-
-      for (const [key, control] of Object.entries(controls))
-        console.log(`Control: ${key} ----- value: ${control.value}`);
-
-
       return;
     }
 
@@ -274,42 +247,43 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     let body = {};
 
     for (const [key, control] of Object.entries(controls)) {
-      if (key === 'teamId' && this.role?.value === 'ROLE_SA')
+      if (key === 'teamId' && this.role?.value === Role.Admin)
         continue;
 
       body = {...body, [key]: control.value};
     }
 
-    console.log(body);
-
-    if (this.singleAction.action === -1) {
-      this.userService.createInstance({...body, password: 'Password@1'}).subscribe({
-        next: resp => {
-          this.afterSubmit(this.getMessage(true), {searchText: this.id?.value ?? ""}, true);
-        },
-        error: err => {
-          console.log(err)
-          this.afterSubmit(this.getMessage(), {});
-          const errResp = err as HttpErrorResponse;
-          this.msg += " " + errResp.error?.message;
-        },
-      });
+    if (this.singleAction.action === Mode.CREATE) {
+      this.userService.createInstance({...body, password: 'Password@1'})
+        .pipe(takeUntil(this.destroy))
+        .subscribe({
+          next: resp => {
+            this.afterSubmit(this.getMessage(true), {searchText: this.id?.value ?? ""}, true);
+          },
+          error: err => {
+            console.log(err)
+            this.afterSubmit(this.getMessage(), {});
+            const errResp = err as HttpErrorResponse;
+            this.msg += " " + errResp.error?.message;
+          },
+        });
       return;
     }
 
-    if (this.singleAction.action === 2) {
-      this.userService.editEntry(this.id?.value, body).subscribe({
-        next: resp => {
-          this.afterSubmit(this.getMessage(true), {searchText: this.id?.value ?? ""}, true);
-          console.log("EDITING...")
-        },
-        error: err => {
-          console.log(err)
-          this.afterSubmit(this.getMessage(), {});
-          const errResp = err as HttpErrorResponse;
-          this.msg += " " + errResp.error?.message;
-        },
-      });
+    if (this.singleAction.action === Mode.EDIT) {
+      this.userService.editEntry(this.id?.value, body)
+        .pipe(takeUntil(this.destroy))
+        .subscribe({
+          next: resp => {
+            this.afterSubmit(this.getMessage(true), {searchText: this.id?.value ?? ""}, true);
+          },
+          error: err => {
+            console.log(err)
+            this.afterSubmit(this.getMessage(), {});
+            const errResp = err as HttpErrorResponse;
+            this.msg += " " + errResp.error?.message;
+          },
+        });
       return;
     }
   }
@@ -322,11 +296,8 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
   }
 
   toggleShowTeams(): void {
-    console.log(`Change in role: ${this.role?.value}`);
-
-    this.showTeams = ['ROLE_PM', 'ROLE_TM'].includes(this.role?.value);
-    console.log(this.showTeams);
-    this.form.controls['teamId'].disable();
+    console.log(this.role?.value);
+    this.showTeams = isTmOrPm(this.role?.value) ?? false;
   }
 
   // Getters
@@ -367,7 +338,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     this.form.controls['firstName'].setValue(firstName);
   }
 
-  set lastName(lastName: string){
+  set lastName(lastName: string) {
     this.form.controls['lastName'].setValue(lastName);
   }
 
@@ -387,33 +358,55 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     this.form.controls['teamId'].setValue(teamId);
   }
 
-  fillForm(event: { entity: BaseTableData | null; action: number }) {
+  fillForm(event: SingleActionWithEntity) {
     this.setSingleAction(event);
-    if (this.singleAction.action === -1)
-      return;
+    const mode = this.singleAction.action;
 
-    const user = this.singleAction.entity as UserRow;
-    console.log("USER", user)
+    this.mode = mode === Mode.CREATE ? 'Create' : (mode === Mode.EDIT ? 'Edit' : 'View');
 
-    this.id = user.id;
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
-    this.email = user.email;
-    this.phoneNumber = user.phoneNumber;
-    this.role = user.role;
-    this.team = user.team?.id ?? "";
+    const user = (this.singleAction.entity ?? null) as UserRow | null;
+
+    this.form.reset();
+    this.form.enable();
+
+    this.form.patchValue({
+      id: user?.id ?? '',
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
+      email: user?.email ?? '',
+      phoneNumber: user?.phoneNumber ?? '',
+      role: user?.role ?? '',
+      teamId: user?.team?.id ?? ''
+    });
 
     this.toggleShowTeams();
 
-    if (['ROLE_TM', 'ROLE_PM'].includes(user.role))
-      this.chosenTeam = {id: user.team?.id ?? "", name: user.team?.name ?? ""};
+    if (mode !== Mode.CREATE && !user)
+      this.toggleShowMessages('An unexpected error occurred. Unable to display user details.');
 
-    this.id?.disable();
+    const isTeamRole = isTmOrPm(user?.role ?? '') ?? false;
 
-    if (!this.formHelper.isSubmittable(this.singleAction)) {
-      Object.keys(this.form.controls).forEach(key => {
-        this.form.controls[key].disable();
-      })
-    }
+    this.chosenTeam = isTeamRole
+      ? { id: user?.team?.id ?? '', name: user?.team?.name ?? '' }
+      : { id: '', name: '' };
+
+    if (mode === Mode.EDIT)
+      this.id?.disable();
+
+    if (!this.formHelper.isSubmittable(this.singleAction))
+      this.form.disable();
+
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
+
+  protected readonly getRoleName = getRoleName;
+  protected readonly VALID_ROLES = VALID_ROLES;
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
+  }
+
+  protected readonly Mode = Mode;
 }

@@ -15,6 +15,7 @@ import {EntityManagement} from '../../interfaces/entity-management.interface';
 import {Team} from '../../interfaces/team.interface';
 import {BaseTableData} from '../../interfaces/base-table-data.interface';
 import {NgClass} from '@angular/common';
+import {Mode} from '../../models/modes.enum';
 
 @Component({
   selector: 'app-team-management',
@@ -83,12 +84,12 @@ export class TeamManagementComponent extends EntityManagement {
     if (this.form.invalid)
       return;
 
-    if (this.singleAction.action === -1) {
+    if (this.singleAction.action === Mode.CREATE) {
       this.createTeam();
       return;
     }
 
-    if (this.singleAction.action === 2) {
+    if (this.singleAction.action === Mode.EDIT) {
       this.editTeam();
       return;
     }
@@ -132,7 +133,7 @@ export class TeamManagementComponent extends EntityManagement {
 
   setTeamName(event: { entity: BaseTableData | null, action: number }) {
     this.setSingleAction(event);
-    if (this.singleAction.action === -1)
+    if (this.singleAction.action === Mode.CREATE)
       return;
 
     let teamName = "";

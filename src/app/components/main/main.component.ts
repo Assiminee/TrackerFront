@@ -1,7 +1,9 @@
-import {Component, OnInit, signal, WritableSignal} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {isAdmin, isTmOrPm, Role} from "../../models/roles.enum";
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -13,10 +15,11 @@ import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
   standalone: true,
   styleUrl: './main.component.css'
 })
-export class MainComponent {
+export class MainComponent implements OnDestroy {
   initials: string = "";
   role: string = "";
   searchText: FormControl = new FormControl('');
+  subscription!: Subscription;
 
   constructor(protected auth: AuthService, protected router: Router, private route: ActivatedRoute) {
     const user = this.auth.loggedInUser();
@@ -29,7 +32,7 @@ export class MainComponent {
     this.initials = user.lastName.charAt(0).toUpperCase() + user.firstName.charAt(0).toUpperCase();
     this.role = user.role;
 
-    this.route.queryParams.subscribe(params => {
+    this.subscription = this.route.queryParams.subscribe(params => {
       const searchText = (params['searchText'] ?? "").trim();
 
       if (searchText !== this.searchText.value)
@@ -49,5 +52,14 @@ export class MainComponent {
       queryParamsHandling: 'merge',
       replaceUrl: true
     });
+  }
+
+  protected readonly Role = Role;
+  protected readonly isAdmin = isAdmin;
+  protected readonly isTmOrPm = isTmOrPm;
+
+  ngOnDestroy(): void {
+    if (this.subscription)
+      this.subscription.unsubscribe();
   }
 }

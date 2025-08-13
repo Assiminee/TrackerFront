@@ -5,6 +5,7 @@ import {FormHelperService} from '../services/form-helper.service';
 import {FormGroup} from '@angular/forms';
 import {TeamService} from '../services/team.service';
 import {BaseTableData} from './base-table-data.interface';
+import {SingleActionWithEntity} from '../models/single-action.type';
 
 interface EntityManagementInterface {
   thead: WritableSignal<DataTableColumn[]>;
@@ -31,16 +32,7 @@ export class EntityManagement implements EntityManagementInterface {
   constructor(protected router: Router, protected route: ActivatedRoute,  protected teamService: TeamService, protected formHelper: FormHelperService) {}
 
   afterSubmit(msg: string, queryParams: object, success: boolean = false): void {
-    this.success = success;
-    this.msg = msg;
-
-    setTimeout(() => {
-      this.showSuccess = false;
-      this.showFailed = false;
-    }, 4000);
-
-    this.showSuccess = success;
-    this.showFailed = !success;
+    this.toggleShowMessages(msg, success);
 
     if (Object.keys(queryParams).length > 0) {
       this.router.navigate([], {
@@ -52,7 +44,20 @@ export class EntityManagement implements EntityManagementInterface {
     }
   }
 
-  setSingleAction(event: { entity: BaseTableData | null, action: number }) {
+  toggleShowMessages(msg: string, success: boolean = false): void {
+    this.success = success;
+    this.msg = msg;
+
+    setTimeout(() => {
+      this.showSuccess = false;
+      this.showFailed = false;
+    }, 6000);
+
+    this.showSuccess = success;
+    this.showFailed = !success;
+  }
+
+  setSingleAction(event: SingleActionWithEntity) {
     this.singleAction = event;
     console.log("Single action: ", this.singleAction)
   }

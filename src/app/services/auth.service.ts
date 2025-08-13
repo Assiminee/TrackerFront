@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Subscription, tap} from 'rxjs';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Observable, Subscription, tap} from 'rxjs';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {LoginResponse} from '../interfaces/login-response.interface';
 import {JwtDecoderService} from './jwt-decoder.service';
 import {Router} from '@angular/router';
@@ -34,7 +34,16 @@ export class AuthService {
         },
         error: (error: HttpErrorResponse) => {
           console.error("Failed to login: ", error);
-          setSuccess(false, (error.status >= 400 && error.status < 500)  ? "Invalid login credentials" : "Failed to login. Please try again later.");
+          let message = '';
+
+          if (error.status === 401)
+            message = 'Invalid login credentials';
+          else if (error.status === 403)
+            message = 'Your email must be verified before you attempt to login';
+          else
+            message = 'Failed to login. Please try again later';
+
+          setSuccess(false, message);
         }
     })
   }
@@ -59,5 +68,16 @@ export class AuthService {
 
   logout() : void {
     localStorage.removeItem("jwt");
+  }
+
+  activateAccount(email: string, password: string, confirmPassword: string, token: string) {
+    return this.client.post(this.BASE_URL + "/confirm", {email, newPassword: password, confirmPassword, token});
+  }
+
+  requestActivationEmail(email: string) {
+    let params = new HttpParams();
+
+    params = params.set('email', email);
+    return this.client.post(this.BASE_URL + "/resend-token", null, {params: params});
   }
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, Signal, WritableSignal} from '@angular/core';
+import {Component, OnInit, signal, WritableSignal} from '@angular/core';
 import {MainComponent} from '../main/main.component';
 import {ReportData} from '../../interfaces/report-data.interface';
 import {DataManagementComponent} from '../data-management/data-management.component';

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {EntityService, PagedResponse} from '../interfaces/entity-service.interface';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {DataTableColumn} from '../interfaces/data-table-column.interface';
 import {Observable, of, from, mergeMap, catchError, toArray} from 'rxjs';
 import {BaseTableData} from '../interfaces/base-table-data.interface';

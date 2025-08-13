@@ -7,7 +7,8 @@ import {TableDisplayService} from '../../services/table-display.service';
   selector: 'app-preview',
   imports: [TableComponent],
   templateUrl: './preview.component.html',
-  styleUrl: './preview.component.css'
+  styleUrl: './preview.component.css',
+  standalone: true
 })
 export class PreviewComponent implements OnInit {
   @Input() table: Table = {

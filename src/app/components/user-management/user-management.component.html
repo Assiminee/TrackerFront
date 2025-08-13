@@ -26,7 +26,7 @@
           </g>
         </svg>
       </div>
-      <h3 id="dialog-title" class="text-2xl text-gray-900">Create new user</h3>
+      <h3 id="dialog-title" class="text-2xl text-gray-900">{{ mode }} new user</h3>
     </div>
     <app-alert [msg]="msg" [showMsg]="showFailed" [success]="success"/>
     <div class="pt-5 text-center sm:mt-0 sm:text-left overflow-auto p-5">
@@ -36,9 +36,10 @@
           <div class="flex flex-col w-full">
             <label class="text-lg p-2">ID <span class="text-red-500 font-bold">*</span></label>
             <input type="text"
-                   class="customInput rounded-xl"
+                   class="rounded-xl"
                    placeholder="X75DHN2W"
                    formControlName="id"
+                   [ngClass]="id?.disabled ? 'disabledCustomInput' : 'customInput'"
             />
             <div class="pt-5 text-red-400 transition-all opacity-0"
                  [class.opacity-100]="formHelper.isInvalid(id)">
@@ -54,6 +55,7 @@
                      class="customInput rounded-l-xl"
                      placeholder="John"
                      formControlName="firstName"
+                     [ngClass]="firstName?.disabled ? 'disabledCustomInput' : 'customInput'"
               />
             </div>
 
@@ -63,6 +65,7 @@
                      class="customInput rounded-r-xl"
                      placeholder="wick"
                      formControlName="lastName"
+                     [ngClass]="lastName?.disabled ? 'disabledCustomInput' : 'customInput'"
               />
             </div>
           </div>
@@ -78,6 +81,7 @@
                    class="customInput rounded-xl"
                    placeholder="john.wick@huawei.com"
                    formControlName="email"
+                   [ngClass]="email?.disabled ? 'disabledCustomInput' : 'customInput'"
             />
             <div class="pt-5 pl-2 text-red-400 transition-all opacity-0"
                  [class.opacity-100]="formHelper.isInvalid(email)">
@@ -92,6 +96,7 @@
                    class="customInput rounded-xl"
                    placeholder="(+XXX) X XX XX XX XX"
                    formControlName="phoneNumber"
+                   [ngClass]="phoneNumber?.disabled ? 'disabledCustomInput' : 'customInput'"
             />
             <div class="pt-5 pl-2 text-red-400 transition-all opacity-0"
                  [class.opacity-100]="formHelper.isInvalid(phoneNumber)">
@@ -102,10 +107,12 @@
         <div class="flex justify-center items-center w-full">
           <div class="flex flex-col w-full">
             <label class="text-lg p-2">Role <span class="text-red-500 font-bold">*</span></label>
-            <select class="customInput rounded-xl" formControlName="role" (change)="toggleShowTeams()">
+            <select class="customInput rounded-xl" formControlName="role" (change)="toggleShowTeams()"
+                    [ngClass]="role?.disabled ? 'disabledCustomInput' : 'customInput'"
+            >
               <option value="" class="opacity-100">Choose a role</option>
-              @for (option of roleOptions; track option.value) {
-                <option [value]="option.value" class="opacity-100">{{ option.name }}</option>
+              @for (option of VALID_ROLES; track option) {
+                <option [value]="option" class="opacity-100">{{ getRoleName(option) }}</option>
               }
             </select>
             <div class="pt-5 pl-2 text-red-400 transition-all opacity-0"
@@ -124,49 +131,52 @@
                      class="customInput placeholder-black rounded-t-xl text-start"
                      readonly
                      [placeholder]="chosenTeamName"
+                     [ngClass]="team?.disabled ? 'disabledCustomInput' : 'customInput'"
               />
-              <div class="customInput rounded-b-xl p-3">
-                <input type="text" class="customInput rounded-xl p-3" placeholder="Search..."
-                       [formControl]="searchTeam"
-                />
-                <div
-                  class="flex p-2 gap-2 opacity-0 h-0 transformations text-center text-wrap justify-center items-center"
-                  [ngClass]="{'opacity-100': error !== null, 'h-full': error !== null}">
-                  <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
-                       stroke="#ff0000" stroke-width="0.00024000000000000003"
-                       class="animate-pulse" width="26" height="26"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                       stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M7.91 3.23 3.23 7.913v-.01a.81.81 0 0 0-.23.57v7.054c0 .22.08.42.23.57L7.9 20.77c.15.15.36.23.57.23h7.06c.22 0 .42-.08.57-.23l4.67-4.673a.81.81 0 0 0 .23-.57V8.473c0-.22-.08-.42-.23-.57L16.1 3.23a.81.81 0 0 0-.57-.23H8.48c-.22 0-.42.08-.57.23ZM12 7a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1Zm-1 9a1 1 0 0 1 1-1h.008a1 1 0 1 1 0 2H12a1 1 0 0 1-1-1Z"
-                            fill="#ff0000"></path>
-                    </g>
-                  </svg>
-                  {{ this.error ?? '' }}
+              @if (singleAction.action !== Mode.VIEW) {
+                <div class="customInput rounded-b-xl p-3">
+                  <input type="text" class="customInput rounded-xl p-3" placeholder="Search..."
+                         [formControl]="searchTeam"
+                  />
+                  <div
+                    class="flex p-2 gap-2 opacity-0 h-0 transformations text-center text-wrap justify-center items-center"
+                    [ngClass]="{'opacity-100': error !== null, 'h-full': error !== null}">
+                    <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
+                         stroke="#ff0000" stroke-width="0.00024000000000000003"
+                         class="animate-pulse" width="26" height="26"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                         stroke-linejoin="round"></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M7.91 3.23 3.23 7.913v-.01a.81.81 0 0 0-.23.57v7.054c0 .22.08.42.23.57L7.9 20.77c.15.15.36.23.57.23h7.06c.22 0 .42-.08.57-.23l4.67-4.673a.81.81 0 0 0 .23-.57V8.473c0-.22-.08-.42-.23-.57L16.1 3.23a.81.81 0 0 0-.57-.23H8.48c-.22 0-.42.08-.57.23ZM12 7a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1Zm-1 9a1 1 0 0 1 1-1h.008a1 1 0 1 1 0 2H12a1 1 0 0 1-1-1Z"
+                              fill="#ff0000"></path>
+                      </g>
+                    </svg>
+                    {{ this.error ?? '' }}
+                  </div>
+                  <div class="max-h-[20vh] flex flex-col overflow-auto"
+                       infinite-scroll
+                       [infiniteScrollDistance]="2"
+                       [infiniteScrollThrottle]="700"
+                       (scrolled)="onScroll()"
+                       [scrollWindow]="false">
+                    @for (team of teams; track team.id) {
+                      <button type="button" class="hover:bg-gray-200 p-2 px-3 rounded-xl text-start"
+                              (click)="setChosenTeam(team.id, team.name)">{{ team.name }}
+                      </button>
+                    }
+                    @if (isLoading) {
+                      <p>Loading...</p>
+                    }
+                  </div>
                 </div>
-                <div class="max-h-[20vh] flex flex-col overflow-auto"
-                     infinite-scroll
-                     [infiniteScrollDistance]="2"
-                     [infiniteScrollThrottle]="700"
-                     (scrolled)="onScroll()"
-                     [scrollWindow]="false">
-                  @for (team of teams; track team.id) {
-                    <button type="button" class="hover:bg-gray-200 p-2 px-3 rounded-xl text-start"
-                            (click)="setChosenTeam(team.id, team.name)">{{ team.name }}
-                    </button>
-                  }
-                  @if (isLoading) {
-                    <p>Loading...</p>
-                  }
+                <div class="pt-5 pl-2 text-red-400 transition-all opacity-0"
+                     [class.opacity-100]="formHelper.isInvalid(team)">
+                  <p>{{ (form.invalid && team?.hasError('required')) ? 'A team must be selected' : '' }}</p>
                 </div>
-              </div>
-              <div class="pt-5 pl-2 text-red-400 transition-all opacity-0"
-                   [class.opacity-100]="formHelper.isInvalid(team)">
-                <p>{{ (form.invalid && team?.hasError('required')) ? 'A team must be selected' : '' }}</p>
-              </div>
+              }
             </div>
           </div>
         }

@@ -1,25 +1,36 @@
+/* styles.css / global.scss */
+/*@import "@ionic/angular/css/core.css";*/
+/*!*@import "@ionic/angular/css/normalize.css";*!*/
+/*@import "@ionic/angular/css/structure.css";*/
+/*@import "@ionic/angular/css/typography.css";*/
+
+/* optional helpers */
+/*@import "@ionic/angular/css/display.css";*/
+
 @import "tailwindcss";
+
+@source "./src/**/*.{html,ts}";
 
 @layer components {
   .sideBar {
     @apply
-    /* Display */
+      /* Display */
     flex
     flex-col
 
-    /* Sizing */
+      /* Sizing */
     h-full
     w-1/12
 
-    /* Positioning */
+      /* Positioning */
     justify-center
     items-center
 
-    /* Styling */
+      /* Styling */
     shadow-xl
     bg-red-800
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
@@ -27,21 +38,21 @@
 
   .sandwich {
     @apply
-    /* Display */
+      /* Display */
     flex
     opacity-100
 
-    /* Positioning */
+      /* Positioning */
     pt-10
     justify-center
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
   }
 
-  @media (min-height:400px) and (min-width:640px) {
+  @media (min-height: 400px) and (min-width: 640px) {
     .sandwich {
       @apply
       opacity-0
@@ -51,32 +62,32 @@
 
   .initials {
     @apply
-    /* Display */
+      /* Display */
     flex
     opacity-100
 
-    /* Sizing */
+      /* Sizing */
     h-1/10
     w-1/2
 
-    /* Positioning */
+      /* Positioning */
     justify-center
     items-center
 
-    /* Styling */
+      /* Styling */
     bg-white
     shadow-2xl
     shadow-black
     rounded-lg
     font-semibold
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
   }
 
-  @media (max-height:400px), (max-width:640px) {
+  @media (max-height: 400px), (max-width: 640px) {
     .initials {
       @apply
       opacity-0
@@ -85,20 +96,20 @@
 
   .anchorContainer {
     @apply
-    /* Display */
+      /* Display */
     flex
     flex-col
     gap-5
     opacity-100
 
-    /* Sizing */
+      /* Sizing */
     h-full
 
-    /* Positioning */
+      /* Positioning */
     justify-center
     items-center
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
@@ -113,25 +124,25 @@
 
   .anchor {
     @apply
-    /* Display */
+      /* Display */
     flex
     flex-col
     gap-2
 
-    /* Positioning */
+      /* Positioning */
     justify-center
     items-center
   }
 
   .anchorImg {
     @apply
-    /* Sizing */
+      /* Sizing */
     w-5
     h-5
     md:w-7
     md:h-7
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
@@ -139,10 +150,10 @@
 
   .anchorText {
     @apply
-    /* Positioning */
+      /* Positioning */
     px-2
 
-    /* Styling */
+      /* Styling */
     rounded-2xl
     bg-transparent
     text-white
@@ -150,7 +161,7 @@
     md:text-black
     sm:text-xs
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
@@ -158,25 +169,25 @@
 
   .logoutBtn {
     @apply
-    /* Display */
+      /* Display */
     flex
     flex-col
     gap-2
     opacity-100
 
 
-    /* Positioning */
+      /* Positioning */
     justify-center
     items-center
     pb-5
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
   }
 
-  @media (max-height:400px), (max-width:640px) {
+  @media (max-height: 400px), (max-width: 640px) {
     .logoutBtn {
       @apply
       opacity-0
@@ -185,26 +196,26 @@
 
   .navbar {
     @apply
-    /* Display */
+      /* Display */
     flex
     h-1/12
 
-    /* Positioning */
+      /* Positioning */
     justify-between
     items-center
     px-8
 
-    /* Styling */
+      /* Styling */
     shadow-xl
     bg-white
 
-    /* Animation */
+      /* Animation */
     transition-all
     duration-500
     ease-in-out
   }
 
-  @media (max-height:620px) {
+  @media (max-height: 620px) {
     .navbar {
       @apply
       h-1/6
@@ -221,7 +232,7 @@
     sm:p-10
   }
 
-  @media (max-height:620px) {
+  @media (max-height: 620px) {
     .main {
       @apply
       h-5/6
@@ -229,6 +240,10 @@
   }
 
   .clip-diagonal {
+    clip-path: polygon(0 0, 100% 0, 100% 30%, 0% 50%);
+  }
+
+  .clip-diagonal2 {
     clip-path: polygon(0 0, 100% 0, 100% 30%, 0% 60%);
   }
 
@@ -303,16 +318,36 @@
     focus:shadow-gray-500/10
     placeholder-gray-400
   }
+
+  .disabledCustomInput {
+    @apply
+    w-full
+    p-5
+    shadow-xl
+    shadow-gray-400/10
+    bg-gray-200
+    ring-2
+    ring-gray-400/25
+    outline-none
+    placeholder-gray-500
+  }
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 .mdc-checkbox__background {
   border-radius: 4px !important;
   box-shadow: 2px 2px !important;
 }
 
-.mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background, .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
+.mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background, .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background {
   background-color: oklch(44.4% 0.177 26.899) !important;
   border-color: oklch(44.4% 0.177 26.899) !important;
 }

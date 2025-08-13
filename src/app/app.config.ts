@@ -8,11 +8,13 @@ import {
   HTTP_INTERCEPTORS
 } from '@angular/common/http';
 import {AuthInterceptor} from './core/auth.interceptor';
+// import {provideIonicAngular} from '@ionic/angular/standalone';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
+    // provideIonicAngular(),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     {
