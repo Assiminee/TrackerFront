@@ -2,7 +2,7 @@ import {
   Component, ContentChild,
   effect, EventEmitter,
   HostListener,
-  Input, OnChanges,
+  Input, OnChanges, OnDestroy,
   OnInit, Output,
   signal, SimpleChanges,
   WritableSignal
@@ -18,6 +18,8 @@ import {NgClass} from '@angular/common';
 import {FormGroupDirective} from '@angular/forms';
 import {Mode} from '../../models/modes.enum';
 import {SingleActionWithEntity, SingleActionWithId} from '../../models/single-action.type';
+import {AuthService} from '../../services/auth.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'app-data-management',
@@ -31,7 +33,7 @@ import {SingleActionWithEntity, SingleActionWithId} from '../../models/single-ac
   standalone: true,
   styleUrl: './data-management.component.css'
 })
-export class DataManagementComponent implements OnInit, OnChanges {
+export class DataManagementComponent implements OnInit, OnChanges, OnDestroy {
   // Reference to the form in ng-content
   @ContentChild(FormGroupDirective, {static: true}) modalFormDir!: FormGroupDirective;
 
@@ -50,7 +52,8 @@ export class DataManagementComponent implements OnInit, OnChanges {
   // Responsible for showing a message after an API is called
   @Input() success!: boolean;
   @Input() showSuccess!: boolean;
-  @Input() msg!: string;
+  @Input() p1!: string;
+  @Input() p2!: string;
 
   // Responsible for informing the parent element of what action is being performed on the data
   // entity: an instance of BaseTableData (Team, User, or Report) containing the actual entity
@@ -99,8 +102,9 @@ export class DataManagementComponent implements OnInit, OnChanges {
   // Formatted data of the entities selected for deletion
   // to be displayed in a table
   formattedDataToDelete: { [key: string]: string }[] = [];
+  destroy: Subject<void> = new Subject();
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService) {
     this.setQueryParamsFromSignal();
   }
 
@@ -122,44 +126,45 @@ export class DataManagementComponent implements OnInit, OnChanges {
       this.thead(),
       this.searchText(),
       this.currentPage() <= 0 ? 0 : this.currentPage() - 1,
-    ).subscribe({
-      next: (data) => {
-        if (!this.entityService.isValidResponse(data)) {
-          this.setData(1, 0, []);
-          return;
-        }
+    ).pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: (data) => {
+          if (!this.entityService.isValidResponse(data)) {
+            this.setData(1, 0, []);
+            return;
+          }
 
-        this.setData(data.totalPages < 1 ? 1 : data.totalPages, data.totalElements, data.content as BaseTableData[]);
-        console.log(this.data);
-      },
-      error: (err) => {
-        console.log(err);
-        this.setData(1, 0, []);
-      }
-    });
+          this.setData(data.totalPages < 1 ? 1 : data.totalPages, data.totalElements, data.content as BaseTableData[]);
+        },
+        error: (err) => {
+          this.setData(1, 0, []);
+        }
+      });
   }
 
   updateSignalFromURL() {
-    this.route.queryParams.subscribe(params => {
-      let pageNumber = params['page'];
-      let searchText = params['searchText'] ?? "";
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy))
+      .subscribe(params => {
+        let pageNumber = params['page'];
+        let searchText = params['searchText'] ?? "";
 
-      pageNumber = pageNumber !== undefined ? parseInt(pageNumber, 10) || 1 : 1;
-      pageNumber = pageNumber < 1 ? 1 : pageNumber;
+        pageNumber = pageNumber !== undefined ? parseInt(pageNumber, 10) || 1 : 1;
+        pageNumber = pageNumber < 1 ? 1 : pageNumber;
 
-      if (pageNumber !== this.currentPage())
-        this.currentPage.set(pageNumber);
+        if (pageNumber !== this.currentPage())
+          this.currentPage.set(pageNumber);
 
-      if (searchText.trim() !== this.searchText())
-        this.searchText.set(searchText);
+        if (searchText.trim() !== this.searchText())
+          this.searchText.set(searchText);
 
-      const cols = this.updateSignal(params);
+        const cols = this.updateSignal(params);
 
-      if (cols === null)
-        return;
+        if (cols === null)
+          return;
 
-      this.thead.set(cols);
-    });
+        this.thead.set(cols);
+      });
   }
 
   changeQueryParams() {
@@ -302,17 +307,27 @@ export class DataManagementComponent implements OnInit, OnChanges {
   }
 
   toggleDeletion(deleteEntities: boolean) {
+    const p1 = 'Unable to perform a delete operation';
+
     if (this.deleteIds.length === 0) {
-      this.afterOperation(`No ${this.entity}s have been selected`);
+      this.afterOperation(p1, `No ${this.entity}s have been selected`);
       return;
+    }
+
+    if (this.entity === 'user') {
+      const loggedInUser = this.authService.loggedInUser();
+      const user = this.deleteIds.find(id => id === loggedInUser?.sub);
+
+      if (user) {
+        this.afterOperation(p1, `You've selected your own account for deletion. That action forbidden.`);
+        return;
+      }
     }
 
     const entities = this.data.filter(entity => this.deleteIds.includes(entity.id));
 
-    console.log(entities);
-    console.log(this.entityService.entitiesDeletable(entities))
     if (!this.entityService.entitiesDeletable(entities)) {
-      this.afterOperation(`Some of the ${this.entity}s selected for deletion have already been deleted`);
+      this.afterOperation(p1, `Some of the ${this.entity}s selected for deletion have already been deleted`);
       return;
     }
 
@@ -320,8 +335,6 @@ export class DataManagementComponent implements OnInit, OnChanges {
     this.formattedDataToDelete = this.entityService.formatForDelete(this.data, this.deleteIds)
     this.deleteOp = deleteEntities;
     this.showWarning = true;
-
-    console.log('ids to delete in parent component', this.deleteIds);
   }
 
   getDeletionTh() {
@@ -334,15 +347,16 @@ export class DataManagementComponent implements OnInit, OnChanges {
   deleteEntities() {
     const params = {forceDelete: 'true', mode: 'deactivate'};
 
-    this.entityService.deleteEntries(this.deleteIds, params).subscribe({
-      next: resp => {
-        this.afterOperation("The delete operation was a success", true);
-      },
-      error: err => {
-        console.log("Error:", err);
-        this.afterOperation("An error occurred while deleting the selected " + this.entity + "(s). Please try again later");
-      }
-    })
+    this.entityService.deleteEntries(this.deleteIds, params)
+      .pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: resp => {
+          this.afterOperation("The delete operation was a success", `The selected ${this.entity}(s) have been deleted successfully`, true);
+        },
+        error: err => {
+          this.afterOperation('', `An error occurred while deleting the selected ${this.entity}(s). Please try again later`);
+        }
+      })
   }
 
   dismissWarning(show: boolean) {
@@ -351,14 +365,12 @@ export class DataManagementComponent implements OnInit, OnChanges {
 
   performSingleAction(event: SingleActionWithId) {
     this.singleAction = event;
-    console.log(this.singleAction);
 
     const entity = this.data.find(entry => entry.id === this.singleAction?.id);
 
     if (!entity || !this.singleAction)
       return;
 
-    console.log(entity);
     if (this.singleAction.action === Mode.DELETE) {
       if (this.singleAction?.id === null)
         return;
@@ -372,9 +384,10 @@ export class DataManagementComponent implements OnInit, OnChanges {
     this.show = true;
   }
 
-  afterOperation(msg: string, success: boolean = false): void {
+  afterOperation(p1: string, p2: string, success: boolean = false): void {
     this.success = success;
-    this.msg = msg;
+    this.p1 = p1;
+    this.p2 = p2;
     this.dismiss();
 
     setTimeout(() => {
@@ -389,5 +402,24 @@ export class DataManagementComponent implements OnInit, OnChanges {
 
   isSubmittable() {
     return this.singleAction && this.singleAction.action !== Mode.VIEW
+  }
+
+  patchEntity = (entity: BaseTableData) => {
+    const entry = this.data.find(entry => entry.id.toUpperCase() === entity.id.toUpperCase())
+
+    if (!entry)
+      return;
+
+    const index = this.data.indexOf(entry);
+
+    if (index === -1)
+      return;
+
+    this.data[index] = entity;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

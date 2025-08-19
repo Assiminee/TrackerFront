@@ -3,12 +3,14 @@
   [entity]="entity"
   [subTitle]="'Manage teams'"
   [entityService]="teamService"
-  [showSuccess]="showSuccess"
-  [msg]="msg"
+  [showSuccess]="showOuter"
+  [success]="success"
+  [p1]="p1"
+  [p2]="p2"
   (singleActionEmitter)="setTeamName($event)"
 >
   <div ngProjectAs="entityForm" class="flex flex-col max-h-[60vh]">
-    <div class="relative flex items-center gap-5" [class.pb-5]="showFailed">
+    <div class="relative flex items-center gap-5" [class.pb-5]="showInner">
       <div
         class="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
         <svg viewBox="-5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +30,12 @@
       </div>
       <h3 id="dialog-title" class="text-2xl text-gray-900">Create a new Team</h3>
     </div>
-    <app-alert [msg]="msg" [showMsg]="showFailed" [success]="success"/>
+    <app-alert
+      [p1]="p1"
+      [p2]="p2"
+      [showMsg]="showInner"
+      [success]="success"
+    />
     <div class="pt-5 text-center sm:mt-0 sm:text-left overflow-auto p-5 pb-0">
       <form class="flex flex-col gap-3" [formGroup]="form" id="modalForm" (ngSubmit)="onSubmit()" #modalForm="ngForm">
         <div class="flex justify-center items-center w-full">
@@ -55,7 +62,7 @@
       </form>
     </div>
   </div>
-  <div ngProjectAs="notice">
+  <div ngProjectAs="notice" class="overflow-y-auto max-h-[40vh]">
     <p class="font-semibold">You’re about to delete one or more teams. Please review carefully before proceeding:</p>
     <ul class="list-decimal flex flex-col gap-2 p-5">
       <li>

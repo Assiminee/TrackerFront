@@ -1,15 +1,18 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, Input, OnDestroy} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {isAdmin, isTmOrPm, Role} from "../../models/roles.enum";
 import {Subscription} from 'rxjs';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'app-main',
   imports: [
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink,
+    NgClass
   ],
   templateUrl: './main.component.html',
   standalone: true,
@@ -20,6 +23,7 @@ export class MainComponent implements OnDestroy {
   role: string = "";
   searchText: FormControl = new FormControl('');
   subscription!: Subscription;
+  @Input() padding: boolean = true;
 
   constructor(protected auth: AuthService, protected router: Router, private route: ActivatedRoute) {
     const user = this.auth.loggedInUser();

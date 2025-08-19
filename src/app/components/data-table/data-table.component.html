@@ -47,9 +47,9 @@
         @for (key of keys; track key) {
           <td class="py-3 px-5 justify-center">
             @if (isBadge(key)) {
-              <span class="badge text-nowrap" [ngClass]="getCustomCssClass(key, entry)">{{ getEntryValue(entry, key) }}</span>
-            }
-            @else {
+              <span class="badge text-nowrap"
+                    [ngClass]="getCustomCssClass(key, entry)">{{ getEntryValue(entry, key) }}</span>
+            } @else {
               <p class="text-sm sm:text-lg">{{ getEntryValue(entry, key) }}</p>
             }
           </td>
@@ -81,7 +81,8 @@
   <div
     (click)="$event.stopPropagation()"
     class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100">
-    <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center"
+         (click)="emitId(entryId, 1)">
       <svg fill="#000000" viewBox="-3.5 0 32 32" class="w-7 h-7" version="1.1"
            xmlns="http://www.w3.org/2000/svg">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -91,10 +92,12 @@
             d="M12.406 13.844c1.188 0 2.156 0.969 2.156 2.156s-0.969 2.125-2.156 2.125-2.125-0.938-2.125-2.125 0.938-2.156 2.125-2.156zM12.406 8.531c7.063 0 12.156 6.625 12.156 6.625 0.344 0.438 0.344 1.219 0 1.656 0 0-5.094 6.625-12.156 6.625s-12.156-6.625-12.156-6.625c-0.344-0.438-0.344-1.219 0-1.656 0 0 5.094-6.625 12.156-6.625zM12.406 21.344c2.938 0 5.344-2.406 5.344-5.344s-2.406-5.344-5.344-5.344-5.344 2.406-5.344 5.344 2.406 5.344 5.344 5.344z"></path>
         </g>
       </svg>
-      <button (click)="emitId(entryId, 1)">View</button>
+      View
     </div>
-    <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 w-6">
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center"
+         (click)="emitId(entryId, 2)"
+    >
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
         <g id="SVGRepo_iconCarrier">
@@ -104,10 +107,11 @@
             stroke-linejoin="round"></path>
         </g>
       </svg>
-      <button (click)="emitId(entryId, 2)">Edit</button>
+      Edit
     </div>
     @if (showDownloadOption) {
-      <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center">
+      <div class="border-b border-gray-200 p-2 hover:bg-gray-100 flex gap-2 items-center"
+           (click)="emitId(entryId, 3)">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -117,10 +121,10 @@
               fill="#000000"></path>
           </g>
         </svg>
-        <button (click)="emitId(entryId, 3)">Download</button>
+        Download
       </div>
     }
-    <div class="p-2 hover:bg-gray-100 flex gap-2 items-center">
+    <div class="p-2 hover:bg-gray-100 flex gap-2 items-center text-red-400" (click)="emitId(entryId, 0)">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ff0000"
            class="w-6 h-6">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -140,7 +144,7 @@
             stroke="#ff0000" stroke-width="1.5" stroke-linecap="round"></path>
         </g>
       </svg>
-      <button class="text-red-400" (click)="emitId(entryId, 0)">Delete</button>
+      Delete
     </div>
   </div>
 </ng-template>
@@ -149,14 +153,20 @@
   <div
     (click)="$event.stopPropagation()"
     class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100">
-    <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center">
-      <button (click)="setFilter(null, 'deleted')">All</button>
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center"
+         (click)="setFilter(null, 'deleted')"
+    >
+      <button>All</button>
     </div>
-    <div class="border-b border-gray-200 p-2 hover:bg-green-100 flex gap-2 items-center">
-      <button class="text-green-600" (click)="setFilter(false, 'deleted')">Active</button>
+    <div class="border-b border-gray-200 p-2 hover:bg-green-100 flex gap-2 items-center"
+         (click)="setFilter(false, 'deleted')"
+    >
+      <button class="text-green-600">Active</button>
     </div>
-    <div class="p-2 hover:bg-red-100 flex gap-2 items-center">
-      <button class="text-red-600" (click)="setFilter(true, 'deleted')">Deleted</button>
+    <div class="p-2 hover:bg-red-100 flex gap-2 items-center"
+         (click)="setFilter(true, 'deleted')"
+    >
+      <button class="text-red-600">Deleted</button>
     </div>
   </div>
 </ng-template>
@@ -165,17 +175,27 @@
   <div
     (click)="$event.stopPropagation()"
     class="rounded-lg shadow-xl bg-gray-50 border border-gray-200 absolute top-8 right-0 z-100 text-center">
-    <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center justify-center">
-      <button (click)="setFilter(null, 'role')">All</button>
+    <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center justify-center"
+         (click)="setFilter(null, 'role')"
+    >
+      <button>All</button>
     </div>
-    <div class="border-b border-gray-200 p-2 px-4 hover:bg-blue-100 text-blue-600 flex gap-2 items-center justify-center">
-      <button class="text-center" (click)="setFilter(Role.ProjectManager, 'role')">Project Manager</button>
+    <div
+      class="border-b border-gray-200 p-2 px-4 hover:bg-blue-100 text-blue-600 flex gap-2 items-center justify-center"
+      (click)="setFilter(Role.ProjectManager, 'role')"
+    >
+      <button class="text-center">Project Manager</button>
     </div>
-    <div class="border-b border-gray-200 p-2 px-4 hover:bg-orange-100 text-orange-600 flex gap-2 items-center justify-center">
-      <button class="text-center" (click)="setFilter(Role.TeamMember, 'role')">Team Member</button>
+    <div
+      class="border-b border-gray-200 p-2 px-4 hover:bg-orange-100 text-orange-600 flex gap-2 items-center justify-center"
+      (click)="setFilter(Role.TeamMember, 'role')"
+    >
+      <button class="text-center">Team Member</button>
     </div>
-    <div class="p-2 px-4 hover:bg-purple-100 text-purple-600 flex gap-2 items-center justify-center">
-      <button class="text-center" (click)="setFilter(Role.Admin, 'role')">Administrator</button>
+    <div class="p-2 px-4 hover:bg-purple-100 text-purple-600 flex gap-2 items-center justify-center"
+         (click)="setFilter(Role.Admin, 'role')"
+    >
+      <button class="text-center">Administrator</button>
     </div>
   </div>
 </ng-template>

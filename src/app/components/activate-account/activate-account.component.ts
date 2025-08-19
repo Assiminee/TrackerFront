@@ -54,8 +54,6 @@ export class ActivateAccountComponent {
       this.email = params['email'];
       this.token = params['token'];
 
-      console.log(this.token);
-      console.log(this.email);
       if (!this.isValidParams()) {
         this.success = false;
         this.password.disable();

@@ -34,7 +34,6 @@ export class ListHeaderComponent {
   }
 
   deleteAll() {
-    console.log('clicked outer delete button')
     this.deleteSelectedEvent.emit(true);
   }
 

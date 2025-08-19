@@ -10,7 +10,7 @@
   (openModal)="showModal($event)"
 />
 <div class="flex flex-col w-full bg-white shadow-xl/15 shadow-red-800 rounded-3xl">
-  <app-alert [success]="success" [showMsg]="showSuccess" [msg]="msg"/>
+  <app-alert [success]="success" [showMsg]="showSuccess" [p1]="p1" [p2]="p2"/>
   <div class="overflow-auto">
     <app-data-table
       [data]="data" [thead]="thead"
@@ -54,11 +54,13 @@
         (click)="$event.stopPropagation()"
       >
         <div class="relative bg-white max-h-[70vh] px-4 pt-5 pb-4 sm:p-8 rounded-2xl">
-          <button type="button" class="absolute right-4 top-4" (click)="dismiss()">
-            <img src="/close.png" class="w-3 h-3"/>
-          </button>
+          <div class="relative w-full h-[2vh] p-0">
+            <button type="button" class="absolute right-0 top-0" (click)="dismiss()">
+              <img src="/close.png" class="w-3 h-3"/>
+            </button>
+          </div>
           @if (deleteOp) {
-            <div class="flex justify-center items-center pb-5 gap-3">
+            <div class="flex justify-center items-center pt-2 gap-3">
               <div class="relative border-1 border-red-300 bg-red-50 text-red-700 rounded-xl p-5 text-justify"
                    [ngClass]="{'block': showWarning, 'hidden': !showWarning}">
                 <div class="flex items-center gap-3 animate-pulse justify-center pb-5">

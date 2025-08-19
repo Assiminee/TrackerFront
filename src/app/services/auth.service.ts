@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {Observable, Subscription, tap} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Subscription, tap} from 'rxjs';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {LoginResponse} from '../interfaces/login-response.interface';
 import {JwtDecoderService} from './jwt-decoder.service';
@@ -11,21 +11,23 @@ import {Router} from '@angular/router';
 export class AuthService {
   private BASE_URL: string = "http://localhost:8080/api/auth";
 
-  constructor(private client: HttpClient, private jwtDecoderService: JwtDecoderService, private router: Router) { }
+  constructor(private client: HttpClient, private jwtDecoderService: JwtDecoderService, private router: Router) {
+  }
 
-  login(id: string, password: string, url: string, setSuccess: Function): Subscription {
-    return this.client.post<LoginResponse>(this.BASE_URL + "/login", {id, password}).pipe(
-      tap((loginResponse: LoginResponse) => {
-        if (!this.jwtDecoderService.isValid(loginResponse.token))
-          throw new Error("Invalid JWT token");
+  login(id: string, password: string, setSuccess: Function, url: string = '/home'): Subscription {
+    return this.client.post<LoginResponse>(this.BASE_URL + "/login", {id, password})
+      .pipe(
+        tap((loginResponse: LoginResponse) => {
+          if (!this.jwtDecoderService.isValid(loginResponse.token))
+            throw new Error("Invalid JWT token");
 
-        localStorage.setItem("jwt", loginResponse.token);
+          localStorage.setItem("jwt", loginResponse.token);
 
-        const token = localStorage.getItem("jwt");
+          const token = localStorage.getItem("jwt");
 
-        if (token === null || token !== loginResponse.token)
-          throw new Error("Failed to save token");
-      }))
+          if (token === null || token !== loginResponse.token)
+            throw new Error("Failed to save token");
+        }))
       .subscribe({
         next: () => {
           setSuccess(true);
@@ -33,22 +35,17 @@ export class AuthService {
           return;
         },
         error: (error: HttpErrorResponse) => {
-          console.error("Failed to login: ", error);
-          let message = '';
-
-          if (error.status === 401)
-            message = 'Invalid login credentials';
-          else if (error.status === 403)
-            message = 'Your email must be verified before you attempt to login';
-          else
-            message = 'Failed to login. Please try again later';
-
-          setSuccess(false, message);
+          setSuccess(
+            false,
+            error.status === 0 ?
+              'Failed to login. Please try again later' :
+              error.error.message
+          );
         }
-    })
+      })
   }
 
-  isLoggedIn() : boolean {
+  isLoggedIn(): boolean {
     const token = localStorage.getItem('jwt');
 
     if (!token)
@@ -66,7 +63,7 @@ export class AuthService {
     return this.jwtDecoderService.decode(localStorage.getItem("jwt") ?? "");
   }
 
-  logout() : void {
+  logout(): void {
     localStorage.removeItem("jwt");
   }
 

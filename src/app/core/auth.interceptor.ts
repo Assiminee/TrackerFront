@@ -33,8 +33,6 @@ export class AuthInterceptor implements HttpInterceptor {
     this.handleUnauthorized(err);
     this.handleForbidden(err);
 
-    console.error(err);
-
     return throwError(() => err);
   }
 
@@ -46,15 +44,21 @@ export class AuthInterceptor implements HttpInterceptor {
       // to login again. Once logged in, queryParams: { returnUrl: this.router.url }
       // will make it so that the user is routed back to the page they were
       // in before being sent over to login.
-      this.router.navigate(['/login'], {
+      const extras = this.router.url.toLowerCase() === '/login' ? undefined : {
         queryParams: { returnUrl: this.router.url, expiredSession: true }
-      });
-      console.log("attached query params")
+      }
+
+      this.router.navigate(['/login'], extras);
     }
   }
 
   private handleForbidden(err: HttpErrorResponse) {
-    if (err.status === 403)
+    if (err.status === 403) {
+      if (this.router.url === '/login')
+        return;
+
       this.router.navigate(['/forbidden']);
+      return;
+    }
   }
 }

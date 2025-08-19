@@ -65,8 +65,6 @@ export abstract class BaseEntityService implements EntityService {
   getPage(dataTableColumns: DataTableColumn[] = [], searchText?: string, pageNumber?: number) : Observable<Object>{
     const params = this.constructHttpParams(dataTableColumns, searchText, pageNumber);
 
-    console.log(params);
-
     return this.client.get(this.url, params)
   }
 

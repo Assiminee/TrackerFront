@@ -13,7 +13,8 @@ import {NgClass} from '@angular/common';
 export class AlertComponent implements OnChanges {
   @Input() success!: boolean;
   @Input() showMsg!: boolean;
-  @Input() msg!: string;
+  @Input() p1!: string;
+  @Input() p2!: string;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['showMsg']) {

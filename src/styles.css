@@ -228,8 +228,6 @@
     flex-col
     h-11/12
     overflow-auto
-    p-6
-    sm:p-10
   }
 
   @media (max-height: 620px) {
@@ -359,3 +357,12 @@ body {
 .mdc-checkbox__mixedmark {
   border-color: white !important;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/*.no-scrollbar {*/
+/*  -ms-overflow-style: none;  !* IE and Edge *!*/
+/*  scrollbar-width: none;     !* Firefox *!*/
+/*}*/

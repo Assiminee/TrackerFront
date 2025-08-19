@@ -23,8 +23,6 @@ export class UserService extends BaseEntityService {
     else if (key === 'team') value = entry['team']?.name ?? '';
     else value = entry[key] ?? '';
 
-    // console.log(`KEY: ${key} -------- VALUE: ${value}`);
-
     return value;
   }
 

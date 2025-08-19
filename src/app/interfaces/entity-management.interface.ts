@@ -9,21 +9,26 @@ import {SingleActionWithEntity} from '../models/single-action.type';
 
 interface EntityManagementInterface {
   thead: WritableSignal<DataTableColumn[]>;
-  msg: string;
-  showFailed: boolean;
-  showSuccess: boolean;
+  p1: string;
+  p2: string;
   success: boolean;
+  showInner: boolean;
+  showOuter: boolean;
   isInvalid: Function;
+  entity: string;
+  form: FormGroup;
+  singleAction: { entity: BaseTableData | null, action: number };
 
-  afterSubmit(msg: string, queryParams: object, success: boolean): void
+  afterSubmit(p1: string, p2: string, queryParams: object, showInner: boolean, success: boolean): void
 }
 
 export class EntityManagement implements EntityManagementInterface {
   thead!: WritableSignal<DataTableColumn[]>;
-  msg: string = '';
-  showFailed: boolean = false;
-  showSuccess: boolean = false;
+  p1: string = '';
+  p2: string = '';
   success: boolean = false;
+  showInner: boolean = false;
+  showOuter: boolean = false;
   isInvalid!: Function;
   entity!: string;
   form!: FormGroup;
@@ -31,8 +36,8 @@ export class EntityManagement implements EntityManagementInterface {
 
   constructor(protected router: Router, protected route: ActivatedRoute,  protected teamService: TeamService, protected formHelper: FormHelperService) {}
 
-  afterSubmit(msg: string, queryParams: object, success: boolean = false): void {
-    this.toggleShowMessages(msg, success);
+  afterSubmit(p1: string, p2: string, queryParams: object, showInner: boolean, success: boolean = false): void {
+    this.toggleShowMessages(p1, p2, showInner, success);
 
     if (Object.keys(queryParams).length > 0) {
       this.router.navigate([], {
@@ -44,21 +49,23 @@ export class EntityManagement implements EntityManagementInterface {
     }
   }
 
-  toggleShowMessages(msg: string, success: boolean = false): void {
+  toggleShowMessages(p1: string, p2: string, showInner: boolean, success: boolean = false): void {
     this.success = success;
-    this.msg = msg;
+    this.showInner = showInner;
+    this.showOuter = !showInner;
+
+    this.p1 = p1;
+    this.p2 = p2;
 
     setTimeout(() => {
-      this.showSuccess = false;
-      this.showFailed = false;
+      this.showInner = false;
+      this.showOuter = false;
+      this.p1 = '';
+      this.p2 = '';
     }, 6000);
-
-    this.showSuccess = success;
-    this.showFailed = !success;
   }
 
   setSingleAction(event: SingleActionWithEntity) {
     this.singleAction = event;
-    console.log("Single action: ", this.singleAction)
   }
 }

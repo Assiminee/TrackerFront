@@ -1,4 +1,10 @@
-import {Component, EventEmitter, OnChanges, OnInit, Output, signal, SimpleChanges, WritableSignal} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  signal,
+  WritableSignal
+} from '@angular/core';
 import {DataManagementComponent} from "../data-management/data-management.component";
 import {DataTableColumn} from '../../interfaces/data-table-column.interface';
 import {
@@ -99,27 +105,24 @@ export class TeamManagementComponent extends EntityManagement {
   createTeam() {
     this.teamService.createInstance({name: this.name?.value ?? ''})?.subscribe({
       next: (resp) => {
-        console.log(resp);
-        this.afterSubmit(this.getMessage("create", true), {searchText: this.name?.value ?? ""}, true);
+        this.afterSubmit('Success', this.getMessage("create", true), {searchText: this.name?.value ?? ""}, false, true);
       },
       error: (err) => {
-        console.log(err);
-        this.afterSubmit(this.getMessage("create"), {});
+        this.afterSubmit('Failed', this.getMessage("create"), {}, false);
+        this.p2 += " " + err.error.message;
       }
     });
   }
 
   editTeam() {
-    console.log(this.name?.value);
     this.teamService.editEntry(this.singleAction?.entity?.id ?? "", {name: this.name?.value})
       .subscribe({
         next: (resp) => {
-          console.log(resp);
-          this.afterSubmit(this.getMessage("edite", true), {searchText: this.name?.value ?? ""}, true);
+          this.afterSubmit('Success', this.getMessage("edite", true), {searchText: this.name?.value ?? ""}, false, true);
         },
         error: (err) => {
-          console.log(err);
-          this.afterSubmit(this.getMessage("edite"), {});
+          this.afterSubmit('Failed', this.getMessage("edite"), {}, false);
+          this.p2 += " " + err.error.message;
         }
       })
   }
@@ -133,17 +136,18 @@ export class TeamManagementComponent extends EntityManagement {
 
   setTeamName(event: { entity: BaseTableData | null, action: number }) {
     this.setSingleAction(event);
-    if (this.singleAction.action === Mode.CREATE)
-      return;
 
-    let teamName = "";
+    this.form.enable();
+    this.form.reset();
 
-    if (this.singleAction)
-      teamName = (this.singleAction.entity as Team).name;
+    if (this.singleAction.action !== Mode.CREATE) {
+      this.form.controls?.['name'].setValue((this.singleAction.entity as Team).name);
 
-    this.form.controls?.['name'].setValue(teamName);
+      if (!this.formHelper.isSubmittable(this.singleAction))
+        this.form.controls?.['name'].disable();
+    }
 
-    if (!this.formHelper.isSubmittable(this.singleAction))
-      this.form.controls?.['name'].disable();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
 }

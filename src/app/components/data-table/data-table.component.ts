@@ -33,9 +33,9 @@ export class DataTableComponent implements OnInit, OnChanges {
   readonly entityCheckboxes = signal<TableRowCheckbox>(
     {name: 'all-checks', selected: false}
   );
-  @ViewChild("menus") menus: TemplateRef<any> = new TemplateRef();
-  @ViewChild("statusFilter") statusFilter: TemplateRef<any> = new TemplateRef();
-  @ViewChild("roleFilter") roleFilter: TemplateRef<any> = new TemplateRef();
+  @ViewChild("menus", { static: false }) menus?: TemplateRef<any>;
+  @ViewChild("statusFilter", { static: false }) statusFilter?: TemplateRef<any>;
+  @ViewChild("roleFilter", { static: false }) roleFilter?: TemplateRef<any>;
   @Output() menuOpenEvent: EventEmitter<string> = new EventEmitter<string>();
   @Output() deleteIds: EventEmitter<string[]> = new EventEmitter<string[]>();
   @Output() singleActionIdEmitter: EventEmitter<SingleActionWithId> = new EventEmitter<SingleActionWithId>();
@@ -90,7 +90,6 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   update(selected: boolean, index?: number) {
-    // console.log(this.entityCheckboxes());
     this.entityCheckboxes.update(check => {
       // Parent is checked
       if (index === undefined) {
@@ -104,8 +103,6 @@ export class DataTableComponent implements OnInit, OnChanges {
         check.selected = check.childCheckboxes?.every(r => r.selected) ?? true;
       }
 
-      console.log(check);
-
       return {...check};
     });
 
@@ -113,24 +110,28 @@ export class DataTableComponent implements OnInit, OnChanges {
       .childCheckboxes?.filter(check => check.selected) ?? [];
 
     this.idsToDelete = selectedChecks.map(check => check.name);
-    console.log('Ids to delete from table component', this.idsToDelete);
 
     this.deleteIds.emit(this.idsToDelete);
   }
 
   toggleMenu(menuIndex: string, event?: MouseEvent) {
     event?.stopPropagation();
+
     this.openMenuIndex = this.openMenuIndex === menuIndex ? "" : menuIndex;
     this.menuOpenEvent.emit(this.openMenuIndex);
 
     if (this.openMenuIndex === "")
       return;
 
-    this.applyOverlay(event?.currentTarget as HTMLElement, this.menus, menuIndex);
+    const origin = (event?.currentTarget ?? null) as HTMLElement | null;
+
+    if (!origin || !this.menus) return;
+
+    this.applyOverlay(origin, this.menus, menuIndex);
   }
 
-  applyOverlay(origin: HTMLElement, ref: TemplateRef<any>, menuIndex?: string) {
-    if (origin === null)
+  applyOverlay(origin: HTMLElement | null | undefined, ref?: TemplateRef<any>, menuIndex?: string) {
+    if (!ref || !origin)
       return;
 
     // close any old overlay
@@ -141,7 +142,8 @@ export class DataTableComponent implements OnInit, OnChanges {
       .flexibleConnectedTo(origin)
       .withPositions([
         {originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'top', offsetY: 0},
-      ]);
+      ])
+      .withPush(true);
 
     // 2) configure scroll/backdrop etc.
     this.overlayRef = this.overlay.create({
@@ -231,11 +233,11 @@ export class DataTableComponent implements OnInit, OnChanges {
 
   openSortMenu(entry: DataTableColumn, event?: MouseEvent) {
     const ref = entry.isFlag ? this.statusFilter : this.roleFilter;
+    const origin = (event?.currentTarget ?? null) as HTMLElement | null;
 
-    if (ref === undefined)
-      return;
+    if (!origin || !ref) return;
 
-    this.applyOverlay(event?.currentTarget as HTMLElement, ref);
+    this.applyOverlay(origin, ref);
   }
 
   setFilter(value: boolean | string | null, key: string): void {

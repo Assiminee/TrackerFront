@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, signal, WritableSignal} from '@angular/core';
+import {Component, OnInit, OnDestroy, signal, WritableSignal, ViewChild} from '@angular/core';
 import {DataManagementComponent} from '../data-management/data-management.component';
 import {Team} from '../../interfaces/team.interface';
 import {DataTableColumn} from '../../interfaces/data-table-column.interface';
@@ -25,9 +25,10 @@ import {AlertComponent} from '../alert/alert.component';
 import {EntityManagement} from '../../interfaces/entity-management.interface';
 import {UserRow} from '../../interfaces/user-row.interface';
 import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
-import {getRoleName, isTmOrPm, isValidRole, Role, VALID_ROLES} from '../../models/roles.enum';
+import {getRoleName, isAdmin, isTmOrPm, isValidRole, Role, VALID_ROLES} from '../../models/roles.enum';
 import {SingleActionWithEntity} from '../../models/single-action.type';
 import {Mode} from '../../models/modes.enum';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-user-management',
@@ -55,8 +56,9 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     {key: 'searchNameOnly', filterBy: 'true', queryParamName: 'searchNameOnly'}
   ];
   mode: string = 'Create';
+  @ViewChild(DataManagementComponent) dataSource!: DataManagementComponent;
 
-  constructor(protected userService: UserService, teamService: TeamService, router: Router, route: ActivatedRoute, formHelper: FormHelperService) {
+  constructor(protected userService: UserService, private authService: AuthService, teamService: TeamService, router: Router, route: ActivatedRoute, formHelper: FormHelperService) {
     super(router, route, teamService, formHelper);
 
     this.thead = this.getWritableSignal();
@@ -208,7 +210,6 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
       switchMap((v: string) => {
         return this.teamService.getPage(this.getTeamsParams, v, this.teamPage).pipe(
           catchError(err => {
-            console.log(err);
             this.error = 'Search failed. Please try again later';
             return of([]);
           }),
@@ -236,35 +237,37 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
   }
 
   onSubmit() {
-    const controls = this.form.controls;
+    isAdmin(this.role?.value) ? this.team?.disable() : this.team?.enable();
 
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
     }
 
-
+    const controls = this.form.controls;
     let body = {};
 
     for (const [key, control] of Object.entries(controls)) {
-      if (key === 'teamId' && this.role?.value === Role.Admin)
+      if (key === 'teamId' && isAdmin(this.role?.value)) {
+        body = {...body, teamId: ""};
         continue;
+      }
 
       body = {...body, [key]: control.value};
     }
 
     if (this.singleAction.action === Mode.CREATE) {
+      this.toggleShowMessages('Creating user', 'Processing... Please wait.', true, true);
       this.userService.createInstance({...body, password: 'Password@1'})
         .pipe(takeUntil(this.destroy))
         .subscribe({
           next: resp => {
-            this.afterSubmit(this.getMessage(true), {searchText: this.id?.value ?? ""}, true);
+            this.afterSubmit('Success', this.getMessage(true), {searchText: this.id?.value ?? ""}, false, true);
           },
           error: err => {
-            console.log(err)
-            this.afterSubmit(this.getMessage(), {});
+            this.afterSubmit("Failed", this.getMessage(), {}, true);
             const errResp = err as HttpErrorResponse;
-            this.msg += " " + errResp.error?.message;
+            this.p2 += " " + errResp.error?.message;
           },
         });
       return;
@@ -275,13 +278,13 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
         .pipe(takeUntil(this.destroy))
         .subscribe({
           next: resp => {
-            this.afterSubmit(this.getMessage(true), {searchText: this.id?.value ?? ""}, true);
+            this.dataSource.patchEntity(resp as UserRow);
+            this.afterSubmit("Success", this.getMessage(true), {searchText: this.id?.value ?? ""}, false, true);
           },
           error: err => {
-            console.log(err)
-            this.afterSubmit(this.getMessage(), {});
+            this.afterSubmit('Failed', this.getMessage(), {}, false);
             const errResp = err as HttpErrorResponse;
-            this.msg += " " + errResp.error?.message;
+            this.p2 += " " + errResp.error?.message;
           },
         });
       return;
@@ -289,14 +292,17 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
   }
 
   getMessage(success: boolean = false): string {
-    if (success)
-      return `User "${this.firstName?.value} ${this.lastName?.value}" (ID: ${this.id?.value}) created successfully.`;
+    const mode = this.singleAction.action;
 
-    return `Failed to create user "${this.firstName?.value} ${this.lastName?.value}" (ID: ${this.id?.value}).`
+    if (success)
+      return `User "${this.firstName?.value} ${this.lastName?.value}" (ID: ${this.id?.value})
+      ${mode === Mode.CREATE ? 'created' : (mode === Mode.EDIT ? 'edited' : '')} successfully.`;
+
+    return `Failed to ${mode === Mode.CREATE ? 'create' : (mode === Mode.EDIT ? 'edit' : '')} user
+    "${this.firstName?.value} ${this.lastName?.value}" (ID: ${this.id?.value}).`;
   }
 
   toggleShowTeams(): void {
-    console.log(this.role?.value);
     this.showTeams = isTmOrPm(this.role?.value) ?? false;
   }
 
@@ -329,35 +335,6 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     return this.form.controls['teamId'];
   }
 
-  // Setters
-  set id(id: string) {
-    this.form.controls['id'].setValue(id);
-  }
-
-  set firstName(firstName: string) {
-    this.form.controls['firstName'].setValue(firstName);
-  }
-
-  set lastName(lastName: string) {
-    this.form.controls['lastName'].setValue(lastName);
-  }
-
-  set email(email: string) {
-    this.form.controls['email'].setValue(email);
-  }
-
-  set phoneNumber(phoneNumber: string) {
-    this.form.controls['phoneNumber'].setValue(phoneNumber);
-  }
-
-  set role(role: string) {
-    this.form.controls['role'].setValue(role);
-  }
-
-  set team(teamId: string) {
-    this.form.controls['teamId'].setValue(teamId);
-  }
-
   fillForm(event: SingleActionWithEntity) {
     this.setSingleAction(event);
     const mode = this.singleAction.action;
@@ -382,16 +359,27 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
     this.toggleShowTeams();
 
     if (mode !== Mode.CREATE && !user)
-      this.toggleShowMessages('An unexpected error occurred. Unable to display user details.');
+      this.toggleShowMessages('Failed', 'An unexpected error occurred. Unable to display user details.', true);
 
     const isTeamRole = isTmOrPm(user?.role ?? '') ?? false;
 
     this.chosenTeam = isTeamRole
-      ? { id: user?.team?.id ?? '', name: user?.team?.name ?? '' }
-      : { id: '', name: '' };
+      ? {id: user?.team?.id ?? '', name: user?.team?.name ?? ''}
+      : {id: '', name: ''};
 
-    if (mode === Mode.EDIT)
+    if (mode === Mode.EDIT) {
+      const loggedInUser = this.authService.loggedInUser();
+
+      if (!loggedInUser) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      if (this.id?.value.toUpperCase() === loggedInUser.sub?.toUpperCase())
+        this.role?.disable();
+
       this.id?.disable();
+    }
 
     if (!this.formHelper.isSubmittable(this.singleAction))
       this.form.disable();
@@ -402,11 +390,10 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
 
   protected readonly getRoleName = getRoleName;
   protected readonly VALID_ROLES = VALID_ROLES;
+  protected readonly Mode = Mode;
 
   ngOnDestroy() {
     this.destroy.next();
     this.destroy.complete();
   }
-
-  protected readonly Mode = Mode;
 }
