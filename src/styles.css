@@ -317,6 +317,23 @@
     placeholder-gray-400
   }
 
+  .spreadSheetCustomInput {
+    @apply
+    w-full
+
+    rounded-xl
+    px-3
+    shadow-xl
+    shadow-gray-400/30
+    bg-white
+    ring-2
+    ring-gray-400/65
+    outline-none
+    focus:ring-gray-400/80
+    focus:shadow-gray-400/40
+    placeholder-gray-400
+  }
+
   .disabledCustomInput {
     @apply
     w-full
@@ -328,6 +345,33 @@
     ring-gray-400/25
     outline-none
     placeholder-gray-500
+  }
+
+  .cell {
+    @apply
+    border
+    border-gray-400/75
+    flex
+    items-center
+    justify-center
+    leading-snug
+    select-none
+    whitespace-nowrap
+    px-3
+    py-2
+  }
+
+  .spreadsheetBtn {
+    @apply
+    flex
+    bg-gray-200/65
+    p-3
+    justify-between
+    gap-2
+    cursor-pointer
+    shadow-gray-400/20
+    shadow-xl/10
+    ring-gray-500/20
   }
 }
 

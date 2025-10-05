@@ -69,6 +69,7 @@ export abstract class BaseEntityService implements EntityService {
   }
 
   createInstance(body: object) : Observable<Object> {
+    console.log(this.url)
     return this.client.post(this.url, body);
   }
 

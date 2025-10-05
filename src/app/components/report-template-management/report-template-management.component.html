@@ -42,7 +42,7 @@
                      class="rounded-xl"
                      placeholder="Sales template 2025"
                      formControlName="name"
-                     [ngClass]="name?.disabled ? 'disabledCustomInput' : 'customInput'"
+                     [ngClass]="name.disabled ? 'disabledCustomInput' : 'customInput'"
               />
               <div class="pt-5 text-red-400 transition-all opacity-0"
                    [class.opacity-100]="formHelper.isInvalid(name)">
@@ -68,7 +68,7 @@
                   class="rounded-l-xl"
                   placeholder="Template description"
                   formControlName="description"
-                  [ngClass]="description?.disabled ? 'disabledCustomInput' : 'customInput'"
+                  [ngClass]="description.disabled ? 'disabledCustomInput' : 'customInput'"
                 >
 
                   </textarea>

@@ -1,198 +1,366 @@
-<app-main
-  [padding]="false"
->
-  <div class="flex w-full h-[8vh] bg-white p-3 border-y border-gray-200 gap-4 shadow-lg">
-    <div class="flex gap-2">
-      <div class="flex badge bg-gray-100 p-3 justify-between gap-2">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-             class="w-4 h-4"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-          <g id="SVGRepo_iconCarrier">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"
-                  fill="#0F0F0F"></path>
-          </g>
-        </svg>
-        <p class="text-base">Save</p>
-      </div>
-      <div class="flex badge bg-gray-100 p-3 justify-between gap-2">
-        <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"
-             class="w-4 h-4">
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-          <g id="SVGRepo_iconCarrier">
-            <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
-                  d="M3 14.25C3.41421 14.25 3.75 14.5858 3.75 15C3.75 16.4354 3.75159 17.4365 3.85315 18.1919C3.9518 18.9257 4.13225 19.3142 4.40901 19.591C4.68577 19.8678 5.07435 20.0482 5.80812 20.1469C6.56347 20.2484 7.56459 20.25 9 20.25H15C16.4354 20.25 17.4365 20.2484 18.1919 20.1469C18.9257 20.0482 19.3142 19.8678 19.591 19.591C19.8678 19.3142 20.0482 18.9257 20.1469 18.1919C20.2484 17.4365 20.25 16.4354 20.25 15C20.25 14.5858 20.5858 14.25 21 14.25C21.4142 14.25 21.75 14.5858 21.75 15V15.0549C21.75 16.4225 21.75 17.5248 21.6335 18.3918C21.5125 19.2919 21.2536 20.0497 20.6517 20.6516C20.0497 21.2536 19.2919 21.5125 18.3918 21.6335C17.5248 21.75 16.4225 21.75 15.0549 21.75H8.94513C7.57754 21.75 6.47522 21.75 5.60825 21.6335C4.70814 21.5125 3.95027 21.2536 3.34835 20.6517C2.74643 20.0497 2.48754 19.2919 2.36652 18.3918C2.24996 17.5248 2.24998 16.4225 2.25 15.0549C2.25 15.0366 2.25 15.0183 2.25 15C2.25 14.5858 2.58579 14.25 3 14.25Z"
-                  fill="#000000"></path>
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12 16.75C12.2106 16.75 12.4114 16.6615 12.5535 16.5061L16.5535 12.1311C16.833 11.8254 16.8118 11.351 16.5061 11.0715C16.2004 10.792 15.726 10.8132 15.4465 11.1189L12.75 14.0682V3C12.75 2.58579 12.4142 2.25 12 2.25C11.5858 2.25 11.25 2.58579 11.25 3V14.0682L8.55353 11.1189C8.27403 10.8132 7.79963 10.792 7.49393 11.0715C7.18823 11.351 7.16698 11.8254 7.44648 12.1311L11.4465 16.5061C11.5886 16.6615 11.7894 16.75 12 16.75Z"
-                  fill="#000000"></path>
-          </g>
-        </svg>
-        <p class="text-base">Export</p>
-      </div>
-    </div>
-    <div class="flex border-x gap-2">
-      <button class="px-2">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)"
-             class="w-5 h-5">
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M20 10L20.7071 10.7071L21.4142 10L20.7071 9.29289L20 10ZM3 18C3 18.5523 3.44772 19 4 19C4.55229 19 5 18.5523 5 18L3 18ZM15.7071 15.7071L20.7071 10.7071L19.2929 9.29289L14.2929 14.2929L15.7071 15.7071ZM20.7071 9.29289L15.7071 4.29289L14.2929 5.70711L19.2929 10.7071L20.7071 9.29289ZM20 9L10 9L10 11L20 11L20 9ZM3 16L3 18L5 18L5 16L3 16ZM10 9C6.13401 9 3 12.134 3 16L5 16C5 13.2386 7.23858 11 10 11L10 9Z"
-              fill="#000000"></path>
-          </g>
-        </svg>
-      </button>
-      <button class="px-2">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-             class="w-5 h-5">
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M20 10L20.7071 10.7071L21.4142 10L20.7071 9.29289L20 10ZM3 18C3 18.5523 3.44772 19 4 19C4.55229 19 5 18.5523 5 18L3 18ZM15.7071 15.7071L20.7071 10.7071L19.2929 9.29289L14.2929 14.2929L15.7071 15.7071ZM20.7071 9.29289L15.7071 4.29289L14.2929 5.70711L19.2929 10.7071L20.7071 9.29289ZM20 9L10 9L10 11L20 11L20 9ZM3 16L3 18L5 18L5 16L3 16ZM10 9C6.13401 9 3 12.134 3 16L5 16C5 13.2386 7.23858 11 10 11L10 9Z"
-              fill="#000000"></path>
-          </g>
-        </svg>
-      </button>
-    </div>
-    <div class="flex gap-2">
-      <div class="flex badge bg-gray-100 p-3 justify-between gap-2" (click)="incrementCols()">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-             class="w-7 h-7"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-          <g id="SVGRepo_iconCarrier">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 8.25C12.4142 8.25 12.75 8.58579 12.75 9V11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H12.75L12.75 15C12.75 15.4142 12.4142 15.75 12 15.75C11.5858 15.75 11.25 15.4142 11.25 15V12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H11.25L11.25 9C11.25 8.58579 11.5858 8.25 12 8.25Z"
-                  fill="#6bdb75"></path>
-          </g>
-        </svg>
-        <p class="text-base">Add columns</p>
-      </div>
-      <div class="flex badge bg-gray-100 p-3 justify-between gap-2" (click)="incrementRows()">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-             class="w-7 h-7"
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-          <g id="SVGRepo_iconCarrier">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 8.25C12.4142 8.25 12.75 8.58579 12.75 9V11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H12.75L12.75 15C12.75 15.4142 12.4142 15.75 12 15.75C11.5858 15.75 11.25 15.4142 11.25 15V12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H11.25L11.25 9C11.25 8.58579 11.5858 8.25 12 8.25Z"
-                  fill="#6bdb75"></path>
-          </g>
-        </svg>
-        <p class="text-base">Add rows</p>
-      </div>
-    </div>
-  </div>
-  <div class="p-6 h-full w-full">
-    <div class="listHeader">
-      <div class="flex flex-col text-left p-3 gap-1">
-        <p class="text-2xl md:text-3xl font-serif font-semibold">Spreadsheet</p>
-        <p class="hidden md:block font-normal">Manage your report's spreadsheets</p>
-      </div>
-    </div>
-    <!--    <div-->
-    <!--      class="w-full h-[60vh] bg-white overflow-auto rounded-b-3xl">-->
-    <!--      <table class="table-auto w-full">-->
-    <!--        <thead>-->
-    <!--        <tr>-->
-    <!--          <th class="border border-gray-400/60 bg-gray-100/75 py-5 px-5"></th>-->
-    <!--          @for (i of getArr(cols); track i; let first = $first) {-->
-    <!--            <th class="border border-gray-400/60 bg-gray-100/75 py-2 px-24">{{ getLetter(i) }}</th>-->
-    <!--          }-->
-    <!--        </tr>-->
-    <!--        </thead>-->
-    <!--        <tbody>-->
-    <!--          @for (row of getArr(rows); track row) {-->
-    <!--            <tr>-->
-    <!--              <td class="border border-gray-400/60 bg-gray-100/75 py-2 px-5">{{ row + 1 }}</td>-->
-    <!--              @for (i of getArr(cols); track i) {-->
-    <!--                <td class="border border-gray-400/60">-->
-    <!--                  <input class="w-full h-full focus:outline-red-800  py-3 px-3"/>-->
-    <!--                </td>-->
-    <!--              }-->
-    <!--            </tr>-->
-    <!--          }-->
-    <!--        </tbody>-->
-    <!--      </table>-->
-    <!--    </div>-->
-    <!--  </div>-->
-    <div
-      #gridContainer
-      class="w-full h-[60vh] bg-white overflow-auto rounded-b-3xl relative select-none"
-      (mousedown)="onMouseDown($event)"
-      (mousemove)="onMouseMove($event)"
-      (mouseup)="onMouseUp($event)"
-      (mouseleave)="onMouseUp($event)"
-    >
+<!--<app-main-->
+<!--  [padding]="false"-->
+<!--&gt;-->
+<!--  <div class="flex w-full h-[8vh] bg-white p-3 border-y border-gray-200 gap-4 shadow-lg">-->
+<!--    <div class="flex gap-2">-->
+<!--      <div class="flex badge bg-gray-100 p-3 justify-between gap-2">-->
+<!--        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"-->
+<!--             class="w-4 h-4"-->
+<!--        >-->
+<!--          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>-->
+<!--          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>-->
+<!--          <g id="SVGRepo_iconCarrier">-->
+<!--            <path fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                  d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z"-->
+<!--                  fill="#0F0F0F"></path>-->
+<!--          </g>-->
+<!--        </svg>-->
+<!--        <p class="text-base">Save</p>-->
+<!--      </div>-->
+<!--      <div class="flex badge bg-gray-100 p-3 justify-between gap-2">-->
+<!--        <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"-->
+<!--             class="w-4 h-4">-->
+<!--          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>-->
+<!--          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>-->
+<!--          <g id="SVGRepo_iconCarrier">-->
+<!--            <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                  d="M3 14.25C3.41421 14.25 3.75 14.5858 3.75 15C3.75 16.4354 3.75159 17.4365 3.85315 18.1919C3.9518 18.9257 4.13225 19.3142 4.40901 19.591C4.68577 19.8678 5.07435 20.0482 5.80812 20.1469C6.56347 20.2484 7.56459 20.25 9 20.25H15C16.4354 20.25 17.4365 20.2484 18.1919 20.1469C18.9257 20.0482 19.3142 19.8678 19.591 19.591C19.8678 19.3142 20.0482 18.9257 20.1469 18.1919C20.2484 17.4365 20.25 16.4354 20.25 15C20.25 14.5858 20.5858 14.25 21 14.25C21.4142 14.25 21.75 14.5858 21.75 15V15.0549C21.75 16.4225 21.75 17.5248 21.6335 18.3918C21.5125 19.2919 21.2536 20.0497 20.6517 20.6516C20.0497 21.2536 19.2919 21.5125 18.3918 21.6335C17.5248 21.75 16.4225 21.75 15.0549 21.75H8.94513C7.57754 21.75 6.47522 21.75 5.60825 21.6335C4.70814 21.5125 3.95027 21.2536 3.34835 20.6517C2.74643 20.0497 2.48754 19.2919 2.36652 18.3918C2.24996 17.5248 2.24998 16.4225 2.25 15.0549C2.25 15.0366 2.25 15.0183 2.25 15C2.25 14.5858 2.58579 14.25 3 14.25Z"-->
+<!--                  fill="#000000"></path>-->
+<!--            <path fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                  d="M12 16.75C12.2106 16.75 12.4114 16.6615 12.5535 16.5061L16.5535 12.1311C16.833 11.8254 16.8118 11.351 16.5061 11.0715C16.2004 10.792 15.726 10.8132 15.4465 11.1189L12.75 14.0682V3C12.75 2.58579 12.4142 2.25 12 2.25C11.5858 2.25 11.25 2.58579 11.25 3V14.0682L8.55353 11.1189C8.27403 10.8132 7.79963 10.792 7.49393 11.0715C7.18823 11.351 7.16698 11.8254 7.44648 12.1311L11.4465 16.5061C11.5886 16.6615 11.7894 16.75 12 16.75Z"-->
+<!--                  fill="#000000"></path>-->
+<!--          </g>-->
+<!--        </svg>-->
+<!--        <p class="text-base">Export</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="flex border-x gap-2">-->
+<!--      <button class="px-2">-->
+<!--        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)"-->
+<!--             class="w-5 h-5">-->
+<!--          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>-->
+<!--          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>-->
+<!--          <g id="SVGRepo_iconCarrier">-->
+<!--            <path-->
+<!--              d="M20 10L20.7071 10.7071L21.4142 10L20.7071 9.29289L20 10ZM3 18C3 18.5523 3.44772 19 4 19C4.55229 19 5 18.5523 5 18L3 18ZM15.7071 15.7071L20.7071 10.7071L19.2929 9.29289L14.2929 14.2929L15.7071 15.7071ZM20.7071 9.29289L15.7071 4.29289L14.2929 5.70711L19.2929 10.7071L20.7071 9.29289ZM20 9L10 9L10 11L20 11L20 9ZM3 16L3 18L5 18L5 16L3 16ZM10 9C6.13401 9 3 12.134 3 16L5 16C5 13.2386 7.23858 11 10 11L10 9Z"-->
+<!--              fill="#000000"></path>-->
+<!--          </g>-->
+<!--        </svg>-->
+<!--      </button>-->
+<!--      <button class="px-2">-->
+<!--        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"-->
+<!--             class="w-5 h-5">-->
+<!--          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>-->
+<!--          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>-->
+<!--          <g id="SVGRepo_iconCarrier">-->
+<!--            <path-->
+<!--              d="M20 10L20.7071 10.7071L21.4142 10L20.7071 9.29289L20 10ZM3 18C3 18.5523 3.44772 19 4 19C4.55229 19 5 18.5523 5 18L3 18ZM15.7071 15.7071L20.7071 10.7071L19.2929 9.29289L14.2929 14.2929L15.7071 15.7071ZM20.7071 9.29289L15.7071 4.29289L14.2929 5.70711L19.2929 10.7071L20.7071 9.29289ZM20 9L10 9L10 11L20 11L20 9ZM3 16L3 18L5 18L5 16L3 16ZM10 9C6.13401 9 3 12.134 3 16L5 16C5 13.2386 7.23858 11 10 11L10 9Z"-->
+<!--              fill="#000000"></path>-->
+<!--          </g>-->
+<!--        </svg>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--    <div class="flex gap-2">-->
+<!--      <div class="flex badge bg-gray-100 p-3 justify-between gap-2" (click)="incrementCols()">-->
+<!--        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"-->
+<!--             class="w-7 h-7"-->
+<!--        >-->
+<!--          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>-->
+<!--          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>-->
+<!--          <g id="SVGRepo_iconCarrier">-->
+<!--            <path fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                  d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 8.25C12.4142 8.25 12.75 8.58579 12.75 9V11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H12.75L12.75 15C12.75 15.4142 12.4142 15.75 12 15.75C11.5858 15.75 11.25 15.4142 11.25 15V12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H11.25L11.25 9C11.25 8.58579 11.5858 8.25 12 8.25Z"-->
+<!--                  fill="#6bdb75"></path>-->
+<!--          </g>-->
+<!--        </svg>-->
+<!--        <p class="text-base">Add columns</p>-->
+<!--      </div>-->
+<!--      <div class="flex badge bg-gray-100 p-3 justify-between gap-2" (click)="incrementRows()">-->
+<!--        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"-->
+<!--             class="w-7 h-7"-->
+<!--        >-->
+<!--          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>-->
+<!--          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>-->
+<!--          <g id="SVGRepo_iconCarrier">-->
+<!--            <path fill-rule="evenodd" clip-rule="evenodd"-->
+<!--                  d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 8.25C12.4142 8.25 12.75 8.58579 12.75 9V11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H12.75L12.75 15C12.75 15.4142 12.4142 15.75 12 15.75C11.5858 15.75 11.25 15.4142 11.25 15V12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H11.25L11.25 9C11.25 8.58579 11.5858 8.25 12 8.25Z"-->
+<!--                  fill="#6bdb75"></path>-->
+<!--          </g>-->
+<!--        </svg>-->
+<!--        <p class="text-base">Add rows</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="p-6 h-full w-full">-->
+<!--    <div class="listHeader">-->
+<!--      <div class="flex flex-col text-left p-3 gap-1">-->
+<!--        <p class="text-2xl md:text-3xl font-serif font-semibold">Spreadsheet</p>-->
+<!--        <p class="hidden md:block font-normal">Manage your report's spreadsheets</p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;    <div&ndash;&gt;-->
+<!--    &lt;!&ndash;      class="w-full h-[60vh] bg-white overflow-auto rounded-b-3xl">&ndash;&gt;-->
+<!--    &lt;!&ndash;      <table class="table-auto w-full">&ndash;&gt;-->
+<!--    &lt;!&ndash;        <thead>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <tr>&ndash;&gt;-->
+<!--    &lt;!&ndash;          <th class="border border-gray-400/60 bg-gray-100/75 py-5 px-5"></th>&ndash;&gt;-->
+<!--    &lt;!&ndash;          @for (i of getArr(cols); track i; let first = $first) {&ndash;&gt;-->
+<!--    &lt;!&ndash;            <th class="border border-gray-400/60 bg-gray-100/75 py-2 px-24">{{ getLetter(i) }}</th>&ndash;&gt;-->
+<!--    &lt;!&ndash;          }&ndash;&gt;-->
+<!--    &lt;!&ndash;        </tr>&ndash;&gt;-->
+<!--    &lt;!&ndash;        </thead>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <tbody>&ndash;&gt;-->
+<!--    &lt;!&ndash;          @for (row of getArr(rows); track row) {&ndash;&gt;-->
+<!--    &lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--    &lt;!&ndash;              <td class="border border-gray-400/60 bg-gray-100/75 py-2 px-5">{{ row + 1 }}</td>&ndash;&gt;-->
+<!--    &lt;!&ndash;              @for (i of getArr(cols); track i) {&ndash;&gt;-->
+<!--    &lt;!&ndash;                <td class="border border-gray-400/60">&ndash;&gt;-->
+<!--    &lt;!&ndash;                  <input class="w-full h-full focus:outline-red-800  py-3 px-3"/>&ndash;&gt;-->
+<!--    &lt;!&ndash;                </td>&ndash;&gt;-->
+<!--    &lt;!&ndash;              }&ndash;&gt;-->
+<!--    &lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--    &lt;!&ndash;          }&ndash;&gt;-->
+<!--    &lt;!&ndash;        </tbody>&ndash;&gt;-->
+<!--    &lt;!&ndash;      </table>&ndash;&gt;-->
+<!--    &lt;!&ndash;    </div>&ndash;&gt;-->
+<!--    &lt;!&ndash;  </div>&ndash;&gt;-->
+<!--    <div-->
+<!--      #gridContainer-->
+<!--      class="w-full h-[60vh] bg-white overflow-auto rounded-b-3xl relative select-none"-->
+<!--      (mousedown)="onMouseDown($event)"-->
+<!--      (mousemove)="onMouseMove($event)"-->
+<!--      (mouseup)="onMouseUp($event)"-->
+<!--      (mouseleave)="onMouseUp($event)"-->
+<!--    >-->
 
-      @if (dragging) {
-        <div
-          class="absolute pointer-events-none border border-blue-500/70 bg-blue-400/20"
-          [ngStyle]="selectionBox"
-        ></div>
-      }
-      @for (row of getArr(rows); track row; let first = $first; let i = $index) {
-        <div class="flex">
-          <div class="w-24 h-12 shrink-0 border border-gray-400/60 bg-gray-100/70
-             flex items-center justify-center whitespace-nowrap tabular-nums leading-none"
-            [ngClass]="first ? 'text-gray-100/75' : ''"
-          >{{ row }}</div>
-          @for (letter of getRow(i); track letter; let j = $index) {
-            @if (first) {
-              <div class="w-64 h-12 shrink-0 border border-gray-400/60 bg-gray-100/70
-             flex items-center justify-center whitespace-nowrap tabular-nums leading-none">
-                {{ letter }}
-              </div>
-            } @else {
-              <div class="w-64 h-12 shrink-0 border border-gray-400/60
-             flex items-center justify-center whitespace-nowrap tabular-nums leading-none overflow-auto no-scrollbar"
-                   [ngClass]="(i === 1) ? 'bg-red-800 text-white' : ''"
-              >
-                {{ letter }}
-              </div>
-            }
-          }
-        </div>
-      }
-      <!--      <table class="table-auto w-full">-->
-      <!--        <thead>-->
-      <!--        <tr>-->
-      <!--          <th class="border border-gray-400/60 bg-gray-100/75 py-5 px-5"></th>-->
-      <!--          @for (i of getArr(cols); track i; let first = $first) {-->
-      <!--            <th class="border border-gray-400/60 bg-gray-100/75 py-2 px-24">{{ getLetter(i) }}</th>-->
-      <!--          }-->
-      <!--        </tr>-->
-      <!--        </thead>-->
-      <!--        <tbody>-->
-      <!--          @for (row of getArr(rows); track row) {-->
-      <!--            <tr>-->
-      <!--              <td class="border border-gray-400/60 bg-gray-100/75 py-2 px-5">{{ row + 1 }}</td>-->
-      <!--              @for (i of getArr(cols); track i) {-->
-      <!--                <td-->
-      <!--                  #cellEl-->
-      <!--                  class="border border-gray-400/60"-->
-      <!--                  [class.bg-blue-100]="isCellSelected(row, i)"-->
-      <!--                  [class.ring-2]="isCellSelected(row, i)"-->
-      <!--                  [class.ring-blue-400]="isCellSelected(row, i)"-->
-      <!--                  [attr.data-row]="row"-->
-      <!--                  [attr.data-col]="i"-->
-      <!--                  (mousedown)="$event.preventDefault()"-->
-      <!--                >-->
-      <!--                  <input type="text" class="w-full h-full focus:outline-red-800 py-3 px-3" />-->
-      <!--                </td>-->
-      <!--              }-->
-      <!--            </tr>-->
-      <!--          }-->
-      <!--        </tbody>-->
-      <!--      </table>-->
-    </div>
-  </div>
-</app-main>
+<!--      @if (dragging) {-->
+<!--        <div-->
+<!--          class="absolute pointer-events-none border border-blue-500/70 bg-blue-400/20"-->
+<!--          [ngStyle]="selectionBox"-->
+<!--        ></div>-->
+<!--      }-->
+<!--      @for (row of getArr(rows); track row; let first = $first; let i = $index) {-->
+<!--        <div class="flex">-->
+<!--          <div class="w-24 h-12 shrink-0 border border-gray-400/60 bg-gray-100/70-->
+<!--             flex items-center justify-center whitespace-nowrap tabular-nums leading-none"-->
+<!--               [ngClass]="first ? 'text-gray-100/75' : ''"-->
+<!--          >{{ row }}-->
+<!--          </div>-->
+
+<!--          @for (index of getColCount(); track index; let j = $index; ) {-->
+<!--            @if (first) {-->
+<!--              <div class="w-64 h-12 shrink-0 border border-gray-400/60 bg-gray-100/70-->
+<!--             flex items-center justify-center whitespace-nowrap tabular-nums leading-none">-->
+<!--                {{ getLetter(j + 1) }}-->
+<!--              </div>-->
+<!--            } @else {-->
+<!--              @let header = getTh(i - 1, j);-->
+<!--              @let isHeader = header && header.col.columnIndex === j;-->
+
+<!--              @if (!header) {-->
+<!--                @let subCols = getSubCols(i - 1, j);-->
+<!--                <div class="w-64 h-12 shrink-0 border border-gray-400/60-->
+<!--             flex items-center justify-center whitespace-nowrap tabular-nums leading-none overflow-auto no-scrollbar-->
+<!--            "-->
+<!--                     [ngClass]="isHeader ? 'bg-red-800 text-white' : 'text-black'"-->
+<!--                >-->
+<!--                  @if (subCols) {-->
+<!--                    @if (!subCols.subCols) {-->
+<!--                      <div-->
+<!--                        class="flex-1 flex p-5 border items-center justify-center border-gray-400/60 bg-red-800 text-white">-->
+<!--                        {{ '' }}-->
+<!--                      </div>-->
+<!--                    } @else {-->
+<!--                      @for (subCol of subCols.subCols; track subCol.id) {-->
+<!--                        <div-->
+<!--                          class="flex-1 flex p-5 border items-center justify-center border-gray-400/60 bg-red-800 text-white">-->
+<!--                          {{ subCol.name }}-->
+<!--                        </div>-->
+<!--                      }-->
+<!--                    }-->
+<!--                  }-->
+<!--                </div>-->
+
+
+<!--              } @else {-->
+<!--                <div class="w-64 h-12 shrink-0 border border-gray-400/60-->
+<!--             flex items-center justify-center whitespace-nowrap tabular-nums leading-none overflow-auto no-scrollbar"-->
+<!--                     [ngClass]="isHeader ? 'bg-red-800 text-white' : 'text-black'"-->
+<!--                >-->
+<!--                  {{ '&nbsp;' }}-->
+<!--                </div>-->
+<!--              }-->
+<!--            }-->
+<!--          }-->
+
+<!--          &lt;!&ndash;          @let tableRow = getTableRow(i - 1);&ndash;&gt;-->
+
+<!--          &lt;!&ndash;          @for (val of tableRow.data; track val; let j = $index) {&ndash;&gt;-->
+<!--          &lt;!&ndash;            @if (first) {&ndash;&gt;-->
+<!--          &lt;!&ndash;              <div class="w-64 h-12 shrink-0 border border-gray-400/60 bg-gray-100/70&ndash;&gt;-->
+<!--          &lt;!&ndash;             flex items-center justify-center whitespace-nowrap tabular-nums leading-none">&ndash;&gt;-->
+<!--          &lt;!&ndash;                {{ val }}&ndash;&gt;-->
+<!--          &lt;!&ndash;              </div>&ndash;&gt;-->
+<!--          &lt;!&ndash;            } @else {&ndash;&gt;-->
+<!--          &lt;!&ndash;              <div class="w-64 h-12 shrink-0 border border-gray-400/60&ndash;&gt;-->
+<!--          &lt;!&ndash;             flex items-center justify-center whitespace-nowrap tabular-nums leading-none overflow-auto no-scrollbar"&ndash;&gt;-->
+<!--          &lt;!&ndash;                   [ngClass]="(tableRow.isHeader) ? 'bg-red-800 text-white' : ''"&ndash;&gt;-->
+<!--          &lt;!&ndash;              >&ndash;&gt;-->
+<!--          &lt;!&ndash;                {{ val }}&ndash;&gt;-->
+<!--          &lt;!&ndash;              </div>&ndash;&gt;-->
+<!--          &lt;!&ndash;            }&ndash;&gt;-->
+<!--          &lt;!&ndash;          }&ndash;&gt;-->
+<!--        </div>-->
+<!--      }-->
+<!--      &lt;!&ndash;      <table class="table-auto w-full">&ndash;&gt;-->
+<!--      &lt;!&ndash;        <thead>&ndash;&gt;-->
+<!--      &lt;!&ndash;        <tr>&ndash;&gt;-->
+<!--      &lt;!&ndash;          <th class="border border-gray-400/60 bg-gray-100/75 py-5 px-5"></th>&ndash;&gt;-->
+<!--      &lt;!&ndash;          @for (i of getArr(cols); track i; let first = $first) {&ndash;&gt;-->
+<!--      &lt;!&ndash;            <th class="border border-gray-400/60 bg-gray-100/75 py-2 px-24">{{ getLetter(i) }}</th>&ndash;&gt;-->
+<!--      &lt;!&ndash;          }&ndash;&gt;-->
+<!--      &lt;!&ndash;        </tr>&ndash;&gt;-->
+<!--      &lt;!&ndash;        </thead>&ndash;&gt;-->
+<!--      &lt;!&ndash;        <tbody>&ndash;&gt;-->
+<!--      &lt;!&ndash;          @for (row of getArr(rows); track row) {&ndash;&gt;-->
+<!--      &lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--      &lt;!&ndash;              <td class="border border-gray-400/60 bg-gray-100/75 py-2 px-5">{{ row + 1 }}</td>&ndash;&gt;-->
+<!--      &lt;!&ndash;              @for (i of getArr(cols); track i) {&ndash;&gt;-->
+<!--      &lt;!&ndash;                <td&ndash;&gt;-->
+<!--      &lt;!&ndash;                  #cellEl&ndash;&gt;-->
+<!--      &lt;!&ndash;                  class="border border-gray-400/60"&ndash;&gt;-->
+<!--      &lt;!&ndash;                  [class.bg-blue-100]="isCellSelected(row, i)"&ndash;&gt;-->
+<!--      &lt;!&ndash;                  [class.ring-2]="isCellSelected(row, i)"&ndash;&gt;-->
+<!--      &lt;!&ndash;                  [class.ring-blue-400]="isCellSelected(row, i)"&ndash;&gt;-->
+<!--      &lt;!&ndash;                  [attr.data-row]="row"&ndash;&gt;-->
+<!--      &lt;!&ndash;                  [attr.data-col]="i"&ndash;&gt;-->
+<!--      &lt;!&ndash;                  (mousedown)="$event.preventDefault()"&ndash;&gt;-->
+<!--      &lt;!&ndash;                >&ndash;&gt;-->
+<!--      &lt;!&ndash;                  <input type="text" class="w-full h-full focus:outline-red-800 py-3 px-3" />&ndash;&gt;-->
+<!--      &lt;!&ndash;                </td>&ndash;&gt;-->
+<!--      &lt;!&ndash;              }&ndash;&gt;-->
+<!--      &lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--      &lt;!&ndash;          }&ndash;&gt;-->
+<!--      &lt;!&ndash;        </tbody>&ndash;&gt;-->
+<!--      &lt;!&ndash;      </table>&ndash;&gt;-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</app-main>-->
+
+<!--&lt;!&ndash;<app-main [padding]="false">&ndash;&gt;-->
+<!--&lt;!&ndash;  <div class="flex w-full h-[8vh] bg-white p-3 border-y border-gray-200 gap-4 shadow-lg">&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="flex gap-2">&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="flex badge bg-gray-100 p-3 justify-between gap-2">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4">&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_iconCarrier">&ndash;&gt;-->
+<!--&lt;!&ndash;            <path fill-rule="evenodd" clip-rule="evenodd" d="M18.1716 1C18.702 1 19.2107 1.21071 19.5858 1.58579L22.4142 4.41421C22.7893 4.78929 23 5.29799 23 5.82843V20C23 21.6569 21.6569 23 20 23H4C2.34315 23 1 21.6569 1 20V4C1 2.34315 2.34315 1 4 1H18.1716ZM4 3C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21L5 21L5 15C5 13.3431 6.34315 12 8 12L16 12C17.6569 12 19 13.3431 19 15V21H20C20.5523 21 21 20.5523 21 20V6.82843C21 6.29799 20.7893 5.78929 20.4142 5.41421L18.5858 3.58579C18.2107 3.21071 17.702 3 17.1716 3H17V5C17 6.65685 15.6569 8 14 8H10C8.34315 8 7 6.65685 7 5V3H4ZM17 21V15C17 14.4477 16.5523 14 16 14L8 14C7.44772 14 7 14.4477 7 15L7 21L17 21ZM9 3H15V5C15 5.55228 14.5523 6 14 6H10C9.44772 6 9 5.55228 9 5V3Z" fill="#0F0F0F"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;          </g>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="text-base">Save</p>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="flex badge bg-gray-100 p-3 justify-between gap-2">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" class="w-4 h-4">&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_iconCarrier">&ndash;&gt;-->
+<!--&lt;!&ndash;            <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M3 14.25C3.41421 14.25 3.75 14.5858 3.75 15C3.75 16.4354 3.75159 17.4365 3.85315 18.1919C3.9518 18.9257 4.13225 19.3142 4.40901 19.591C4.68577 19.8678 5.07435 20.0482 5.80812 20.1469C6.56347 20.2484 7.56459 20.25 9 20.25H15C16.4354 20.25 17.4365 20.2484 18.1919 20.1469C18.9257 20.0482 19.3142 19.8678 19.591 19.591C19.8678 19.3142 20.0482 18.9257 20.1469 18.1919C20.2484 17.4365 20.25 16.4354 20.25 15C20.25 14.5858 20.5858 14.25 21 14.25C21.4142 14.25 21.75 14.5858 21.75 15V15.0549C21.75 16.4225 21.75 17.5248 21.6335 18.3918C21.5125 19.2919 21.2536 20.0497 20.6517 20.6516C20.0497 21.2536 19.2919 21.5125 18.3918 21.6335C17.5248 21.75 16.4225 21.75 15.0549 21.75H8.94513C7.57754 21.75 6.47522 21.75 5.60825 21.6335C4.70814 21.5125 3.95027 21.2536 3.34835 20.6517C2.74643 20.0497 2.48754 19.2919 2.36652 18.3918C2.24996 17.5248 2.24998 16.4225 2.25 15.0549C2.25 15.0366 2.25 15.0183 2.25 15C2.25 14.5858 2.58579 14.25 3 14.25Z" fill="#000000"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 16.75C12.2106 16.75 12.4114 16.6615 12.5535 16.5061L16.5535 12.1311C16.833 11.8254 16.8118 11.351 16.5061 11.0715C16.2004 10.792 15.726 10.8132 15.4465 11.1189L12.75 14.0682V3C12.75 2.58579 12.4142 2.25 12 2.25C11.5858 2.25 11.25 2.58579 11.25 3V14.0682L8.55353 11.1189C8.27403 10.8132 7.79963 10.792 7.49393 11.0715C7.18823 11.351 7.16698 11.8254 7.44648 12.1311L11.4465 16.5061C11.5886 16.6615 11.7894 16.75 12 16.75Z" fill="#000000"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;          </g>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="text-base">Export</p>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="flex border-x gap-2">&ndash;&gt;-->
+<!--&lt;!&ndash;      <button class="px-2">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)" class="w-5 h-5">&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_iconCarrier">&ndash;&gt;-->
+<!--&lt;!&ndash;            <path d="M20 10L20.7071 10.7071L21.4142 10L20.7071 9.29289L20 10ZM3 18C3 18.5523 3.44772 19 4 19C4.55229 19 5 18.5523 5 18L3 18ZM15.7071 15.7071L20.7071 10.7071L19.2929 9.29289L14.2929 14.2929L15.7071 15.7071ZM20.7071 9.29289L15.7071 4.29289L14.2929 5.70711L19.2929 10.7071L20.7071 9.29289ZM20 9L10 9L10 11L20 11L20 9ZM3 16L3 18L5 18L5 16L3 16ZM10 9C6.13401 9 3 12.134 3 16L5 16C5 13.2386 7.23858 11 10 11L10 9Z" fill="#000000"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;          </g>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;      <button class="px-2">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_iconCarrier">&ndash;&gt;-->
+<!--&lt;!&ndash;            <path d="M20 10L20.7071 10.7071L21.4142 10L20.7071 9.29289L20 10ZM3 18C3 18.5523 3.44772 19 4 19C4.55229 19 5 18.5523 5 18L3 18ZM15.7071 15.7071L20.7071 10.7071L19.2929 9.29289L14.2929 14.2929L15.7071 15.7071ZM20.7071 9.29289L15.7071 4.29289L14.2929 5.70711L19.2929 10.7071L20.7071 9.29289ZM20 9L10 9L10 11L20 11L20 9ZM3 16L3 18L5 18L5 16L3 16ZM10 9C6.13401 9 3 12.134 3 16L5 16C5 13.2386 7.23858 11 10 11L10 9Z" fill="#000000"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;          </g>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="flex gap-2">&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="flex badge bg-gray-100 p-3 justify-between gap-2" (click)="incrementCols()">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7">&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_iconCarrier">&ndash;&gt;-->
+<!--&lt;!&ndash;            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 8.25C12.4142 8.25 12.75 8.58579 12.75 9V11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H12.75L12.75 15C12.75 15.4142 12.4142 15.75 12 15.75C11.5858 15.75 11.25 15.4142 11.25 15V12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H11.25L11.25 9C11.25 8.58579 11.5858 8.25 12 8.25Z" fill="#6bdb75"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;          </g>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="text-base">Add columns</p>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="flex badge bg-gray-100 p-3 justify-between gap-2" (click)="incrementRows()">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7">&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>&ndash;&gt;-->
+<!--&lt;!&ndash;          <g id="SVGRepo_iconCarrier">&ndash;&gt;-->
+<!--&lt;!&ndash;            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22ZM12 8.25C12.4142 8.25 12.75 8.58579 12.75 9V11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H12.75L12.75 15C12.75 15.4142 12.4142 15.75 12 15.75C11.5858 15.75 11.25 15.4142 11.25 15V12.75H9C8.58579 12.75 8.25 12.4142 8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H11.25L11.25 9C11.25 8.58579 11.5858 8.25 12 8.25Z" fill="#6bdb75"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;          </g>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="text-base">Add rows</p>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;  </div>&ndash;&gt;-->
+<!--&lt;!&ndash;  <div class="p-6 h-full w-full">&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="listHeader">&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="flex flex-col text-left p-3 gap-1">&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="text-2xl md:text-3xl font-serif font-semibold">Spreadsheet</p>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p class="hidden md:block font-normal">Manage your report's spreadsheets</p>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    <div #gridContainer class="w-full h-[60vh] bg-white overflow-auto rounded-b-3xl relative select-none" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp($event)" (mouseleave)="onMouseUp($event)">&ndash;&gt;-->
+<!--&lt;!&ndash;      @if (dragging) {&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="absolute pointer-events-none border border-blue-500/70 bg-blue-400/20" [ngStyle]="selectionBox"></div>&ndash;&gt;-->
+<!--&lt;!&ndash;      }&ndash;&gt;-->
+<!--&lt;!&ndash;      <table class="border-collapse w-full">&ndash;&gt;-->
+<!--&lt;!&ndash;        <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;        <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;          <th class="w-24 h-12 bg-gray-100/70 sticky top-0 left-0 z-20"></th>&ndash;&gt;-->
+<!--&lt;!&ndash;          @for (j of getColCount(); track j) {&ndash;&gt;-->
+<!--&lt;!&ndash;            <th class="w-64 h-12 bg-gray-100/70 sticky top-0 z-10 whitespace-nowrap tabular-nums leading-none">{{ letters[j] }}</th>&ndash;&gt;-->
+<!--&lt;!&ndash;          }&ndash;&gt;-->
+<!--&lt;!&ndash;        </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;        </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;        <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;          @for (r of getArr(rows); track r; let i = $index) {&ndash;&gt;-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;              <th class="w-24 h-12 bg-gray-100/70 sticky left-0 z-10 flex items-center justify-center whitespace-nowrap tabular-nums leading-none">{{ i + 1 }}</th>&ndash;&gt;-->
+<!--&lt;!&ndash;              @for (j of getColCount(); track j) {&ndash;&gt;-->
+<!--&lt;!&ndash;                <td #cellEl class="w-64 h-12 border border-gray-400/60 overflow-auto no-scrollbar" [ngClass]="{'bg-blue-100 ring-2 ring-blue-400': isCellSelected(i, j)}" [attr.data-row]="i" [attr.data-col]="j">&ndash;&gt;-->
+<!--&lt;!&ndash;                  @let header = getTh(i, j);&ndash;&gt;-->
+<!--&lt;!&ndash;                  @let sub = getSub(i + 1, j);&ndash;&gt;-->
+<!--&lt;!&ndash;                  @if (header) {&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="h-full flex items-center justify-center bg-red-800 text-white whitespace-nowrap tabular-nums leading-none">&ndash;&gt;-->
+<!--&lt;!&ndash;                      {{ header.col.columnName }}&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                  } @else if (sub) {&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="h-full flex items-center justify-center bg-red-800 text-white whitespace-nowrap tabular-nums leading-none">&ndash;&gt;-->
+<!--&lt;!&ndash;                      {{ sub.name }}&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                  } @else {&ndash;&gt;-->
+<!--&lt;!&ndash;                    &lt;!&ndash; Empty cell content or input if needed &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                      &lt;!&ndash; <input class="w-full h-full focus:outline-red-800 py-3 px-3" /> &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                  }&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--&lt;!&ndash;              }&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;          }&ndash;&gt;-->
+<!--&lt;!&ndash;        </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;      </table>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;  </div>&ndash;&gt;-->
+<!--&lt;!&ndash;</app-main>&ndash;&gt;-->

@@ -55,11 +55,12 @@ export class DataTableComponent implements OnInit, OnChanges {
   constructor(
     private overlay: Overlay,
     private vcr: ViewContainerRef,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.keys = this.thead().map(e => e.key);
+
+    // console.log(this.keys);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -162,6 +163,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   getEntryValue(entry: BaseTableData, key: string): any {
+    // console.log(entry)
     if (['createdAt', 'updatedAt'].includes(key)) {
       const date = new Date(entry[key]);
 

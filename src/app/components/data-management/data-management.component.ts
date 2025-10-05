@@ -20,6 +20,7 @@ import {Mode} from '../../models/modes.enum';
 import {SingleActionWithEntity, SingleActionWithId} from '../../models/single-action.type';
 import {AuthService} from '../../services/auth.service';
 import {Subject, takeUntil} from 'rxjs';
+import {ReportTemplateService} from '../../services/report-template.service';
 
 @Component({
   selector: 'app-data-management',
@@ -377,6 +378,11 @@ export class DataManagementComponent implements OnInit, OnChanges, OnDestroy {
 
       this.idsToDelete([this.singleAction.id]);
       this.toggleDeletion(true);
+      return;
+    }
+
+    if (this.singleAction.action === Mode.EDIT && this.entityService instanceof ReportTemplateService) {
+      this.entityService.navigateToSpreadsheets(this.router, entity);
       return;
     }
 

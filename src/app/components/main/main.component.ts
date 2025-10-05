@@ -5,10 +5,12 @@ import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {isAdmin, isTmOrPm, Role} from "../../models/roles.enum";
 import {Subscription} from 'rxjs';
 import {NgClass} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-main',
   imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterLink,

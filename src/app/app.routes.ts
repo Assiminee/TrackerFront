@@ -11,7 +11,7 @@ import {AdminAuthGuardService} from './services/admin-auth-guard.service';
 import {
   ReportTemplateManagementComponent
 } from './components/report-template-management/report-template-management.component';
-import {SpreadsheetsComponent} from './components/spreadsheets/spreadsheets.component';
+import {SheetTemplatesComponent} from './components/sheet-templates/sheet-templates.component';
 
 export const routes: Routes = [
   {path: 'login', component: Login},
@@ -20,7 +20,7 @@ export const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'reports', component: ReportsComponent},
   {path: 'report-templates', component: ReportTemplateManagementComponent},
-  {path: 'spreadsheets', component: SpreadsheetsComponent},
+  {path: 'spreadsheets', component: SheetTemplatesComponent},
   {
     path: 'admin', component: AdminComponent, canActivate: [AdminAuthGuardService], children: [
       {path: 'manage-users', component: UserManagementComponent},
