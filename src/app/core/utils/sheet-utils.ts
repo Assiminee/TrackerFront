@@ -46,7 +46,7 @@ function columnToGridCell(table: Table, col: Column): GridCell {
 
 // Maps a single sub-column (sub-header) cell to a GridCell
 function subColumnToGridCell(table: Table, col: Column, sc?: SubColumn): GridCell {
-  const colIndex = sc ? sc.subColumnIndex + col.columnIndex : col.columnIndex;
+  const colIndex = sc ? sc.subColumnIndex : col.columnIndex;
   const rowIndex = table.startingRow + 1;
 
   return {
@@ -64,6 +64,14 @@ function subColumnToGridCell(table: Table, col: Column, sc?: SubColumn): GridCel
     isLastRow: false,
     parentId: col.id,
     isEditable: false
+  }
+}
+
+export function gridCellToSubColumn(gridCell: GridCell): SubColumn {
+  return {
+    id: gridCell.id,
+    name: gridCell.content.value,
+    subColumnIndex: gridCell.columnIndex
   }
 }
 
@@ -121,20 +129,19 @@ function createBlankDataGridCells(col: Column, hasSubCols: boolean, startCol: nu
   }
 
   for (const subColumn of col.subColumns) {
-    const blankCells : GridCell[] = []
-    const subColumnIndex = col.columnIndex + subColumn.subColumnIndex;
+    const blankCells : GridCell[] = [];
     let j = 0;
 
     for (let i = rowIndex; i < rowIndex + rowCount - 1; i++) {
       blankCells.push({
         id: `${subColumn.id}_CELL_${j}`,
         isDataCell: true,
-        columnIndex: subColumnIndex,
+        columnIndex: subColumn.subColumnIndex,
         rowIndex: i,
-        gridColumnIndex: subColumnIndex + 1,
+        gridColumnIndex: subColumn.subColumnIndex + 1,
         gridRowIndex: i + 1,
-        isLastColumn: subColumnIndex === endCol,
-        isFirstColumn: subColumnIndex === startCol,
+        isLastColumn: subColumn.subColumnIndex === endCol,
+        isFirstColumn: subColumn.subColumnIndex === startCol,
         isFirstRow: i === startRow,
         isLastRow: i === endRow,
         content: new FormControl(`${subColumn.id}_CELL_${j}_INDEX_${j}`),
@@ -224,7 +231,7 @@ function createBlankColumn(startingCol: number, index: number, tableId: string, 
     column.subColumns = [{
       id: `${id}_SUB_COLUMN_0`,
       name: 'Sub Column 1',
-      subColumnIndex: 0
+      subColumnIndex: column.columnIndex
     }];
 
   return column;
@@ -302,6 +309,8 @@ export function mapSheet(sheet: Sheet, mode: Mode.EDIT | Mode.CREATE, map?: Shee
   if (sheet.standaloneCells.length)
     gridCells.push(...standaloneCellsToGridCells(sheet.standaloneCells));
 
+  console.log("WHAT ABOUT HERE? WHAT DOES THE SHEET LOOK LIKE?", sheet)
+
   for (const table of sheet.tables) {
     gridCells.push(...table.columns.map((col) => createGridCells(table, col)).flat());
 
@@ -323,7 +332,6 @@ export function mapSheet(sheet: Sheet, mode: Mode.EDIT | Mode.CREATE, map?: Shee
       }
     })
   }
-
 
   return map;
 }

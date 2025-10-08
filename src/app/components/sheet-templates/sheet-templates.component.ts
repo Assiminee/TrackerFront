@@ -1,6 +1,15 @@
-import {Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {createBlankTable, mapSheet} from '../../core/utils/sheet-utils';
+import {createBlankTable, gridCellToSubColumn, mapSheet} from '../../core/utils/sheet-utils';
 import {GridCell, GridRecord, SheetDisplayMap, SheetId} from '../../core/utils/sheet-map.types';
 import {Router} from '@angular/router';
 import {Sheet} from '../../models/report/shared/sheet.interface';
@@ -12,8 +21,9 @@ import {SheetTemplateService} from '../../services/sheet-template.service';
 import {Observable, Subject, takeUntil} from 'rxjs';
 import {Mode} from '../../models/modes.enum';
 import {FormHelperService} from '../../services/form-helper.service';
-import {Action, ActionType} from '../../models/report/shared/action.interface';
+import {Action, ActionType, DataAction} from '../../models/report/shared/action.interface';
 import {MainComponent} from "../main/main.component";
+import {NgClass, NgStyle} from "@angular/common";
 
 type GridCellDisplay = {
   columnStart: number;
@@ -28,7 +38,9 @@ type GridCellDisplay = {
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    MainComponent
+    MainComponent,
+    NgStyle,
+    NgClass
   ],
   templateUrl: './sheet-templates.component.html',
   standalone: true,
@@ -72,7 +84,9 @@ export class SheetTemplatesComponent implements OnInit, OnDestroy {
   protected selected = new Set<string>();
   protected selectedCellContent: string | undefined;
   protected selectedCell: FormControl | undefined;
-  protected hoveredOverCell: { row: number; column: number } = {row: -1, column: -1};
+  protected clickedCell: { row: number; column: number } = {row: -1, column: -1};
+  protected menuLeft: number = 0;
+  protected menuTop: number = 0;
 
   constructor(private router: Router, private service: SheetTemplateService, protected formHelper: FormHelperService) {
     this.report = history.state?.['reportTemplate'];
@@ -108,12 +122,16 @@ export class SheetTemplatesComponent implements OnInit, OnDestroy {
 
   createForm = () => {
     return new FormGroup({
-      name: new FormControl(this.report.name, [Validators.required, Validators.minLength(2), Validators.maxLength(200)]),
-      description: new FormControl(this.report.description, Validators.maxLength(500)),
+      name: new FormControl(
+        this.report ? this.report.name : "",
+        [Validators.required, Validators.minLength(2), Validators.maxLength(200)]
+      ),
+      description: new FormControl(this.report ? this.report.description : "", Validators.maxLength(500)),
     })
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   generateBlankSheet() {
     const date = new Date();
@@ -301,6 +319,7 @@ export class SheetTemplatesComponent implements OnInit, OnDestroy {
   }
 
   protected readonly Object = Object;
+
   // protected readonly log = console.log;
 
   createTable() {
@@ -443,60 +462,88 @@ export class SheetTemplatesComponent implements OnInit, OnDestroy {
     const location = {row: -1, column: -1};
 
     if (gridCell === undefined || gridCell?.isHeaderCell === false) {
-      this.hoveredOverCell = location;
+      this.clickedCell = location;
       return;
     }
 
-    this.hoveredOverCell = {row, column};
+    this.clickedCell = {row, column};
   }
 
   show(row: number, column: number) {
-    return this.hoveredOverCell.row === row && this.hoveredOverCell.column === column;
+    return this.clickedCell.row === row && this.clickedCell.column === column;
   }
 
   cellEllMouseLeave() {
-    this.hoveredOverCell = {row: -1, column: -1};
+    this.clickedCell = {row: -1, column: -1};
   }
 
-  createSubColumn(gridCell: GridCell, i: number, j: number) {
-    const id = gridCell.isHeaderCell ? gridCell.id : gridCell.parentId;
+  shiftSubColumns(table: Table, column: Column, toTheLeft: boolean, gridCell: GridCell) {
+    if (!column.subColumns.length) return;
 
-    if (!id)
-      return;
+    table.endingColumn += 1;
 
-    const table: Table | undefined = this.sheetTemplateStorage[this.currentSheetTemplateId].tables
-      .find(table => table.id.toLowerCase() === gridCell.tableId?.toLowerCase());
+    for (const col of table.columns) {
+      if (column.columnIndex > col.columnIndex) continue;
+      if (gridCell.isHeaderCell && !toTheLeft && column.id.toLowerCase() == col.id.toLowerCase()) continue;
 
-    if (!table)
-      return;
-
-    table.hasSubColumns = true;
-
-    const column: Column | undefined = table.columns.find(col => col.id.toLowerCase() === id.toLowerCase());
-
-    if (!column)
-      return;
-
-    const subColumnCount = column.subColumns.length;
-    if (subColumnCount >= 1) {
-      table.endingColumn += 1;
-      table.columns.forEach(col => {
-        if (col.id.toLowerCase() !== id.toLowerCase() && col.columnIndex > column.columnIndex) {
-          col.columnIndex += 1;
+      col.subColumns.forEach((subColumn) => {
+        if (gridCell.isSubHeaderCell) {
+          if (toTheLeft && subColumn.subColumnIndex < gridCell.columnIndex) return;
+          if (!toTheLeft && subColumn.subColumnIndex <= gridCell.columnIndex) return;
         }
-      })
+
+        subColumn.subColumnIndex += 1;
+      });
+      if (column.id.toLowerCase() !== col.id.toLowerCase()) col.columnIndex += 1;
+    }
+  }
+
+  createSubColumn(gridCell: GridCell, table: Table, column: Column, toTheLeft: boolean) {
+    this.clickedCell = {row: -1, column: -1};
+    let subColumnIndex : number;
+
+    if (gridCell.isSubHeaderCell) {
+      if (column.subColumns.length === 0) subColumnIndex = column.columnIndex;
+      else subColumnIndex = toTheLeft ? gridCell.columnIndex : gridCell.columnIndex + 1;
+    } else {
+      subColumnIndex = toTheLeft ? column.columnIndex : column.columnIndex + column.subColumns.length;
     }
 
     const subColumn: SubColumn = {
-      id: `${column.id}_SUB_COLUMN_${subColumnCount}`,
-      subColumnIndex: subColumnCount,
-      name: `Sub Column ${subColumnCount}`
-    }
+      id: `${column.id}_SUB_COLUMN_${column.subColumns.length}`,
+      subColumnIndex: subColumnIndex,
+      name: `Sub Column ${column.subColumns.length}`
+    };
 
+    table.hasSubColumns = true;
     column.subColumns.push(subColumn);
+
+    return subColumn;
+  }
+
+  addSubColumnToTable(gridCell: GridCell, toTheLeft: boolean = false) {
+    const id = gridCell.isHeaderCell ? gridCell.id : gridCell.parentId;
+    const table = this.sheetTemplateStorage[this.currentSheetTemplateId].tables
+      .find(table => table.id.toLowerCase() === gridCell.tableId?.toLowerCase());
+    const column = table?.columns.find(col => col.id.toLowerCase() === id?.toLowerCase());
+
+    if (!table || !id || !column) return;
+
+    this.shiftSubColumns(table, column, toTheLeft, gridCell);
+
+    const subColumn: SubColumn = this.createSubColumn(gridCell, table, column, toTheLeft);
+
     const mode = this.sheetMapDisplay.sheetInfo[this.currentSheetTemplateId].mode
 
     this.sheetMapDisplay = mapSheet(this.sheetTemplateStorage[this.currentSheetTemplateId], mode, this.sheetMapDisplay);
+
+    this.undo.push({
+      type: ActionType.ADD_SUB_HEADER_FIELD,
+      gridCell: {
+        ...this.sheetMapDisplay
+          .sheets[this.currentSheetTemplateId][table.startingRow + 2][subColumn.subColumnIndex + 1]
+      },
+    } as DataAction);
   }
 
   save() {
@@ -580,11 +627,155 @@ export class SheetTemplatesComponent implements OnInit, OnDestroy {
     if (!undo)
       return;
 
-    this.redo.push(undo);
 
-    if (undo.type === ActionType.ADD_COLUMN)
+    if (undo.type === ActionType.ADD_COLUMN) {
       this.cols--;
-    else if (undo.type === ActionType.ADD_ROW)
+    } else if (undo.type === ActionType.ADD_ROW) {
       this.rows--;
+    } else if (undo.type === ActionType.ADD_SUB_HEADER_FIELD) {
+      this.undoCreateSubHeaderField(undo);
+    }
+
+    this.redo.push(undo);
+  }
+
+  undoCreateSubHeaderField(undo: Action) {
+    const subColumn = (undo as DataAction).gridCell;
+    const table = this.sheetTemplateStorage[this.currentSheetTemplateId]
+      .tables.find(t => t.id?.toLowerCase() === subColumn?.tableId?.toLowerCase());
+    const column = table?.columns.find(c => c.id.toLowerCase() === subColumn?.parentId?.toLowerCase());
+    const sc = column?.subColumns.find(sc => sc.id.toLowerCase() === subColumn?.id?.toLowerCase());
+
+    if (!subColumn || !table || !column || !sc) return;
+
+    const index = column.subColumns.indexOf(sc);
+    if (index === -1) return;
+
+    column.subColumns.splice(index, 1);
+
+    if (column.subColumns.length >= 1) {
+      table.columns.forEach((col) => {
+        if (column.columnIndex > col.columnIndex) return;
+        col.subColumns.forEach((subColumn) => {
+          if (subColumn.subColumnIndex < sc.subColumnIndex) return;
+          subColumn.subColumnIndex--;
+        });
+        if (column.id.toLowerCase() !== col.id.toLowerCase()) col.columnIndex--;
+      })
+      table.endingColumn--;
+    }
+    let hasSubCols = false;
+
+    for (const col of table.columns) {
+      if (col.subColumns.length > 0) {
+        hasSubCols = true;
+        break;
+      }
+    }
+
+    table.hasSubColumns = hasSubCols;
+    delete this.sheetMapDisplay.sheets[this.currentSheetTemplateId];
+    delete this.sheetMapDisplay.sheetInfo[this.currentSheetTemplateId];
+    this.sheetMapDisplay = mapSheet(this.sheetTemplateStorage[this.currentSheetTemplateId], Mode.EDIT, this.sheetMapDisplay);
+  }
+
+  revertAddSubHeaderField(undo: Action) {
+    const gridCell = (undo as DataAction).gridCell;
+    const table = this.sheetTemplateStorage[this.currentSheetTemplateId]
+      .tables.find(t => t.id?.toLowerCase() === gridCell?.tableId?.toLowerCase());
+    const column = table?.columns.find(c => c.id.toLowerCase() === gridCell?.parentId?.toLowerCase());
+
+    if (!gridCell || !table || !column) return;
+
+    const subColumn = gridCellToSubColumn(gridCell);
+
+    if (column.subColumns.length >= 1) {
+      table.columns.forEach((col) => {
+        if (column.columnIndex > col.columnIndex) return;
+
+        col.subColumns.forEach((subColumn) => {
+          if (subColumn.subColumnIndex < gridCell.columnIndex) return;
+
+          subColumn.subColumnIndex += 1;
+        });
+        if (column.id.toLowerCase() !== col.id.toLowerCase()) col.columnIndex++;
+      });
+      table.endingColumn += 1;
+    }
+
+    column.subColumns.push(subColumn);
+
+    let hasSubCols = false;
+
+    for (const col of table.columns) {
+      if (col.subColumns.length > 0) {
+        hasSubCols = true;
+        break;
+      }
+    }
+
+    table.hasSubColumns = hasSubCols;
+    delete this.sheetMapDisplay.sheets[this.currentSheetTemplateId];
+    delete this.sheetMapDisplay.sheetInfo[this.currentSheetTemplateId];
+    this.sheetMapDisplay = mapSheet(this.sheetTemplateStorage[this.currentSheetTemplateId], Mode.EDIT, this.sheetMapDisplay);
+  }
+
+  redoAction() {
+    const redo = this.redo.pop();
+
+    if (!redo) return;
+
+    this.undo.push(redo);
+
+    if (redo.type === ActionType.ADD_COLUMN) {
+      this.incrementCols();
+    } else if (redo.type === ActionType.ADD_ROW) {
+      this.incrementRows();
+    } else if (redo.type === ActionType.ADD_SUB_HEADER_FIELD) {
+      this.revertAddSubHeaderField(redo);
+    }
+  }
+
+  cellRightClicked(event: MouseEvent, i: number, j: number) {
+    if (event.button === 2) {
+      event.preventDefault();
+    }
+
+    const cell = this.cellEls.find(cellEl => {
+      const cell = cellEl.nativeElement;
+
+      const r = Number(cell.dataset['row']);
+      const c = Number(cell.dataset['col']);
+
+      return r === i && c === j;
+    })
+
+    console.log({menuLeft: this.menuLeft, menuTop: this.menuTop})
+
+    if (event.button !== 2 || !cell) {
+      i = -1;
+      j = -1;
+    }
+
+    if (cell) {
+      const boundingRect = cell.nativeElement.getBoundingClientRect();
+      this.menuLeft = event.clientX - boundingRect.left;
+      this.menuTop = event.clientY - boundingRect.top;
+    }
+
+    this.clickedCell = {row: i, column: j};
+  }
+
+  @HostListener('document:mousedown', ['$event'])
+  onGlobalMouseDown(event: MouseEvent) {
+    // If menu is visible and click is not inside any visible menu
+    if (this.clickedCell.row !== -1 && this.clickedCell.column !== -1) {
+      // Find all visible menus (though ideally there's only one visible)
+      const visibleMenus = Array.from(document.querySelectorAll('.context-menu:not(.hidden)'));
+      const isClickInsideMenu = visibleMenus.some(menu => menu.contains(event.target as Node));
+      if (!isClickInsideMenu) {
+        this.clickedCell = {row: -1, column: -1};
+      }
+    }
   }
 }

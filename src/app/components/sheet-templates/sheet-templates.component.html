@@ -46,7 +46,7 @@
           </g>
         </svg>
       </button>
-      <button class="px-3 border-r-2 border-r-black">
+      <button class="px-3 border-r-2 border-r-black" type="button" (click)="redoAction()">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
              class="w-4 h-4 transformations cursor-pointer">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -195,28 +195,136 @@
                   [style.grid-row-end]="cellDisplay?.rowEnd"
                   [ngClass]="cellDisplay?.styling"
                   (click)="setSelected(column)"
-                  (mouseenter)="cellElMouseEnter(column, i, j)"
-                  (mouseleave)="cellEllMouseLeave()"
+                  (contextmenu)="cellRightClicked($event, i, j)"
                 >
                   @if (column) {
                     <input
                       class="w-full h-full px-2 focus:outline-2 focus:outline-offset-0 focus:outline-solid rounded-xs focus:outline-red-800"
                       [formControl]="column.content" (input)="setSelected(column)"/>
                     @if (column.isHeaderCell || column.isSubHeaderCell) {
-                      <button type="button"
-                              class="absolute border-1 border-red-700 shadow-2xl bg-red-800 flex gap-2 px-2 py-1 text-white rounded-lg top-[-27px]"
-                              (click)="createSubColumn(column, i, j)" [ngClass]="{hidden: !show(i, j)}">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
-                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                          <g id="SVGRepo_iconCarrier">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9L11.25 11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15L12.75 12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"
-                                  fill="#ffffff"></path>
-                          </g>
-                        </svg>
-                        Add sub-column
-                      </button>
+                      <div
+                        class="absolute z-10 border-1
+                               border-red-800 shadow-2xl
+                               bg-white flex gap-2
+                               text-black rounded-sm
+                               w-fit
+                               context-menu
+                              "
+                        [ngStyle]="{left: menuLeft + 'px', top: menuTop + 'px'}"
+                        [ngClass]="{hidden: !show(i, j)}">
+                        <ul class="w-full">
+                          @if (column.isHeaderCell) {
+                            <li class="py-2 px-2 hover:bg-red-100 rounded-sm">
+                              <button class="flex items-center gap-2" type="button">
+                                <svg fill="#000000" viewBox="-8.5 0 32 32" version="1.1"
+                                     xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                  <g id="SVGRepo_iconCarrier"><title>left</title>
+                                    <path
+                                      d="M7.094 15.938l7.688 7.688-3.719 3.563-11.063-11.063 11.313-11.344 3.531 3.5z"></path>
+                                  </g>
+                                </svg>
+                                Create a column to the left
+                              </button>
+                            </li>
+                            <li class="py-2 px-2 hover:bg-red-100">
+                              <button type="button" class="flex items-center gap-2">
+                                <svg fill="#000000" viewBox="-8.5 0 32 32" version="1.1" class="w-5 h-5"
+                                     xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)">
+                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                  <g id="SVGRepo_iconCarrier"><title>left</title>
+                                    <path
+                                      d="M7.094 15.938l7.688 7.688-3.719 3.563-11.063-11.063 11.313-11.344 3.531 3.5z"></path>
+                                  </g>
+                                </svg>
+                                Create a column to the right
+                              </button>
+                            </li>
+                          }
+                          <li class="py-2 px-2 hover:bg-red-100" (click)="addSubColumnToTable(column, true)">
+                            <button type="button" class="flex items-center gap-2">
+                              <svg fill="#000000" viewBox="-8.5 0 32 32" version="1.1" class="w-5 h-5"
+                                   xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"><title>left</title>
+                                  <path
+                                    d="M7.094 15.938l7.688 7.688-3.719 3.563-11.063-11.063 11.313-11.344 3.531 3.5z"></path>
+                                </g>
+                              </svg>
+                              Create a sub-column to the left
+                            </button>
+                          </li>
+                          <li class="py-2 px-2 hover:bg-red-100">
+                            <button type="button" class="flex items-center gap-2" (click)="addSubColumnToTable(column)">
+                              <svg fill="#000000" viewBox="-8.5 0 32 32" version="1.1" class="w-5 h-5"
+                                   xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"><title>left</title>
+                                  <path
+                                    d="M7.094 15.938l7.688 7.688-3.719 3.563-11.063-11.063 11.313-11.344 3.531 3.5z"></path>
+                                </g>
+                              </svg>
+                              Create a sub-column to the right
+                            </button>
+                          </li>
+                          @if (column.isHeaderCell) {
+                            <li class="py-2 px-2 hover:bg-red-100 rounded-sm">
+                              <button class="flex items-center gap-2">
+                                <svg viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" class="w-5 h-5">
+                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                  <g id="SVGRepo_iconCarrier"><title>delete [#1487]</title>
+                                    <desc>Created with Sketch.</desc>
+                                    <defs></defs>
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                      <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)"
+                                         fill="#000000">
+                                        <g id="icons" transform="translate(56.000000, 160.000000)">
+                                          <path
+                                            d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z"
+                                            id="delete-[#1487]"></path>
+                                        </g>
+                                      </g>
+                                    </g>
+                                  </g>
+                                </svg>
+                                Delete column
+                              </button>
+                            </li>
+                          }
+                          @if (column.isSubHeaderCell) {
+                            <li class="py-2 px-2 hover:bg-red-100 rounded-sm">
+                              <button class="flex items-center gap-2">
+                                <svg viewBox="0 -0.5 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" class="w-5 h-5">
+                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                  <g id="SVGRepo_iconCarrier"><title>delete [#1487]</title>
+                                    <desc>Created with Sketch.</desc>
+                                    <defs></defs>
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                      <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)"
+                                         fill="#000000">
+                                        <g id="icons" transform="translate(56.000000, 160.000000)">
+                                          <path
+                                            d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z"
+                                            id="delete-[#1487]"></path>
+                                        </g>
+                                      </g>
+                                    </g>
+                                  </g>
+                                </svg>
+                                Delete sub-column
+                              </button>
+                            </li>
+                          }
+                        </ul>
+                      </div>
                     }
                   } @else {
                     {{ '&nbsp;' }}

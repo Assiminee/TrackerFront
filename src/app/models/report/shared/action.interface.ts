@@ -1,10 +1,13 @@
+import {GridCell} from "../../../core/utils/sheet-map.types";
+
 export interface Action {
   type: ActionType;
 }
 
-export interface DataAction {
+export interface DataAction extends Action {
   targetId: string;
-  value: string;
+  gridCell?: GridCell;
+  value?: string;
 }
 
 export function isDataAction(action: any): action is DataAction {
@@ -19,10 +22,7 @@ export enum ActionType {
   DELETE_TABLE,
 
   ADD_COLUMN,
-  DELETE_COLUMN,
-
   ADD_ROW,
-  DELETE_ROW,
 
   ADD_HEADER_FIELD,
   DELETE_HEADER_FIELD,
