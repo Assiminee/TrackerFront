@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {BaseEntityService} from './base-entity.service';
 import {BaseTableData} from '../interfaces/base-table-data.interface';
-import {JwtDecoderService} from './jwt-decoder.service';
 import {HttpClient} from '@angular/common/http';
 import {UserRow} from '../interfaces/user-row.interface'
 import {getRoleName, Role} from '../models/roles.enum';
+import {entityNames} from '../core/utils/globals';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ import {getRoleName, Role} from '../models/roles.enum';
 export class UserService extends BaseEntityService {
   constructor(client: HttpClient) {
     super(client);
-    this.entity = 'user';
+    this.entity = entityNames.user;
   }
 
   getEntryValue(key: string, entry: BaseTableData): string {

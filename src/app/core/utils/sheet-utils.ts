@@ -1,24 +1,30 @@
 import {StandaloneCell} from '../../models/report/shared/standalone-cell.interface';
 import {FormControl} from '@angular/forms';
-import {GridCell, SheetDisplayMap} from './sheet-map.types';
+import {GridCell, SheetDisplayMap, SheetInfo} from './sheet-map.types';
 import {Table} from '../../models/report/shared/table.interface';
 import {Column} from '../../models/report/shared/column.interface';
 import {SubColumn} from '../../models/report/shared/sub-column.interface';
 import {Row} from '../../models/report/base/row.interface';
 import {Sheet} from '../../models/report/shared/sheet.interface';
 import {Mode} from '../../models/modes.enum';
+import {v4 as uuidV4, validate} from 'uuid';
 
 // Maps standalone cells to a GridCell
 function standaloneCellsToGridCells(standaloneCells: StandaloneCell[]): GridCell[] {
-  return standaloneCells.map(cell => ({
+  return standaloneCells.map((cell: StandaloneCell): GridCell => standaloneCellToGridCell(cell));
+}
+
+export function standaloneCellToGridCell(cell: StandaloneCell): GridCell {
+  return {
     id: cell.id,
     columnIndex: cell.columnIndex,
     rowIndex: cell.rowIndex,
     gridColumnIndex: cell.columnIndex + 1,
     gridRowIndex: cell.rowIndex + 1,
-    content: new FormControl(cell.standaloneCellName),
-    isEditable: false
-  }));
+    content: new FormControl(cell.standaloneCellValue),
+    isEditable: false,
+    isStandaloneCell: true
+  }
 }
 
 // Maps a single column (header) cell to a GridCell
@@ -75,6 +81,15 @@ export function gridCellToSubColumn(gridCell: GridCell): SubColumn {
   }
 }
 
+export function gridCellToColumn(gridCell: GridCell): Column {
+  return {
+    id: gridCell.id,
+    columnIndex: gridCell.columnIndex,
+    columnName: gridCell.content.value,
+    subColumns: []
+  }
+}
+
 // Maps both header and sub-header cells to GridCells
 function createGridCells(table: Table, col: Column): GridCell[] {
   const gridCells: GridCell[] = [columnToGridCell(table, col)];
@@ -101,7 +116,7 @@ function createBlankDataGridCells(col: Column, hasSubCols: boolean, startCol: nu
   if (rowCount <= 0) return [];
 
   const rowIndex = startRow + (hasSubCols ? 2 : 1);
-  let gridCells : GridCell[] = [];
+  let gridCells: GridCell[] = [];
 
   if (!col.subColumns.length) {
     let j = 0;
@@ -109,7 +124,7 @@ function createBlankDataGridCells(col: Column, hasSubCols: boolean, startCol: nu
 
     for (let i = rowIndex; i < stop; i++) {
       gridCells.push({
-        id: `${col.id}_CELL_${j}`,
+        id: uuidV4(),
         isDataCell: true,
         columnIndex: col.columnIndex,
         rowIndex: i,
@@ -129,12 +144,12 @@ function createBlankDataGridCells(col: Column, hasSubCols: boolean, startCol: nu
   }
 
   for (const subColumn of col.subColumns) {
-    const blankCells : GridCell[] = [];
+    const blankCells: GridCell[] = [];
     let j = 0;
 
     for (let i = rowIndex; i < rowIndex + rowCount - 1; i++) {
       blankCells.push({
-        id: `${subColumn.id}_CELL_${j}`,
+        id: uuidV4(),
         isDataCell: true,
         columnIndex: subColumn.subColumnIndex,
         rowIndex: i,
@@ -144,7 +159,7 @@ function createBlankDataGridCells(col: Column, hasSubCols: boolean, startCol: nu
         isFirstColumn: subColumn.subColumnIndex === startCol,
         isFirstRow: i === startRow,
         isLastRow: i === endRow,
-        content: new FormControl(`${subColumn.id}_CELL_${j}_INDEX_${j}`),
+        content: new FormControl(""),
         columnId: col.id,
         subColumnId: subColumn.id,
         isEditable: false
@@ -187,7 +202,7 @@ function rowsToGridCells(table: Table, headerGridCells: GridCell[], rows: Row[])
         continue;
 
       let dataGridCell: GridCell = {
-        id: `CELL_${cellIndex++}_${row.id}`,
+        id: uuidV4(),
         isDataCell: true,
         columnIndex: headerGridCell.columnIndex,
         rowIndex: rowIndex + i,
@@ -218,10 +233,9 @@ function rowsToGridCells(table: Table, headerGridCells: GridCell[], rows: Row[])
 
 // Creates blank columns (header) cells for newly created tables
 function createBlankColumn(startingCol: number, index: number, tableId: string, hasSubCols: boolean): Column {
-  const id = `${tableId}_COLUMN_${index}`;
 
   const column: Column = {
-    id: id,
+    id: uuidV4(),
     columnIndex: startingCol - 1 + index,
     columnName: `Column ${index + 1}`,
     subColumns: []
@@ -229,7 +243,7 @@ function createBlankColumn(startingCol: number, index: number, tableId: string, 
 
   if (hasSubCols)
     column.subColumns = [{
-      id: `${id}_SUB_COLUMN_0`,
+      id: uuidV4(),
       name: 'Sub Column 1',
       subColumnIndex: column.columnIndex
     }];
@@ -237,6 +251,19 @@ function createBlankColumn(startingCol: number, index: number, tableId: string, 
   return column;
 }
 
+export function createBlankSheet(sheetId: string, count: number, rows: number, cols: number): Sheet {
+  const date = new Date();
+  return {
+    id: sheetId,
+    name: 'Sheet ' + count,
+    createdAt: date,
+    updatedAt: date,
+    rowCount: rows,
+    columnCount: cols,
+    tables: [],
+    standaloneCells: []
+  };
+}
 // Creates a new table with blank columns, sub-columns and data cells
 export function createBlankTable(
   sheetId: string,
@@ -252,7 +279,7 @@ export function createBlankTable(
 
   const sheetTemplateMap = map.sheets[sheetId];
 
-  const tableId = `SHEET_${sheetId}_TABLE_${tableCount}`;
+  const tableId = uuidV4();
   const cols = [...Array(columnCount).keys()].map(index => createBlankColumn(startingColumn, index, tableId, hasSubColumns));
 
   const table: Table = {
@@ -281,6 +308,13 @@ export function createBlankTable(
   return table;
 }
 
+export function updateSheetInfo(sheet: Sheet, sheetInfo: SheetInfo) {
+  sheetInfo.columnCount = sheet.columnCount;
+  sheetInfo.rowCount = sheet.rowCount;
+  sheetInfo.changes = 0;
+  sheetInfo.name = new FormControl(sheet.name);
+}
+
 // Maps a sheet into a SheetDisplay map so as to create a [row x column] grid
 export function mapSheet(sheet: Sheet, mode: Mode.EDIT | Mode.CREATE, map?: SheetDisplayMap): SheetDisplayMap {
   if (!map)
@@ -294,22 +328,22 @@ export function mapSheet(sheet: Sheet, mode: Mode.EDIT | Mode.CREATE, map?: Shee
 
   if (!map.sheetInfo[sheet.id])
     map.sheetInfo[sheet.id] = {
+      isGeneratedInClient: validate(sheet.id),
+      name: new FormControl(sheet.name),
+      isNameEditable: false,
       columnCount: sheet.columnCount,
       rowCount: sheet.rowCount,
-      name: new FormControl(sheet.name),
       visits: 1,
-      isNameEditable: false,
-      mode: mode
+      mode: mode,
+      changes: 0
     };
 
   const sheetMap = map.sheets[sheet.id];
-  const rows : Row[] = [];
+  const rows: Row[] = [];
   const gridCells: GridCell[] = [];
 
   if (sheet.standaloneCells.length)
     gridCells.push(...standaloneCellsToGridCells(sheet.standaloneCells));
-
-  console.log("WHAT ABOUT HERE? WHAT DOES THE SHEET LOOK LIKE?", sheet)
 
   for (const table of sheet.tables) {
     gridCells.push(...table.columns.map((col) => createGridCells(table, col)).flat());

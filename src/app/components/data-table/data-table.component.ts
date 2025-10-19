@@ -59,8 +59,6 @@ export class DataTableComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.keys = this.thead().map(e => e.key);
-
-    // console.log(this.keys);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -100,7 +98,7 @@ export class DataTableComponent implements OnInit, OnChanges {
       } else {
         // Sets the checked sub-report's "selected" property (based on the event)
         check.childCheckboxes![index].selected = selected;
-        // Sets the parent's "selected" property based on whether all sub-reports are checked or not
+        // Sets the parent's "selected" property based on whether all sub-report-management are checked or not
         check.selected = check.childCheckboxes?.every(r => r.selected) ?? true;
       }
 
@@ -163,12 +161,11 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   getEntryValue(entry: BaseTableData, key: string): any {
-    // console.log(entry)
     if (['createdAt', 'updatedAt'].includes(key)) {
       const date = new Date(entry[key]);
 
       if (!date)
-        return ''
+        return '';
 
       const options: Intl.DateTimeFormatOptions = {
         year: 'numeric', month: 'long', day: 'numeric',

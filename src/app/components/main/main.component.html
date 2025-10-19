@@ -8,39 +8,35 @@
       <p>{{ initials }}</p>
     </div>
     <div class="anchorContainer">
-      <a href="/home" class="anchor">
+      <a routerLink="/home" class="anchor">
         <img src="/home.png" alt="home" class="anchorImg">
         <p class="anchorText">Home</p>
       </a>
       @if (isTmOrPm(role)) {
-        <a href="/report-templates" class="anchor">
+        <a routerLink="/report-templates" class="anchor">
           <img src="/templates.png" alt="report templates" class="anchorImg"/>
           <p class="anchorText">Templates</p>
         </a>
-        <a href="/spreadsheets" class="anchor">
-          <img src="/spreadsheet.png" alt="spreadsheets" class="anchorImg"/>
-          <p class="anchorText">Spreadsheets</p>
-        </a>
-        <a href="/reports" class="anchor">
+        <a routerLink="/reports" class="anchor">
           <img src="/sheet-tst.png" alt="reports" class="anchorImg">
           <p class="anchorText">Reports</p>
         </a>
-        <a href="/home" class="anchor">
+        <a routerLink="/home" class="anchor">
           <img src="/archive.png" alt="archive" class="anchorImg">
           <p class="anchorText">Archive</p>
         </a>
       } @else if (isAdmin(role)) {
-        <a href="/admin/manage-users" class="anchor">
+        <a routerLink="/admin/manage-users" class="anchor">
           <img src="/users.png" alt="users" class="anchorImg">
           <p class="anchorText">Users</p>
         </a>
-        <a href="/admin/manage-teams" class="anchor">
+        <a routerLink="/admin/manage-teams" class="anchor">
           <img src="/teams.png" alt="teams" class="anchorImg">
           <p class="anchorText">Teams</p>
         </a>
       }
     </div>
-    <a class="logoutBtn" href="/login" (click)="auth.logout()">
+    <a class="logoutBtn" routerLink="/login" (click)="auth.logout()">
       <img src="/logout.png" alt="logout" class="w-5 h-5">
       <p class="text-white text-xs">Logout</p>
     </a>

@@ -21,6 +21,10 @@ import {SingleActionWithEntity, SingleActionWithId} from '../../models/single-ac
 import {AuthService} from '../../services/auth.service';
 import {Subject, takeUntil} from 'rxjs';
 import {ReportTemplateService} from '../../services/report-template.service';
+import {ReportTemplate} from '../../models/report/templates/report-template.interface';
+import {entityNames} from '../../core/utils/globals';
+import {ReportService} from '../../services/report.service';
+import {Report} from '../../models/report/base/report.interface';
 
 @Component({
   selector: 'app-data-management',
@@ -315,7 +319,7 @@ export class DataManagementComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    if (this.entity === 'user') {
+    if (this.entity === entityNames.user) {
       const loggedInUser = this.authService.loggedInUser();
       const user = this.deleteIds.find(id => id === loggedInUser?.sub);
 
@@ -381,8 +385,13 @@ export class DataManagementComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    if (this.singleAction.action === Mode.EDIT && this.entityService instanceof ReportTemplateService) {
-      this.entityService.navigateToSpreadsheets(this.router, entity);
+    if (this.singleAction.action === Mode.EDIT) {
+      const state = {state: {}};
+
+      if (this.entityService instanceof ReportTemplateService) state.state = {reportTemplate: entity as ReportTemplate};
+      else if (this.entityService instanceof ReportService) state.state = {report: entity as Report};
+
+      this.router.navigate(['/spreadsheets'], state);
       return;
     }
 

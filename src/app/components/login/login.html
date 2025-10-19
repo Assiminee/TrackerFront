@@ -70,7 +70,7 @@
       </form>
       <div class="pb-5 text-center">
         <p class="font-semibold">Don't have an account?</p>
-        <a href="https://www.google.com" class="text-sm underline text-blue-500">
+        <a routerLink="https://www.google.com" class="text-sm underline text-blue-500">
           Please contact an admin
         </a>
       </div>
@@ -87,7 +87,7 @@
         (click)="$event.stopPropagation()"
       >
         <div class="relative bg-white max-h-[70vh] px-4 pt-5 pb-4 sm:p-8 rounded-2xl">
-          <button type="button" class="absolute right-4 top-4" (click)="showModal = false">
+          <button type="button" class="absolute right-4 top-4 cursor-pointer" (click)="showModal = false">
             <img src="/close.png" class="w-3 h-3"/>
           </button>
 

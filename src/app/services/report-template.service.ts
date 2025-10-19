@@ -10,19 +10,25 @@ import {ReportTemplate} from '../models/report/templates/report-template.interfa
 import {take} from 'rxjs';
 import {Sheet} from '../models/report/shared/sheet.interface';
 import {mapSheet} from '../core/utils/sheet-utils';
+import {entityNames} from '../core/utils/globals';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportTemplateService extends BaseEntityService {
 
-  constructor(client: HttpClient, private sheetTemplateService: SheetTemplateService) {
+  constructor(client: HttpClient) {
     super(client);
-    this.entity = 'report-template';
+    this.entity = entityNames.reportTemplate.replace(" ", "-");
   }
 
   formatForDelete(data: BaseTableData[], ids: string[]): { [p: string]: any }[] {
-    return [];
+    return (data as ReportTemplate[]).filter(rt => ids.includes(rt.id))
+      .map((r) => ({
+        Title: r.name,
+        Owner: r.owner.firstName + ' ' + r.owner.lastName,
+        'Sheet Template Count': r.sheetTemplates.length
+      }));
   }
 
   isOwner(key: string, entry: BaseTableData): boolean {
@@ -45,29 +51,6 @@ export class ReportTemplateService extends BaseEntityService {
     if (this.isOwner(key, entry))
       return entry[key].firstName + ' ' + entry[key].lastName;
 
-    if (this.isTeam(key, entry))
-      return entry[key].name;
-
     return entry[key];
-  }
-
-  navigateToSpreadsheets(router: Router, entity: BaseTableData) {
-    const reportTemplate = entity as ReportTemplate;
-
-    if (!reportTemplate.sheetTemplates.length) {
-      router.navigate(['/spreadsheets'], {state: {reportTemplate: reportTemplate}});
-      return;
-    }
-
-    this.sheetTemplateService.getSheetTemplate(reportTemplate.sheetTemplates[0].sheetTemplateId, reportTemplate.id)
-      .pipe(take(1))
-      .subscribe({
-        next: data => {
-          router.navigate(['/spreadsheets'], {state: {reportTemplate, firstSheetTemplate: data as Sheet}});
-        },
-        error: err => {
-          console.log(err);
-        }
-      });
   }
 }

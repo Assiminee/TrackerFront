@@ -29,6 +29,7 @@ import {getRoleName, isAdmin, isTmOrPm, isValidRole, Role, VALID_ROLES} from '..
 import {SingleActionWithEntity} from '../../models/single-action.type';
 import {Mode} from '../../models/modes.enum';
 import {AuthService} from '../../services/auth.service';
+import {entityNames} from '../../core/utils/globals';
 
 @Component({
   selector: 'app-user-management',
@@ -63,7 +64,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
 
     this.thead = this.getWritableSignal();
 
-    this.entity = 'user';
+    this.entity = entityNames.user;
 
     this.form = this.createFormGroup();
 
@@ -72,7 +73,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
 
   getWritableSignal(): WritableSignal<DataTableColumn[]> {
     return signal<DataTableColumn[]>([
-      {key: 'id', title: 'ID', sortable: true, sortOrder: 'ASC', isEnabled: false},
+      {key: 'id', title: 'ID'},
       {
         key: 'fullName',
         title: 'Full Name',
@@ -81,7 +82,7 @@ export class UserManagementComponent extends EntityManagement implements OnInit,
         isEnabled: true,
         queryParamName: 'fullNameAsc'
       },
-      {key: 'team', title: 'Team', sortable: true, sortOrder: 'ASC', isEnabled: false},
+      {key: 'team', title: 'Team'},
       {
         key: 'role', title: 'Role', isEnum: true, badge: true, customCssClass: {
           [Role.ProjectManager]: 'text-blue-600 bg-blue-50 rounded-lg ring-blue-800/30',

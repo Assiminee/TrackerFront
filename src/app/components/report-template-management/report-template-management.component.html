@@ -84,5 +84,19 @@
         </form>
       </div>
     </div>
+
+    <div ngProjectAs="notice" class="overflow-y-auto max-h-[40vh]">
+      <p class="font-semibold">You’re about to delete one or more report templates. Please note that:</p>
+      <ul class="list-decimal flex flex-col gap-2 p-5">
+        <li>
+          A report templates that has been used to generate reports cannot be deleted permanently unless all
+          the related reports are deleted beforehand.
+        </li>
+        <li>
+          Once a report template is deleted, it cannot be recovered.
+        </li>
+      </ul>
+      <p>Click “Proceed” to view the report templates slated for deletion and confirm.</p>
+    </div>
   </app-data-management>
 </app-main>

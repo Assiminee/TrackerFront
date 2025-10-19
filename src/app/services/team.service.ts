@@ -3,6 +3,7 @@ import {BaseEntityService} from './base-entity.service';
 import {BaseTableData} from '../interfaces/base-table-data.interface';
 import {HttpClient} from '@angular/common/http';
 import {Team} from '../interfaces/team.interface';
+import {entityNames} from '../core/utils/globals';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class TeamService extends BaseEntityService {
 
   constructor(client: HttpClient) {
     super(client);
-    this.entity = 'team';
+    this.entity = entityNames.team;
   }
 
   getEntryValue(key: string, entry: BaseTableData): string {

@@ -1,7 +1,7 @@
 import {Routes} from '@angular/router';
 import {Login} from './components/login/login';
 import {HomeComponent} from './components/home/home.component';
-import {ReportsComponent} from './components/reports/reports.component';
+import {ReportManagementComponent} from './components/report-management/report-management.component';
 import {AdminComponent} from './components/admin/admin.component';
 import {UserManagementComponent} from './components/user-management/user-management.component';
 import {TeamManagementComponent} from './components/team-management/team-management.component';
@@ -18,7 +18,7 @@ export const routes: Routes = [
   {path: 'confirm', component: ActivateAccountComponent},
   {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
-  {path: 'reports', component: ReportsComponent},
+  {path: 'reports', component: ReportManagementComponent},
   {path: 'report-templates', component: ReportTemplateManagementComponent},
   {path: 'spreadsheets', component: SheetTemplatesComponent},
   {

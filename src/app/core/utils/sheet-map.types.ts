@@ -4,7 +4,12 @@ import {Mode} from '../../models/modes.enum';
 export type SheetId = string;
 type ColumnIndex = number;
 type RowIndex = number;
-type SheetInfo = { columnCount: number, rowCount: number, name: FormControl, visits: number, isNameEditable: boolean, mode: Mode.CREATE | Mode.EDIT };
+export type SheetInfo = {
+  columnCount: number, rowCount: number,
+  name: FormControl, isGeneratedInClient: boolean,
+  isNameEditable: boolean, visits: number,
+  mode: Mode.CREATE | Mode.EDIT, changes: number
+};
 
 export type GridRecord = Record<ColumnIndex, GridCell>;
 export type RowRecord = Record<RowIndex, GridRecord>;
@@ -32,6 +37,7 @@ export interface GridCell {
   isHeaderCell?: boolean;
   isSubHeaderCell?: boolean;
   isDataCell?: boolean;
+  isStandaloneCell?: boolean;
 
   parentId?: string;
   childIds?: string[];

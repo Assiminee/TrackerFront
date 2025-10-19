@@ -22,6 +22,7 @@ import {Team} from '../../interfaces/team.interface';
 import {BaseTableData} from '../../interfaces/base-table-data.interface';
 import {NgClass} from '@angular/common';
 import {Mode} from '../../models/modes.enum';
+import {entityNames} from '../../core/utils/globals';
 
 @Component({
   selector: 'app-team-management',
@@ -46,7 +47,7 @@ export class TeamManagementComponent extends EntityManagement {
 
     this.thead = this.getSignal();
 
-    this.entity = 'team';
+    this.entity = entityNames.team;
     this.form = new FormGroup({name: new FormControl("", Validators.required)});
   }
 

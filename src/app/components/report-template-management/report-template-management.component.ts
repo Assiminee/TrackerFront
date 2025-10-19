@@ -14,6 +14,7 @@ import {getRoleName, VALID_ROLES} from '../../models/roles.enum';
 import {Mode} from '../../models/modes.enum';
 import {NgClass} from '@angular/common';
 import {HttpErrorResponse} from '@angular/common/http';
+import {entityNames} from '../../core/utils/globals';
 
 @Component({
   selector: 'app-report-template-management',
@@ -32,7 +33,7 @@ export class ReportTemplateManagementComponent extends EntityManagement {
 
   constructor(protected service: ReportTemplateService, router: Router, route: ActivatedRoute, teamService: TeamService, formHelper: FormHelperService) {
     super(router, route, teamService, formHelper);
-    this.entity = 'report template';
+    this.entity = entityNames.reportTemplate;
     this.thead = this.getSignal();
     this.form = this.createForm();
   }
@@ -66,12 +67,12 @@ export class ReportTemplateManagementComponent extends EntityManagement {
         queryParamName: 'oldestToNewestUpdated'
       },
       {key: 'owner', title: 'Owner'},
-      // {
-      //   key: 'deleted', title: 'Team Status', isFlag: true, filterBy: null, badge: true, customCssClass: {
-      //     'true': 'text-red-600 bg-red-50 rounded-lg ring-red-800/30',
-      //     'false': 'text-green-600 bg-green-50 rounded-lg ring-green-800/30'
-      //   }, queryParamName: 'isDeleted'
-      // },
+      {
+        key: 'deleted', title: 'Status', isFlag: true, filterBy: null, badge: true, customCssClass: {
+          'true': 'text-red-600 bg-red-50 rounded-lg ring-red-800/30',
+          'false': 'text-green-600 bg-green-50 rounded-lg ring-green-800/30'
+        }, queryParamName: 'isDeleted'
+      },
     ]);
   }
 
@@ -85,7 +86,6 @@ export class ReportTemplateManagementComponent extends EntityManagement {
 
   fillForm(event: SingleActionWithEntity) {
     this.singleAction = event;
-    // event.entity?.id;
     this.form.enable();
 
     this.name.setValue(event.entity?.['name']);

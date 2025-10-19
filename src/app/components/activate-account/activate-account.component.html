@@ -46,7 +46,7 @@
                  class="rounded-lg shadow-2xl px-4 py-2 placeholder-gray-500 border w-full focus:outline-none focus:ring-0 focus:border-gray-500"
                  [ngClass]="password.disabled ? 'bg-gray-200 border-gray-500' : 'bg-white border-gray-300'"
                  placeholder="***************"/>
-          <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6"
+          <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6 cursor-pointer"
                   (click)="toggleShowPassword()">
             <img alt="show/hide" [src]="showPassword ? '/show-pwd.png' : '/hide-pwd.png'" class="w-6 h-6"/>
           </button>
@@ -65,7 +65,7 @@
                  class="rounded-lg shadow-2xl px-4 py-2 placeholder-gray-500 border w-full focus:outline-none focus:ring-0 focus:border-gray-500"
                  [ngClass]="password.disabled ? 'bg-gray-200 border-gray-500' : 'bg-white border-gray-300'"
                  placeholder="***************"/>
-          <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6"
+          <button type="button" class="absolute right-3 border-l-gray-300 border-l-1 pl-3 h-5/6 cursor-pointer"
                   (click)="toggleShowConfPwd()">
             <img alt="show/hide" [src]="showConfPwd ? '/show-pwd.png' : '/hide-pwd.png'" class="w-6 h-6"/>
           </button>
@@ -78,14 +78,14 @@
       <div class="flex flex-col gap-3">
         @if (success) {
           <button type="button" (click)="onSubmit()"
-                  class="bg-red-800 hover:bg-red-700 rounded-lg text-sm sm:text-lg p-1 px-4 text-white self-center"
+                  class="bg-red-800 hover:bg-red-700 rounded-lg text-sm sm:text-lg p-1 px-4 text-white self-center cursor-pointer"
                   [disabled]="!success"
                   [ngClass]="success ? '' : 'bg-red-800/60'">Submit
           </button>
         }
         @if (requestNewToken) {
           <button type="button" (click)="requestToken()"
-                  class="rounded-lg text-sm sm:text-lg p-1 px-4 self-center bg-red-800 hover:bg-red-700 text-white">
+                  class="rounded-lg text-sm sm:text-lg p-1 px-4 self-center bg-red-800 hover:bg-red-700 text-white cursor-pointer">
             Request a new activation email
           </button>
         }

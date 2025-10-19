@@ -1,0 +1,54 @@
+<!--<div role="dialog" aria-modal="true" class="relative z-10" [ngClass]="{'hidden': !showDialog, 'visible': showDialog}">-->
+<!--  <div aria-hidden="true" class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>-->
+<!--  <div class="fixed inset-0 z-10 w-screen overflow-hidden" (click)="dismiss()">-->
+<!--    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">-->
+<!--      <div-->
+<!--        class="relative transform rounded-3xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl"-->
+<!--        (click)="$event.stopPropagation()"-->
+<!--      >-->
+<!--        <div class="relative bg-white max-h-[70vh] px-4 pt-5 pb-4 sm:p-8 rounded-2xl">-->
+<!--          <div class="relative w-full h-[2vh] p-0">-->
+<!--            <button type="button" class="absolute right-0 top-0 cursor-pointer" (click)="dismiss()">-->
+<!--              <img src="/close.png" class="w-3 h-3"/>-->
+<!--            </button>-->
+<!--          </div>-->
+<!--          <div class="flex w-full justify-center pb-5 text-xl text-center font-semibold">-->
+<!--            @if (selection) {-->
+<!--              Creating table at coordinates {{ displaySelection() }}-->
+<!--            }-->
+<!--          </div>-->
+<!--          <div class="inline-flex items-center justify-center w-full gap-3">-->
+<!--            <label class="flex items-center cursor-pointer relative">-->
+<!--              <input type="checkbox" [formControl]="hasSubCols"-->
+<!--                     class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-red-800 checked:bg-red-800 checked:border-red-800"-->
+<!--              />-->
+<!--              <span-->
+<!--                class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">-->
+<!--                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"-->
+<!--                       stroke="currentColor" stroke-width="1">-->
+<!--                    <path fill-rule="evenodd"-->
+<!--                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"-->
+<!--                          clip-rule="evenodd"></path>-->
+<!--                  </svg>-->
+<!--                </span>-->
+<!--            </label>-->
+
+<!--            <label>-->
+<!--              My table has a sub-header row-->
+<!--            </label>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="bg-gray-400/65 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 rounded-b-2xl justify-center gap-3">-->
+<!--          <button type="button" (click)="dismiss()"-->
+<!--                  class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-serif text-gray-900 shadow-md ring-2 ring-gray-400 ring-inset hover:bg-gray-300 sm:mt-0 sm:w-auto">-->
+<!--            Cancel-->
+<!--          </button>-->
+<!--          <button type="button" (click)="confirmCreateTable()"-->
+<!--                  class="mt-3 inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-serif text-white shadow-md ring-2 ring-gray-400 ring-inset hover:bg-green-500/50 sm:mt-0 sm:w-auto">-->
+<!--            Confirm-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

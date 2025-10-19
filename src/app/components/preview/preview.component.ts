@@ -2,10 +2,11 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Table} from "../../interfaces/table.interface";
 import {TableComponent} from "../table/table.component";
 import {TableDisplayService} from '../../services/table-display.service';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-preview',
-  imports: [TableComponent],
+  imports: [TableComponent, RouterLink],
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.css',
   standalone: true

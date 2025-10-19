@@ -4,12 +4,13 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {DataTableColumn} from '../interfaces/data-table-column.interface';
 import {Observable, of, from, mergeMap, catchError, toArray} from 'rxjs';
 import {BaseTableData} from '../interfaces/base-table-data.interface';
+import {ROOT_URL} from '../core/utils/globals';
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class BaseEntityService implements EntityService {
-  protected ROOT_URL : string = "http://localhost:8080/api/";
+  protected ROOT_URL : string = ROOT_URL;
 
   protected constructor(private client: HttpClient) {}
 
@@ -129,6 +130,8 @@ export abstract class BaseEntityService implements EntityService {
   }
 
   entitiesDeletable(entries: BaseTableData[]): boolean {
-    return entries.every(entry => entry?.['deleted'] === false);
+    return entries.every(entry => {
+      return entry?.['deleted'] === false || entry?.['isDeleted'] === false
+    });
   }
 }

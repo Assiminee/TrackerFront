@@ -1,5 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -17,7 +17,8 @@ import {AlertComponent} from '../alert/alert.component';
   imports: [
     ReactiveFormsModule,
     NgClass,
-    AlertComponent
+    AlertComponent,
+    RouterLink
   ],
   templateUrl: './login.html',
   standalone: true,

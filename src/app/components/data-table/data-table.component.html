@@ -15,14 +15,14 @@
           <p class="text-sm sm:text-lg">{{ entry.title }}</p>
           @if (entry.sortable) {
             <button (click)="toggleSortOrder(entry.key)"
-                    class="inline-flex items-center justify-center size-5 shrink-0 bg-green-400 rounded-lg transformations shadow-xl sm:size-8">
+                    class="inline-flex items-center justify-center size-5 shrink-0 bg-green-400 rounded-lg transformations shadow-xl sm:size-8 cursor-pointer">
               <img [src]="constructImageSrc(entry)" class="size-3 sm:size-5" alt="order"/>
             </button>
           }
           @if (entry.isEnum || entry.isFlag) {
             <div class="flex">
               <button (click)="openSortMenu(entry, $event)"
-                      class="inline-flex items-center justify-center size-5 shrink-0 bg-green-400 rounded-lg transformations shadow-xl sm:size-8">
+                      class="inline-flex items-center justify-center size-5 shrink-0 bg-green-400 rounded-lg transformations shadow-xl sm:size-8 cursor-pointer">
                 <img [src]="constructImageSrc(entry)" class="size-3 p-0.5 sm:size-5 sm:p-1" alt="order"/>
               </button>
             </div>
@@ -55,7 +55,7 @@
           </td>
         }
         <td class="h-full flex justify-center items-center py-3 px-5">
-          <button type="button" class="relative" (click)="toggleMenu(entry.id, $event)">
+          <button type="button" class="relative cursor-pointer" (click)="toggleMenu(entry.id, $event)">
             <svg viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"
                  class="fill-black w-8 h-8"
             >
@@ -156,17 +156,17 @@
     <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center"
          (click)="setFilter(null, 'deleted')"
     >
-      <button>All</button>
+      <button class="cursor-pointer w-full">All</button>
     </div>
     <div class="border-b border-gray-200 p-2 hover:bg-green-100 flex gap-2 items-center"
          (click)="setFilter(false, 'deleted')"
     >
-      <button class="text-green-600">Active</button>
+      <button class="text-green-600 cursor-pointer w-full">Active</button>
     </div>
     <div class="p-2 hover:bg-red-100 flex gap-2 items-center"
          (click)="setFilter(true, 'deleted')"
     >
-      <button class="text-red-600">Deleted</button>
+      <button class="text-red-600 cursor-pointer w-full">Deleted</button>
     </div>
   </div>
 </ng-template>
@@ -178,24 +178,24 @@
     <div class="border-b border-gray-200 p-2 hover:bg-gray-200 flex gap-2 items-center justify-center"
          (click)="setFilter(null, 'role')"
     >
-      <button>All</button>
+      <button class="cursor-pointer w-full">All</button>
     </div>
     <div
       class="border-b border-gray-200 p-2 px-4 hover:bg-blue-100 text-blue-600 flex gap-2 items-center justify-center"
       (click)="setFilter(Role.ProjectManager, 'role')"
     >
-      <button class="text-center">Project Manager</button>
+      <button class="text-center cursor-pointer w-full">Project Manager</button>
     </div>
     <div
       class="border-b border-gray-200 p-2 px-4 hover:bg-orange-100 text-orange-600 flex gap-2 items-center justify-center"
       (click)="setFilter(Role.TeamMember, 'role')"
     >
-      <button class="text-center">Team Member</button>
+      <button class="text-center cursor-pointer w-full">Team Member</button>
     </div>
     <div class="p-2 px-4 hover:bg-purple-100 text-purple-600 flex gap-2 items-center justify-center"
          (click)="setFilter(Role.Admin, 'role')"
     >
-      <button class="text-center">Administrator</button>
+      <button class="text-center cursor-pointer w-full">Administrator</button>
     </div>
   </div>
 </ng-template>
